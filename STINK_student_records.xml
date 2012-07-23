@@ -1,0 +1,682 @@
+<?xml version="1.0" standalone="yes"?>
+
+<document class="fragment">
+
+	<section label="sec:database-info">
+
+		<title>System specification and details</title>
+
+		<p>The Southern Technical Institute for Natural Knowledge is a medium-sized tertiary education provider (founded in 1982) that teaches papers across many subjects, which lead to several different qualifications. They are currently in the process of designing and implementing a new student records database. The requirements analysis and conceptual design phases of the project are complete, and you have been brought in as lead database developer. It will be your task to implement an initial prototype of the conceptual specification. A design-level entity-relationship diagram of the proposed database is shown in <hyperlink label="fig:erd"><reference label="fig:erd" /></hyperlink>, and more detailed specifications of the database requirements may be found in the following sections. <strong>Reminder:</strong> In the tables that follow, <quote><tt><hash /></tt></quote> indicates the unique identifier, <quote><tt>*</tt></quote> indicates that a value is required, and <quote><tt>o</tt></quote> indicates that a value is not required.</p>
+
+
+		<figure label="fig:erd" latex-placement="!hb">
+			<caption>Design-level ERD of the proposed database</caption>
+			<image basename="STINK_student_records" location="images">
+				<description>Design-level ERD of the proposed database</description>
+			</image>
+		</figure>
+
+
+		<section>
+		
+			<title>The <tt>Qualification</tt> entity</title>
+
+			<tabular border="1">
+				<tabular-columns>
+					<column align="center" left-border="|" right-border="|" />
+					<column align="left" right-border="|" />
+					<column align="left" right-border="|" />
+				</tabular-columns>
+				<tabular-body>
+					<row-rule />
+					<row>
+						<cell header="yes" />
+						<cell header="yes">Column</cell>
+						<cell header="yes">Description</cell>
+					</row>
+					<row-rule />
+					<row>
+						<cell><tt><hash /></tt></cell>
+						<cell><code>Abbreviation</code></cell>
+						<cell>Up to 10 characters</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Full_Name</code></cell>
+						<cell>Up to 100 characters</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Type</code></cell>
+						<cell>(see below)</cell>
+					</row>
+					<row-rule />
+				</tabular-body>
+			</tabular>
+
+			<itemised-list>
+
+				<item>The abbreviation is a short string that identifies the qualification, e.g., <quote>BCom</quote>, <quote>PGDipCApSc</quote> (these are not the only possible values).</item>
+			
+				<item>The qualification type must be one of the following: <quote>Degree</quote>, <quote>Diploma</quote> or <quote>Certificate</quote>.</item>
+				
+			</itemised-list>
+			
+			<answer>
+			
+				<p indent="no"><strong>Qualification</strong><left-brace /><underline>Abbreviation</underline>, Full<underscore />Name, Type<right-brace /></p>
+				
+				<code-block>
+CREATE TABLE Qualification
+( Abbreviation      VARCHAR2(10),
+  Full_Name         VARCHAR2(100)   NOT NULL,
+  Type              VARCHAR2(11)    NOT NULL
+    CONSTRAINT Qualification_Type_Valid 
+      CHECK (Type IN ('Degree', 'Diploma', 'Certificate')),
+  --
+  CONSTRAINT Qualification_PK PRIMARY KEY (Abbreviation)
+);
+				</code-block>
+				
+				<p indent="no">If we wanted to allow for additional qualification types in future, we could create a separate <code>Qualification_Type</code> lookup table, with a single column <code>Type</code>. We could then replace the <code>CHECK</code> constraint <code>Qualification_Type_Valid</code> with a foreign key to the lookup table. </p>
+			
+			</answer>
+			
+		</section>
+
+
+		<section>
+		
+			<title>The <tt>Paper</tt> entity</title>
+
+			<tabular border="1">
+				<tabular-columns>
+					<column align="center" left-border="|" right-border="|" />
+					<column align="left" right-border="|" />
+					<column align="left" right-border="|" />
+				</tabular-columns>
+				<tabular-body>
+					<row-rule />
+					<row>
+						<cell header="yes" />
+						<cell header="yes">Column</cell>
+						<cell header="yes">Description</cell>
+					</row>
+					<row-rule />
+					<row>
+						<cell><tt><hash /></tt></cell>
+						<cell><code>Paper_Code</code></cell>
+						<cell>7 characters</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Title</code></cell>
+						<cell>Up to 50 characters</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Description</code></cell>
+						<cell>Up to 500 characters</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Points</code></cell>
+						<cell>Integer 0<endash />36, default 18</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Period</code></cell>
+						<cell>(see below)</cell>
+					</row>
+					<row-rule />
+				</tabular-body>
+			</tabular>
+
+			<vskip size="large" />
+			
+			<p indent="no">The period of a paper must be one of the following: <quote>SS</quote> (Summer School), <quote>S1</quote> (Semester One), <quote>S2</quote> (Semester Two) or <quote>FY</quote> (Full Year).</p>
+				
+			<answer>
+			
+				<p indent="no"><strong>Paper</strong><left-brace /><underline>Paper<underscore />Code</underline>, Title, Description, Points, Period<right-brace /></p>
+				
+				<code-block>
+CREATE TABLE Paper
+( Paper_Code        CHAR(7),
+  Title             VARCHAR2(50)    NOT NULL,
+  Description       VARCHAR2(500)   NOT NULL,
+  Points            NUMBER(2)       DEFAULT 18 NOT NULL
+    CONSTRAINT Paper_Points_Range CHECK (Points BETWEEN 0 AND 36),
+  Period            CHAR(2)        NOT NULL
+    CONSTRAINT Paper_Period_Valid
+      CHECK (Period IN ('S1', 'S2', 'SS', 'FY')),
+  --
+  CONSTRAINT Paper_PK PRIMARY KEY (Paper_Code)
+);
+				</code-block>
+			
+				<p indent="no">We also need to add an associative entity between <strong>Paper</strong> and <strong>Qualification</strong> in order to resolve the many-to-many relationship:</p>
+				
+				<vskip size="small" />
+				
+				<p indent="no"><strong>Schedule</strong><left-brace/><underline>Abbreviation, Paper<underscore/>Code</underline><right-brace/>; Abbreviation FK to <strong>Qualification</strong>, Paper<underscore/>Code FK to <strong>Paper</strong></p>
+				
+				<code-block>
+CREATE TABLE Schedule
+( Abbreviation      VARCHAR2(10),
+  Paper_Code        CHAR(7),
+  --
+  CONSTRAINT Schedule_PK PRIMARY KEY (Abbreviation, Paper_Code),
+  CONSTRAINT Schedule_FK_to_Qualification
+    FOREIGN KEY (Abbreviation) REFERENCES Qualification,
+  CONSTRAINT Schedule_FK_to_Paper FOREIGN KEY (Paper_Code) REFERENCES Paper
+);
+				</code-block>
+
+			</answer>
+			
+		</section>
+
+
+		<section>
+		
+			<title>The <tt>Person</tt> entity and its subtypes</title>
+
+			<tabular border="1">
+				<tabular-columns>
+					<column align="center" left-border="|" right-border="|" />
+					<column align="left" right-border="|" />
+					<column align="left" right-border="|" />
+				</tabular-columns>
+				<tabular-body>
+					<row>
+						<cell header="yes" columns="3"><tt>Person</tt></cell>
+					</row>
+					<row-rule />
+					<row>
+						<cell header="yes" />
+						<cell header="yes">Column</cell>
+						<cell header="yes">Description</cell>
+					</row>
+					<row-rule />
+					<row>
+						<cell><tt><hash /></tt></cell>
+						<cell><code>Person_ID</code></cell>
+						<cell>Internally generated 7 digit identifier (see below)</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Surname</code></cell>
+						<cell>Up to 50 characters</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Other_Names</code></cell>
+						<cell>Up to 50 characters</cell>
+					</row>
+					<row>
+						<cell><tt>o</tt></cell>
+						<cell><code>Contact_Phone</code></cell>
+						<cell>(see below)</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Contact_Address</code></cell>
+						<cell>Up to 200 characters</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Username</code></cell>
+						<cell>Up to 10 characters</cell>
+					</row>
+					<row-rule />
+					<row>
+						<cell columns="3" />
+					</row>
+
+					<row>
+						<cell header="yes" columns="3"><tt>Staff</tt></cell>
+					</row>
+					<row-rule />
+					<row>
+						<cell header="yes" />
+						<cell header="yes">Column</cell>
+						<cell header="yes">Description</cell>
+					</row>
+					<row-rule />
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Email</code></cell>
+						<cell>Up to 50 characters</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Rank</code></cell>
+						<cell>(see below)</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Salary</code></cell>
+						<cell>Monetary, <ge /><dollar-sign />35<digitsep />450.00</cell>
+					</row>
+					<row-rule />
+					<row>
+						<cell columns="3" />
+					</row>
+
+					<row>
+						<cell header="yes" columns="3"><tt>Student</tt></cell>
+					</row>
+					<row-rule />
+					<row>
+						<cell header="yes" />
+						<cell header="yes">Column</cell>
+						<cell header="yes">Description</cell>
+					</row>
+					<row-rule />
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Email</code></cell>
+						<cell>Up to 50 characters</cell>
+					</row>
+					<row>
+						<cell><tt>o</tt></cell>
+						<cell><code>Home_Phone</code></cell>
+						<cell>(see below)</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Home_Address</code></cell>
+						<cell>Up to 200 characters</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>International</code></cell>
+						<cell>True/false, default false</cell>
+					</row>
+					<row-rule />
+				</tabular-body>
+			</tabular>
+
+			<itemised-list>
+			
+				<item>You are not required to automatically generate the value of the <code>Person_ID</code> attribute, but bonus marks will be awarded if you are able to do so. (This also applies to the <code>Enrolment_ID</code> and <code>Assessment_ID</code> attributes below.)</item>
+			
+				<item>Phone numbers must cater for full international numbers, as many students are from overseas.</item>
+				
+				<item>A staff member<apostrophe />s rank must be one of the following: <quote>AL</quote> (Assistant Lecturer), <quote>L</quote> (Lecturer), <quote>SL</quote> (Senior Lecturer), <quote>AP</quote> (Associate Professor) or <quote>P</quote> (Professor).</item>
+				
+			</itemised-list>
+
+			<answer>
+			
+				<p indent="no"><strong>Person</strong><left-brace /><underline>Person<underscore />ID</underline>, Surname, Other<underscore />Names, Contact<underscore />Phone, Contact<underscore />Address, Username<right-brace /></p>
+				
+				<vskip size="small" />
+			
+				<p indent="no"><strong>Staff</strong><left-brace /><underline>Staff<underscore />ID</underline>, Email, Rank, Salary<right-brace />; Staff<underscore />ID FK to <strong>Person</strong></p>
+			
+				<vskip size="small" />
+			
+				<p indent="no"><strong>Staff</strong><left-brace /><underline>Student<underscore />ID</underline>, Email, Home<underscore />Phone, Home<underscore />Address, International, Supervisor<underscore />ID<right-brace />; Student<underscore />ID FK to <strong>Person</strong>, Supervisor<underscore />ID FK to <strong>Staff</strong></p>
+				
+				<code-block>
+CREATE TABLE Person
+( Person_ID         NUMBER(7),
+  Surname           VARCHAR2(50)    NOT NULL,
+  Other_Names       VARCHAR2(50)    NOT NULL,
+  Contact_Phone     VARCHAR2(12),   -- at least 12, maybe more 
+  Contact_Address   VARCHAR2(200)   NOT NULL,
+  Username          VARCHAR2(50)    NOT NULL
+    CONSTRAINT Person_Username_Unique UNIQUE, -- bonus marks!
+  --
+  CONSTRAINT Person_PK PRIMARY KEY (Person_ID)
+);
+
+CREATE TABLE Staff
+( Staff_ID          NUMBER(7),
+  Email             VARCHAR2(50)    NOT NULL,
+  Rank              VARCHAR2(2)     NOT NULL
+    CONSTRAINT Staff Rank_Valid
+      CHECK (Rank IN ('AL', 'L', 'SL', 'AP', 'P')),
+  Salary            NUMBER(7,2)     NOT NULL
+    CONSTRAINT Staff_Salary_Range CHECK (Salary >= 35450),
+  --
+  CONSTRAINT Staff_PK PRIMARY KEY (Staff_ID),
+  CONSTRAINT Staff_FK_to_Person
+    FOREIGN KEY (Staff_ID) REFERENCES Person (Person_ID)
+);
+
+CREATE TABLE Student
+( Student_ID        NUMBER(7),
+  Email             VARCHAR2(50)    NOT NULL,
+  Home_Phone        VARCHAR2(12),
+  Home_Address      VARCHAR2(200)   NOT NULL,
+  International     CHAR(1)         DEFAULT 'F' NOT NULL
+    CONSTRAINT Student_International_Valid
+      CHECK (International IN ('T', 'F')),
+  Supervisor_ID     NUMBER(7),      -- optional
+  --
+  CONSTRAINT Student_PK PRIMARY KEY (Student_ID),
+  CONSTRAINT Student_FK_to_Person
+    FOREIGN KEY (Student_ID) REFERENCES Person (Person_ID),
+  CONSTRAINT Student_FK_to_Staff
+    FOREIGN KEY (Supervisor_ID) REFERENCES Staff (Staff_ID)
+);
+				</code-block>
+			
+				<p indent="no">This solution uses the discrete approach for transforming subtypes. The additive approach is also feasible (i.e., place the <strong>Person</strong> attributes into both <strong>Staff</strong> and <strong>Student</strong>, and eliminate <strong>Person</strong> entirely). We accepted either approach, but note that the discrete approach has one distinct advantage over the additive approach in this scenario. Consider what happens when someone is both a staff member and a student: we end up duplicating all the <quote>person</quote> data across both tables. This doesn<apostrophe />t occur with the discrete approach. People who didn<apostrophe />t discuss this aspect lost marks.</p>
+				
+				<p>For those who implemented the additive approach, we marked the <quote>person</quote> attributes in <strong>Staff</strong> and <strong>Student</strong> as if they were a separate <strong>Person</strong> entity.</p>
+				
+				<p>The integrated approach was definitely <em>not</em> suitable due to the supervision relationship between <strong>Staff</strong> and <strong>Student</strong> (which, incidentally, many people missed completely), and the mandatory attributes that exist in both <strong>Staff</strong> and <strong>Student</strong>.</p>
+				
+				<p>We also need to add an associative entity between <strong>Paper</strong> and <strong>Staff</strong> in order to resolve the many-to-many relationship:</p>
+				
+				<vskip size="small" />
+				
+				<p indent="no"><strong>Teach</strong><left-brace /><underline>Staff<underscore />ID, Paper<underscore />Code</underline><right-brace />; Staff<underscore />ID FK to <strong>Staff</strong>, Paper<underscore />Code FK to <strong>Paper</strong></p>
+				
+				<code-block>
+CREATE TABLE Teach
+( Staff_ID          NUMBER(7),
+  Paper_Code        CHAR(7),
+  --
+  CONSTRAINT Teach_PK PRIMARY KEY (Staff_ID, Paper_Code),
+  CONSTRAINT Teach_FK_to_Staff FOREIGN KEY (Staff_ID) REFERENCES Staff,
+  CONSTRAINT Teach_FK_to_Paper FOREIGN KEY (Paper_Code) REFERENCES Paper
+);
+				</code-block>
+				
+				<p>It<apostrophe />s important when implementing <quote>boolean</quote> style columns such as <code>International</code> in <code>Student</code> and <code>Visible</code> in <code>Assessment</code> that you are consistent in the values that you use across all such columns (more precisely, all such columns should have the same domain). Quite a few people did something like implement one column as <code>'T', 'F'</code> and the other as <code>'True', 'False'</code>, or even more subtle, <code>'t', 'f'</code> (remembering that SQL is case sensitive). Using inconsistent domains for columns that should have the same domain could lead to subtle bugs later on.</p>
+				
+				<p>This of course is really a consequence of not having a proper <code>BOOLEAN</code> data type in SQL. However, one person did discover<emdash />possibly inadvertently, given that it isn<apostrophe />t mentioned anywhere in the documentation<emdash />that <OracleServer /> now supports the use of the <code>BOOLEAN</code> data type in <code>CREATE TABLE</code>! This certainly wasn<apostrophe />t possible in older versions, where <code>BOOLEAN</code> was available in PL/SQL only.</p>
+
+			</answer>
+			
+		</section>
+		
+		
+		<newpage />
+		
+		
+		<section>
+		
+			<title>The <tt>Enrolment</tt> entity</title>
+
+			<tabular border="1">
+				<tabular-columns>
+					<column align="center" left-border="|" right-border="|" />
+					<column align="left" right-border="|" />
+					<column align="left" right-border="|" />
+				</tabular-columns>
+				<tabular-body>
+					<row-rule />
+					<row>
+						<cell header="yes" />
+						<cell header="yes">Column</cell>
+						<cell header="yes">Description</cell>
+					</row>
+					<row-rule />
+					<row>
+						<cell><tt><hash /></tt></cell>
+						<cell><code>Enrolment_ID</code></cell>
+						<cell>Internally generated 10 digit identifier</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Description</code></cell>
+						<cell>Up to 100 characters</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Year_Enrolled</code></cell>
+						<cell>4 digits</cell>
+					</row>
+					<row>
+						<cell><tt>o</tt></cell>
+						<cell><code>Comments</code></cell>
+						<cell>Arbitrary text</cell>
+					</row>
+					<row-rule />
+				</tabular-body>
+			</tabular>
+
+			<vskip size="large" />
+			
+			<p indent="no">The year of enrolment cannot be earlier than the year in which the Institute was founded. (Technically it should also not be in the future, but we cannot check this in <OracleServer />.)</p>
+				
+			<answer>
+			
+				<p indent="no"><strong>Enrolment</strong>(<underline>Enrolment<underscore />ID</underline>, Description, Year<underscore />Enrolled, Comments, Paper<underscore />Code, Student<underscore />ID); Paper<underscore />Code FK to <strong>Paper</strong>, Student<underscore />ID FK to <strong>Student</strong></p>
+
+				<code-block>
+CREATE TABLE Enrolment
+( Enrolment_ID      NUMBER(10),
+  Description       VARCHAR2(100)   NOT NULL,
+  Year_Enrolled     NUMBER(4)       NOT NULL
+    CONSTRAINT Enrolment_Year_Enrolled_Range CHECK (Year_Enrolled >= 1982),
+  Comments          VARCHAR2(4000), -- or CLOB
+  Student_ID        NUMBER(7)       NOT NULL,
+  Paper_Code        CHAR(7)         NOT NULL,
+  --
+  CONSTRAINT Enrolment_PK PRIMARY KEY (Enrolment_ID),
+  CONSTRAINT Enrolment_FK_to_Student
+    FOREIGN KEY (Student_ID) REFERENCES Student,
+  CONSTRAINT Enrolment_FK_to_Paper
+    FOREIGN KEY (Paper_Code) REFERENCES Paper
+);
+				</code-block>
+				
+				<p indent="no">A surprising number of people appear to have missed the statement of when the Institute was founded in the first paragraph of the specification!</p>
+				
+				<p>Another very common error was to set the size of the <code>Comments</code> column to a relatively small number, like 200. Think about how much you can say in that many characters (one and a bit text messages), then consider what kinds of things you might want to enter into a general comments column. We deducted marks for anything smaller than 500 characters. When you have no idea of how much you<apostrophe />re going to get, it<apostrophe />s much better to go large than to go small!</p>
+			
+			</answer>
+			
+		</section>
+
+
+		<section>
+		
+			<title>The <tt>Assessment</tt> entity</title>
+
+			<tabular border="1">
+				<tabular-columns>
+					<column align="center" left-border="|" right-border="|" />
+					<column align="left" right-border="|" />
+					<column align="left" right-border="|" />
+				</tabular-columns>
+				<tabular-body>
+					<row-rule />
+					<row>
+						<cell header="yes" />
+						<cell header="yes">Column</cell>
+						<cell header="yes">Description</cell>
+					</row>
+					<row-rule />
+					<row>
+						<cell><tt><hash /></tt></cell>
+						<cell><code>Assessment_ID</code></cell>
+						<cell>Internally generated 10 digit identifier</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Assessment_Year</code></cell>
+						<cell>4 digits</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Name</code></cell>
+						<cell>Up to 50 characters</cell>
+					</row>
+					<row>
+						<cell><tt>o</tt></cell>
+						<cell><code>Description</code></cell>
+						<cell>Up to 500 characters</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Type</code></cell>
+						<cell>(see below)</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Visible</code></cell>
+						<cell>True/false, default false</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Weight</code></cell>
+						<cell>0<endash />100, no decimal places</cell>
+					</row>
+					<row>
+						<cell><tt>o</tt></cell>
+						<cell><code>Maximum_Mark</code></cell>
+						<cell>(see below)</cell>
+					</row>
+					<row-rule />
+				</tabular-body>
+			</tabular>
+
+			<itemised-list>
+			
+				<item>A new set of assessments is created for each year that a paper is offered. The year cannot be earlier than the year in which the Institute was founded. (Technically it should also not be in the future, but we cannot check this in <OracleServer />.)</item>
+				
+				<item>The assessment type must be one of the following: <quote>A</quote> (assignment), <quote>T</quote> (test) or <quote>X</quote> (exam).</item>
+				
+				<item>The <code>Maximum_Mark</code> attribute stores the maximum possible raw mark for the assessment (e.g., 30), while the <code>Weight</code> attribute stores the percentage weight of this assessment for the paper as a whole (e.g., 10<percent-sign />). If <code>Maximum_Mark</code> is not specified, then applications should use <code>Weight</code> for both.</item>
+				
+				<item>The <code>Visible</code> attribute controls whether or not the marks for this assessment are publicly accessible.</item>
+				
+			</itemised-list>
+			
+			<answer>
+			
+				<p indent="no"><strong>Assessment</strong>(<underline>Assessment<underscore />ID</underline>, Assessment<underscore />Year, Name, Description, Type, Visible, Weight, Maximum<underscore />Mark, Paper<underscore />Code); Paper<underscore />Code FK to <strong>Paper</strong></p>
+
+				<code-block>
+CREATE TABLE Assessment
+( Assessment_ID     NUMBER(10),
+  Assessment_Year   NUMBER(4)       NOT NULL
+    CONSTRAINT Assessment_Year_Range
+      CHECK (Assessment_Year >= 1982),
+  Name              VARCHAR2(50)    NOT NULL,
+  Description       VARCHAR2(500),
+  Type              CHAR(1)         NOT NULL
+    CONSTRAINT Assessment_Type_Valid CHECK (Type IN ('A', 'T', 'X')),
+  Visible           CHAR(1)         DEFAULT 'F' NOT NULL
+    CONSTRAINT Assessment_Visible_Valid CHECK (Visible IN ('T', 'F')),
+  Weight            NUMBER(3)       NOT NULL
+    CONSTRAINT Assessment_Weight_Range CHECK (Weight BETWEEN 0 AND 100),
+  Maximum_Mark      NUMBER(3),
+  Paper_Code        CHAR(7)         NOT NULL,
+  --
+  CONSTRAINT Assessment_PK PRIMARY KEY (Assessment_ID),
+  CONSTRAINT Assessment_FK_to_Paper
+    FOREIGN KEY (Paper_Code) REFERENCES Paper
+);
+				</code-block>
+				
+			</answer>
+			
+		</section>
+		
+		
+		<newpage />
+		
+		
+		<section>
+		
+			<title>The <tt>Result</tt> entity</title>
+
+			<tabular border="1">
+				<tabular-columns>
+					<column align="center" left-border="|" right-border="|" />
+					<column align="left" right-border="|" />
+					<column align="left" right-border="|" />
+				</tabular-columns>
+				<tabular-body>
+					<row-rule />
+					<row>
+						<cell header="yes" />
+						<cell header="yes">Column</cell>
+						<cell header="yes">Description</cell>
+					</row>
+					<row-rule />
+					<row>
+						<cell><tt><hash /></tt></cell>
+						<cell><code>Assessment_ID</code></cell>
+						<cell>10 digit identifier</cell>
+					</row>
+					<row>
+						<cell><tt><hash /></tt></cell>
+						<cell><code>Enrolment_ID</code></cell>
+						<cell>10 digit identifier</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Raw_Mark</code></cell>
+						<cell>3 digits plus 1 decimal place (i.e., 000.0)</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Weighted_Mark</code></cell>
+						<cell>Floating point</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Percentage_Mark</code></cell>
+						<cell>0<endash />100, 2 decimal places</cell>
+					</row>
+					<row-rule />
+				</tabular-body>
+			</tabular>
+
+			<itemised-list>
+			
+				<item>The <code>Raw_Mark</code> attribute stores the raw mark awarded for an assessment. Its value should be  between zero and the value of <code>Assessment.Maximum_Mark</code> (note that only the former is required for this assignment<emdash />bonus marks if you can also achieve the latter).</item>
+				
+				<item>The value of the <code>Weighted_Mark</code> attribute is calculated by the formula: <line-break />
+				<code>Raw_Mark</code> / <code>Assessment.Maximum_Mark</code><space /> <times /><space /> <code>Assessment.Weight</code>.</item>
+				
+				<item>The value of the <code>Percentage_Mark</code> attribute is calculated by the formula: <line-break />
+				<code>Raw_Mark</code> / <code>Assessment.Maximum_Mark</code><space /> <times /> 100.</item>
+				
+				<item>Note that the two calculations above are <emph>not</emph> constraints and should not be implemented as such. You may attempt to implement these calculations if you feel confident in your ability to do so, but please ensure that you complete the rest of the assignment <em>first</em>.</item>
+				
+			</itemised-list>
+			
+			<answer>
+			
+				<p indent="no"><strong>Result</strong>(<underline>Assessment<underscore />ID, Enrolment<underscore />ID</underline>, Raw<underscore />Mark, Weighted<underscore />Mark, Percentage<underscore />Mark); Assessment<underscore />ID FK to <strong>Assessment</strong>, Enrolment<underscore />ID FK to <strong>Enrolment</strong></p>
+
+				<code-block>
+CREATE TABLE Result
+( Assessment_ID     NUMBER(10),
+  Enrolment_ID      NUMBER(10),
+  Raw_Mark          NUMBER(4,1)     NOT NULL,
+  Weighted_Mark     NUMBER          NOT NULL,
+  Percentage_Mark   NUMBER(5,2)     NOT NULL
+    CONSTRAINT Result_Percentage_Mark_Range
+      CHECK (Percentage_Mark BETWEEN 0 AND 100),
+  --
+  CONSTRAINT Result_PK PRIMARY KEY (Assessment_ID, Enrolment_ID),
+  CONSTRAINT Result_FK_to_Assessment
+    FOREIGN KEY (Assessment_ID) REFERENCES Assessment,
+  CONSTRAINT Result_FK_to_Enrolment
+    FOREIGN KEY (Enrolment_ID) REFERENCES Enrolment
+);
+				</code-block>
+				
+				<p indent="no">A lot of people got the sizes of the various <code>NUMBER</code> columns incorrect. Remember that the number of decimal places is <em>included</em> in the total number of digits, not <em>in addition to</em>.</p>
+				
+				<p>We also accepted <code>FLOAT</code> and <code>BINARY_FLOAT</code> for <code>Weighted_Mark</code>. Anything with a fixed number of decimal places was marked down, as this is a <em>fixed</em> point number, not a floating point number.</p>
+				
+			</answer>
+			
+		</section>
+	
+	</section>
+
+</document>

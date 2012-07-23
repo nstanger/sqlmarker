@@ -1,0 +1,886 @@
+<?xml version="1.0" standalone="yes"?>
+
+<document class="fragment">
+
+	<section label="sec:database-info">
+	
+		<title>System specification and details</title>
+		
+		<p>Happy Joe’s Quality Used Cars is a national chain of used car dealers that sells a wide range of modern, quality used cars. The company has branches around the country and employs about one hundred people nationwide. Happy Joe’s are currently designing and implementing a new corporate database, which will be housed at the head office in Dunedin. The requirements analysis phase of the project is almost complete, and you have been brought in as a database developer. It will be your task to implement and test an initial prototype of the specification resulting from the requirements analysis phase. A design-level entity-relationship diagram of the proposed database is shown in <hyperlink label="fig-erd"><reference label="fig-erd"/></hyperlink>, and more detailed specifications of the database requirements may be found in the following sections.</p>
+		
+
+		<figure label="fig-erd" latex-placement="!hb">
+			<caption>Design-level ERD of Happy Joe’s database</caption>
+			<image basename="UsedCars_IE" location="images" latex-options="scale=0.85">
+				<description>Design-level ERD of Happy Joe’s database</description>
+			</image>
+		</figure>
+
+
+		<section label="sec-staff">
+		
+			<title>The <tt>Staff</tt> entities</title>
+
+			<tabular border="1" align="left">
+				<tabular-columns>
+					<column align="center" left-border="|" right-border="|"/>
+					<column align="left" right-border="|"/>
+					<column align="left" right-border="|"/>
+				</tabular-columns>
+				<tabular-body>
+					<row>
+						<cell header="yes" columns="3" align="left"><tt>Staff</tt></cell>
+					</row>
+					<row-rule />
+					<row>
+						<cell header="yes"/>
+						<cell header="yes">Column</cell>
+						<cell header="yes">Description</cell>
+					</row>
+					<row-rule/>
+					<row>
+						<cell><tt><hash/></tt></cell>
+						<cell><code>Staff_ID</code></cell>
+						<cell>Internally generated 4 digit identifier</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Firstname</code></cell>
+						<cell>Up to 50 characters</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Lastname</code></cell>
+						<cell>Up to 50 characters</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Address</code></cell>
+						<cell>Up to 150 characters</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Phone</code></cell>
+						<cell>New Zealand landline or mobile number</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Date_Hired</code></cell>
+						<cell>Date employee was first hired, default to current date</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Date_of_Birth</code></cell>
+						<cell>Employee’s date of birth (see below)</cell>
+					</row>
+					<row-rule />
+				</tabular-body>
+			</tabular>
+			
+			<p indent="no">As noted above, Happy Joe’s has about one hundred employees. The usual details such as name, address and phone number will be recorded. Employees must be at least 16 years old at the time they are first hired.</p>
+				
+			<answer>
+			
+				<p indent="no"><strong>Staff</strong><left-brace /><underline>Staff<underscore />ID</underline>, Firstname, Lastname, Address, Phone, Date<underscore />Hired, Date<underscore />of<underscore />Birth<right-brace /></p>
+				
+				<code-block>
+CREATE SEQUENCE Staff_ID_Seq START WITH 1000 MAXVALUE 9999;
+
+CREATE TABLE Staff
+( Staff_ID      NUMBER(4),
+  Firstname     VARCHAR2(50)    NOT NULL,
+  Lastname      VARCHAR2(50)    NOT NULL,
+  Address       VARCHAR2(150)   NOT NULL,
+  -- Use VARCHAR2 for phone numbers in order to retain leading zeros.
+  -- Format: leading 0 plus 2 digits for carrier plus up to 8 digits, e.g.,
+  -- 02187654321, longer if we assume punctuation is included.
+  Phone         VARCHAR2(11)    NOT NULL,
+  Date_Hired    DATE            DEFAULT SYSDATE
+                                NOT NULL,
+  Date_of_Birth DATE            NOT NULL,
+  --
+  CONSTRAINT Staff_Valid_Age
+      CHECK ( ( Date_Hired - TO_YMINTERVAL( '16-0' ) ) &gt;= Date_of_Birth ),
+  --
+  CONSTRAINT Staff_PK PRIMARY KEY ( Staff_ID )
+);
+				</code-block>
+				
+				<p indent="no">This solution uses the discrete approach for transforming subtypes (i.e., one relation for the supertype, plus one relation for each of the subtypes). The reason for this is that the three <code>Staff</code> subtypes each have their own attributes and it’s easier to add more subtypes if necessary. You could probably also make a reasonable argument for the additive approach (one relation for each subtype, including the supertype attributes in each) if you assume that the subtypes are exclusive, i.e., a staff member can’t be two different types at once (this seems unlikely in practice, however). The integrated approach is inappropriate for this scenario because it would force us to make all the subtype attributes optional (allow nulls), where currently they are all mandatory (no nulls).</p>
+				
+				<p>There are several different ways to calculate the age: using <code>INTERVAL</code> types as shown above, using the <code>MONTHS_BETWEEN</code> function, or simply doing your own date arithmetic calculation based on the number of days between the two dates. However, when doing the latter, you need to take into account two things:</p>
+				
+				<enumerated-list>
+				
+					<item>The number of days per year. The actual number varies depending on how you measure it, but 365.25 is a close enough approximation for practical purposes <smiley />.</item>
+					
+					<item>Leap years. Usually there are at least four and at most five in any given sixteen year period. Occasionally there might be only three (for example, 1900 wasn’t a leap year), but this only happens at most once per century!</item>
+					
+				</enumerated-list>
+				
+				<p indent="no">If you work on the basis that “one year is 365 days”, then your age calculation could be off by up to a week! (Incidentally, using something like <code>TO_CHAR(date, 'YYYY')</code> is even worse; if <code>Date_of_Birth</code> is December 31 and <code>Date_Hired</code> is January 1, the calculation will be off by a whole year!) The built-in date functions already take these factors into account, so it's much safer to use them than to implement your own solution.</p>
+				
+			</answer>
+				
+			<tabular border="1" align="left">
+				<tabular-columns>
+					<column align="center" left-border="|" right-border="|"/>
+					<column align="left" right-border="|"/>
+					<column align="left" right-border="|"/>
+				</tabular-columns>
+				<tabular-body>
+					<row>
+						<cell header="yes" columns="3" align="left"><tt>Service</tt></cell>
+					</row>
+					<row-rule />
+					<row>
+						<cell header="yes"/>
+						<cell header="yes">Column</cell>
+						<cell header="yes">Description</cell>
+					</row>
+					<row-rule/>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Hourly_Rate</code></cell>
+						<cell>Hourly pay rate (see below)</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Total_Hours</code></cell>
+						<cell>Total hours worked to date this year, default to 0 (see below)</cell>
+					</row>
+					<row-rule />
+				</tabular-body>
+			</tabular>
+			
+			<p indent="no"><code>Hourly_Rate</code> must meet minimum wage requirements: at least <dollar-sign />10.40 for those aged 16 or 17, and at least <dollar-sign />13.00 for those 18 or older. <code>Total_Hours</code> is measured to the nearest quarter hour and must be in the range 0–3500 (= 40 hours per week <times /> 52 weeks per year, plus a generous allowance for overtime).</p>
+			
+			<answer>
+			
+				<p indent="no"><strong>Service</strong><left-brace /><underline>Staff<underscore />ID</underline>, Hourly<underscore />Rate, Total<underscore />Hours<right-brace /> (foreign keys: Staff<underscore />ID <rightarrow /><space /><strong>Staff</strong>)</p>
+				
+				<code-block>
+CREATE TABLE Service
+( Staff_ID      NUMBER(4),
+  -- Can't validate Hourly_Rate using a CHECK constraint, as we would need to
+  -- access values from the Staff table.
+  Hourly_Rate   NUMBER(5,2)     NOT NULL,
+  Total_Hours   NUMBER(6,2)     DEFAULT 0   NOT NULL
+      CONSTRAINT Service_Total_Hours_Range
+          CHECK ( Total_Hours BETWEEN 0 AND 3500 )
+      CONSTRAINT Service_Total_Hours_Quarters
+          CHECK ( TRUNC( Total_Hours * 4 ) =  ( Total_Hours * 4 ) ),
+  --
+  CONSTRAINT Service_PK PRIMARY KEY ( Staff_ID ),
+  CONSTRAINT Service_FK_to_Staff
+      FOREIGN KEY ( Staff_ID ) REFERENCES Staff ON DELETE CASCADE
+);
+
+CREATE OR REPLACE TRIGGER Validate_Service_Hourly_Rate
+  BEFORE INSERT OR UPDATE OF Hourly_Rate ON Service
+  FOR EACH ROW
+DECLARE
+  Minimum_Rate NUMBER;
+BEGIN
+  -- Use the CASE feature of SELECT to make the query return the minimum
+  -- rate based on age rather than just retrieving the dates and calculating
+  -- the rate within the trigger. We assume that there are no employees with
+  -- an age &lt; 16 in the database, even though it's technically possible
+  -- with the current schema; see if you can figure out how :).
+  SELECT CASE WHEN ( ( SYSDATE - TO_YMINTERVAL( '18-0' ) ) &lt; Date_of_Birth )
+              THEN 10.4 -- these two should be constants somewhere!
+              ELSE 13
+         END INTO Minimum_Rate
+  FROM Staff
+  WHERE Staff.Staff_ID = :NEW.Staff_ID;
+  
+  IF ( :NEW.Hourly_Rate &lt; Minimum_Rate ) THEN
+    RAISE_APPLICATION_ERROR( -20000,
+        'Hourly pay rate of ' || TO_CHAR( :NEW.Hourly_Rate, '$90.00' ) ||
+        ' for employee ' || :NEW.Staff_ID || 
+        ' is less than their minimum rate of ' ||
+        TO_CHAR( Minimum_Rate, '$90.00' ) );
+  END IF;
+END;
+				</code-block>
+				
+				<p indent="no">It makes sense to include <code>ON DELETE CASCADE</code> on the foreign keys from subtypes to <code>Staff</code>, as subtype instances can’t exist independently of the corresponding supertype instance.</p>
+				
+				<p>We also accepted <code>Service_Staff</code> as a table name, on the theory that this is a reasonable transformation for the purposes of clarity.</p>
+				
+			</answer>
+				
+			<tabular border="1" align="left">
+				<tabular-columns>
+					<column align="center" left-border="|" right-border="|"/>
+					<column align="left" right-border="|"/>
+					<column align="left" right-border="|"/>
+				</tabular-columns>
+				<tabular-body>
+					<row>
+						<cell header="yes" columns="3" align="left"><tt>Other</tt></cell>
+					</row>
+					<row-rule />
+					<row>
+						<cell header="yes"/>
+						<cell header="yes">Column</cell>
+						<cell header="yes">Description</cell>
+					</row>
+					<row-rule/>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Salary</code></cell>
+						<cell>Total annual salary (see below)</cell>
+					</row>
+					<row-rule />
+				</tabular-body>
+			</tabular>
+			
+			<p indent="no"><code>Salary</code> must meet minimum wage requirements: at least <dollar-sign />21<digitsep />632 (= <dollar-sign />10.40 <times /> 40 hours per week <times /> 52 weeks per year) for those aged 16 or 17, and at least <dollar-sign />27<digitsep />040 for those 18 or older.</p>
+			
+			<answer>
+			
+				<p indent="no"><strong>Other</strong><left-brace /><underline>Staff<underscore />ID</underline>, Salary<right-brace /> (foreign keys: Staff<underscore />ID <rightarrow /><space /><strong>Staff</strong>)</p>
+				
+				<code-block>
+CREATE TABLE Other
+( Staff_ID      NUMBER(4),
+  -- Can't validate Salary using a CHECK constraint, as we would need to
+  -- access values from the Staff table.
+  Salary    NUMBER(8,2)     NOT NULL,
+  --
+  CONSTRAINT Other_PK PRIMARY KEY ( Staff_ID ),
+  CONSTRAINT Other_FK_to_Staff
+      FOREIGN KEY ( Staff_ID ) REFERENCES Staff ON DELETE CASCADE
+);
+
+CREATE OR REPLACE TRIGGER Validate_Other_Salary
+  BEFORE INSERT OR UPDATE OF Salary ON Other
+  FOR EACH ROW
+DECLARE
+  Minimum_Salary NUMBER;
+BEGIN
+  SELECT CASE WHEN ( ( SYSDATE - TO_YMINTERVAL( '18-0' ) ) &lt; Date_of_Birth )
+              THEN 21632 -- these two should be constants somewhere!
+              ELSE 27040
+         END INTO Minimum_Salary
+  FROM Staff
+  WHERE Staff.Staff_ID = :NEW.Staff_ID;
+  
+  IF ( :NEW.Salary &lt; Minimum_Salary ) THEN
+    RAISE_APPLICATION_ERROR( -20000,
+        'Salary of ' || TO_CHAR( :NEW.Salary, '$999,990.00' ) ||
+        ' for employee ' || :NEW.Staff_ID || 
+        ' is less than their minimum salary of ' ||
+        TO_CHAR( Minimum_Salary, '$999,990.00' ) );
+  END IF;
+END;
+				</code-block>
+				
+				<p indent="no">Similar to <code>Service_Staff</code> above. We also accepted <code>Other_Staff</code> as a table name.</p>
+				
+			</answer>
+				
+			<tabular border="1" align="left">
+				<tabular-columns>
+					<column align="center" left-border="|" right-border="|"/>
+					<column align="left" right-border="|"/>
+					<column align="left" right-border="|"/>
+				</tabular-columns>
+				<tabular-body>
+					<row>
+						<cell header="yes" columns="3" align="left"><tt>Sales</tt></cell>
+					</row>
+					<row-rule />
+					<row>
+						<cell header="yes"/>
+						<cell header="yes">Column</cell>
+						<cell header="yes">Description</cell>
+					</row>
+					<row-rule/>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>On_Commission</code></cell>
+						<cell>“Boolean” (i.e., effectively true/false)</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Commission_Rate</code></cell>
+						<cell>Percentage as a fraction, 0.00–0.30 (see below)</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Total_Earnings</code></cell>
+						<cell>Total earnings to date this year, <ge /><space /><dollar-sign />0.00</cell>
+					</row>
+					<row-rule />
+				</tabular-body>
+			</tabular>
+			
+			<p indent="no">Some sales staff are paid on commission (up to 30<percent-sign /> of the value of each sale), while others are paid a flat rate per sale that varies depending on the type of car sold (e.g., <dollar-sign />100 for a Toyota Corolla vs.<space /><dollar-sign />500 for a BMW M3; these rates are stored in <code>Car</code>—see <hyperlink label="sec-car"><reference label="sec-car"/></hyperlink>). If the salesrep is paid on commission then <code>On_Commission</code> is true and <code>Commission_Rate</code> must be greater than zero. If the salesrep is paid on flat rate then <code>On_Commission</code> is false and <code>Commission_Rate</code> must be zero.</p>
+			
+			<p><code>Total_Earnings</code> stores the total amount earned by a salesrep to date in the current financial year (1 April to 31 March). For salesreps who are on commission, this total is calculated from <code>Commission_Rate</code><space /><times /><space /><code>Sale.Amount</code>. For salesreps who are not on commission, the total is calculated from <code>Car.Flat_Rate</code> (via <code>Sale</code>—see <hyperlink label="sec-car"><reference label="sec-car"/></hyperlink> and <hyperlink label="sec-sale"><reference label="sec-sale"/></hyperlink>).</p>
+		
+			<answer>
+			
+				<p indent="no"><strong>Sales</strong><left-brace /><underline>Staff<underscore />ID</underline>, On<underscore />Commission, Commission<underscore />Rate, Total<underscore />Earnings<right-brace /> (foreign keys: Staff<underscore />ID <rightarrow /><space /><strong>Staff</strong>)</p>
+				
+				<code-block>
+CREATE TABLE Sales
+( Staff_ID          NUMBER(4),
+  On_Commission     CHAR(1)     DEFAULT 'N' NOT NULL
+      CONSTRAINT Sales_Valid_On_Commission
+          CHECK ( On_Commission IN ( 'Y', 'N' ) ),
+  Commission_Rate   NUMBER(3,2) NOT NULL
+      CONSTRAINT Sales_Valid_Commission_Rate
+          CHECK ( Commission_Rate BETWEEN 0.00 AND 0.30 ),
+  Total_Earnings    NUMBER(8,2) NOT NULL
+      CONSTRAINT Sales_Valid_Total_Earnings
+          CHECK ( Total_Earnings &gt;= 0.00 ),
+  --
+  CONSTRAINT Sales_Check_Commission
+      CHECK (    ( ( On_Commission = 'N' ) AND ( Commission_Rate = 0 ) )
+              OR ( ( On_Commission = 'Y' ) AND ( Commission_Rate &gt; 0 ) ) ),
+  --
+  CONSTRAINT Sales_PK PRIMARY KEY ( Staff_ID ),
+  CONSTRAINT Sales_FK_to_Staff
+      FOREIGN KEY ( Staff_ID ) REFERENCES Staff ON DELETE CASCADE
+);
+				</code-block>
+				
+				<p indent="no">Similar to <code>Service_Staff</code> above. We also accepted <code>Other_Staff</code> as a table name. Note that the paragraph above about <code>Total_Earnings</code> describes the <em>process</em> of how it is calculated, not a constraint on its possible values, so implementing this as a constraint is incorrect.</p>
+				
+			</answer>
+				
+		</section>
+
+
+		<section label="sec-customer">
+		
+			<title>The <tt>Customer</tt> entity</title>
+
+			<tabular border="1" align="left">
+				<tabular-columns>
+					<column align="center" left-border="|" right-border="|"/>
+					<column align="left" right-border="|"/>
+					<column align="left" right-border="|"/>
+				</tabular-columns>
+				<tabular-body>
+					<row-rule />
+					<row>
+						<cell header="yes"/>
+						<cell header="yes">Column</cell>
+						<cell header="yes">Description</cell>
+					</row>
+					<row-rule/>
+					<row>
+						<cell><tt><hash /></tt></cell>
+						<cell><code>Customer_ID</code></cell>
+						<cell>Internally generated 6 digit identifier</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Firstname</code></cell>
+						<cell>Up to 50 characters</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Lastname</code></cell>
+						<cell>Up to 50 characters</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Address</code></cell>
+						<cell>Up to 150 characters</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Phone</code></cell>
+						<cell>(see <code>Staff</code> in <hyperlink label="sec-staff"><reference label="sec-staff"/></hyperlink>)</cell>
+					</row>
+					<row>
+						<cell><tt>o</tt></cell>
+						<cell><code>Email</code></cell>
+						<cell>Up to 50 characters</cell>
+					</row>
+					<row>
+						<cell><tt>o</tt></cell>
+						<cell><code>Credit_Rating</code></cell>
+						<cell>One of “A”, “B”, “C” or “D”</cell>
+					</row>
+					<row>
+						<cell><tt>o</tt></cell>
+						<cell><code>Comments</code></cell>
+						<cell>Arbitrary text</cell>
+					</row>
+					<row-rule />
+				</tabular-body>
+			</tabular>
+			
+			<p indent="no">The usual details will be recorded for each customer: name, address, phone and optionally an email address. The credit rating is also optional.</p>
+				
+			<answer>
+			
+				<p indent="no"><strong>Customer</strong><left-brace /><underline>Customer<underscore />ID</underline>, Firstname, Lastname, Address, Phone, Email, Credit<underscore />Rating, <newline />Comments<right-brace /></p>
+				
+				<code-block>
+CREATE SEQUENCE Customer_ID_Seq START WITH 100000 MAXVALUE 999999;
+
+CREATE TABLE Customer
+( Customer_ID   NUMBER(6),
+  Firstname     VARCHAR2(50)    NOT NULL,
+  Lastname      VARCHAR2(50)    NOT NULL,
+  Address       VARCHAR2(150)   NOT NULL,
+  Phone         VARCHAR2(11)    NOT NULL,
+  Email         VARCHAR2(50),   -- optionally CHECK format if desired
+  Credit_Rating CHAR(1)
+      CONSTRAINT Customer_Valid_Credit_Rating
+          CHECK ( Credit_Rating IN ( 'A', 'B', 'C', 'D' ) ),
+  Comments      CLOB,
+  --
+  CONSTRAINT Customer_PK PRIMARY KEY ( Customer_ID )
+);
+				</code-block>
+				
+				<p indent="no">Many people assigned the <code>Comments</code> a size of 500 characters or less, which is far too small for a general comments column. If we assume an average word length of five characters plus one for the inter-word space, then 500 characters can only hold about 83 words! 100 characters would be only 16 words! We accepted 500 characters as a bare minimum; anything below that lost marks. A better choice would be to use either the maximum allowable VARCHAR2 size of 4000, or just use a CLOB, which for most practical purposes is effectively unlimited in size. A similar argument applies to the <code>Details</code> columns in <code>Purchase</code> and <code>Sale</code>.</p>
+				
+			</answer>
+				
+		</section>
+
+
+		<section label="sec-car">
+		
+			<title>The <tt>Car</tt> entity</title>
+
+			<tabular border="1" align="left">
+				<tabular-columns>
+					<column align="center" left-border="|" right-border="|"/>
+					<column align="left" right-border="|"/>
+					<column align="left" right-border="|"/>
+				</tabular-columns>
+				<tabular-body>
+					<row-rule/>
+					<row>
+						<cell header="yes"/>
+						<cell header="yes">Column</cell>
+						<cell header="yes">Description</cell>
+					</row>
+					<row-rule/>
+					<row>
+						<cell><tt><hash/></tt></cell>
+						<cell><code>VIN</code></cell>
+						<cell>17 character Vehicle Identification Number (VIN)</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Registration</code></cell>
+						<cell>Up to 6 characters</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Make</code></cell>
+						<cell>Up to 20 characters</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Model</code></cell>
+						<cell>Up to 30 characters</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Year</code></cell>
+						<cell>Year of manufacture, no earlier than 1980</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Colour</code></cell>
+						<cell>Up to 20 characters</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Odometer</code></cell>
+						<cell>Current odometer reading, 0.0–999<digitsep />999.9</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>First_Registered</code></cell>
+						<cell>Date the car was first registered in New Zealand</cell>
+					</row>
+					<row>
+						<cell><tt>o</tt></cell>
+						<cell><code>Last_Serviced</code></cell>
+						<cell>Date the car was last serviced</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Price</code></cell>
+						<cell>List price of car, whole number <ge /><space /><dollar-sign />0</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Flat_Rate</code></cell>
+						<cell>Flat rate paid to salesrep (where applicable), <gt /><space /><dollar-sign />0</cell>
+					</row>
+					<row-rule/>
+				</tabular-body>
+			</tabular>
+			
+			<p indent="no">Happy Joe’s sell only modern cars, and so will not purchase anything manufactured before 1980. The value of <code>Flat_Rate</code> is determined by how frequently each particular type of car is sold (this information is not stored in the database); the “easier” it is to sell a car, the lower the value of <code>Flat_Rate</code>. All cars have a value for <code>Flat_Rate</code> because we do not know in advance whether they will be sold by a salesrep on commission or on flat rate. The value of <code>Flat_Rate</code> is independent of the sale price, which is why it is stored here rather than in <code>Sale</code>.</p>
+			
+			<answer>
+			
+				<p indent="no"><strong>Car</strong><left-brace /><underline>VIN</underline>, Registration, Make, Model, Year, Colour, Odometer, First<underscore />Registered, Last<underscore />Serviced, Price, Flat<underscore />Rate<right-brace /></p>
+				
+				<code-block>
+CREATE TABLE Car
+( VIN               CHAR(17),       -- optionally CHECK format if desired
+  Registration      VARCHAR2(6)     NOT NULL,
+  Make              VARCHAR2(20)    NOT NULL,
+  Model             VARCHAR2(30)    NOT NULL,
+  Year              NUMBER(4)       NOT NULL
+      CONSTRAINT Car_Valid_Year CHECK ( Year &gt;= 1980 ),
+  Colour            VARCHAR2(20)    NOT NULL,
+  Odometer          NUMBER(7,1)     NOT NULL
+      CONSTRAINT Car_Valid_Odometer 
+          CHECK ( Odometer BETWEEN 0.0 AND 999999.9 ),
+  First_Registered  DATE            NOT NULL,
+  Last_Serviced     DATE,
+  Price             NUMBER(6)       NOT NULL
+      CONSTRAINT Car_Valid_Price CHECK ( Price &gt;= 0 ),
+  Flat_Rate         NUMBER(4)       NOT NULL
+      CONSTRAINT Car_Valid_Flat_Rate CHECK ( Flat_Rate &gt; 0 ),
+  --
+  CONSTRAINT Car_PK PRIMARY KEY ( VIN )
+);
+				</code-block>
+				
+				<p indent="no">The statement of VIN as “17 characters” was obviously a little too subtle for some people, who implemented it as NUMBER(17) rather than CHAR(17). VINs contain both numbers and letters, and the format is well-documented if you weren’t sure (e.g., look up “VIN” on Wikipedia).</p>
+				
+				<p>There was a small typo in the original specification, which said that the value of <code>Odometer</code> should be “0.0–999,999.<underline>0</underline>”, when it should actually have been 0.0–999,999.<underline>9</underline> (this has been corrected above). We accepted either when marking.</p>
+				
+				<p>There is little point in storing <code>Year</code> as a <code>DATE</code>, as we won’t be using anything but the year part anyway. Storing it as a <code>DATE</code> means that we would need to do unnecessary extra work to extract the year part from the date. If you don’t need something, don’t store it, especially if it makes things more complicated!</p>
+				
+			</answer>
+				
+		</section>
+
+
+		<section label="sec-feature">
+		
+			<title>The <tt>Feature</tt> entity</title>
+
+			<tabular border="1" align="left">
+				<tabular-columns>
+					<column align="center" left-border="|" right-border="|"/>
+					<column align="left" right-border="|"/>
+					<column align="left" right-border="|"/>
+				</tabular-columns>
+				<tabular-body>
+					<row-rule/>
+					<row>
+						<cell header="yes"/>
+						<cell header="yes">Column</cell>
+						<cell header="yes">Description</cell>
+					</row>
+					<row-rule/>
+					<row>
+						<cell><tt><hash/></tt></cell>
+						<cell><code>Feature_Code</code></cell>
+						<cell>5 character code</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Description</code></cell>
+						<cell>Up to 100 characters</cell>
+					</row>
+					<row-rule/>
+				</tabular-body>
+			</tabular>
+			
+			<p indent="no">Cars may have any number of optional features, such as air conditioning, side airbags, body kit, iPod integration, cruise control, etc.</p>
+			
+			<answer>
+			
+				<p indent="no"><strong>Feature</strong><left-brace /><underline>Feature<underscore />Code</underline>, Description<right-brace /></p>
+				
+				<code-block>
+CREATE TABLE Feature
+( Feature_Code  VARCHAR2(5),
+  Description   VARCHAR2(100)     NOT NULL,
+  --
+  CONSTRAINT Feature_PK PRIMARY KEY ( Feature_Code )
+);
+				</code-block>
+
+				<p indent="no">At this point we also need to add an associative entity to resolve the many-to-many relationship between <strong>Car</strong> and <strong>Feature</strong>:</p>
+				
+				<p indent="no"><strong>Car<underscore />Feature</strong><left-brace /><underline>VIN, Feature<underscore />Code</underline><right-brace /> (foreign keys: VIN <rightarrow /><space /><strong>Car</strong>, Feature<underscore />Code <rightarrow /><space /><strong>Feature</strong>)</p>
+
+				<code-block>
+CREATE TABLE Car_Feature
+( VIN           VARCHAR2(17),
+  Feature_Code  VARCHAR2(5),
+  --
+  CONSTRAINT Car_Feature_PK PRIMARY KEY ( VIN, Feature_Code ),
+  CONSTRAINT Car_Feature_FK_to_Car
+      FOREIGN KEY ( VIN ) REFERENCES Car ON DELETE CASCADE,
+  CONSTRAINT Car_Feature_FK_to_Feature
+      FOREIGN KEY ( Feature_Code ) REFERENCES Feature ON DELETE CASCADE
+);
+				</code-block>
+				
+				<p indent="no">Again, it makes sense to include <code>ON DELETE CASCADE</code> on (both!) the foreign keys, as the rows in <code>Car_Feature</code> can’t exist independently of the cars and features that they are related to.</p>
+				
+			</answer>
+				
+		</section>
+
+
+		<section label="sec-warranty">
+		
+			<title>The <tt>Warranty</tt> entity</title>
+
+			<tabular border="1" align="left">
+				<tabular-columns>
+					<column align="center" left-border="|" right-border="|"/>
+					<column align="left" right-border="|"/>
+					<column align="left" right-border="|"/>
+				</tabular-columns>
+				<tabular-body>
+					<row-rule/>
+					<row>
+						<cell header="yes"/>
+						<cell header="yes">Column</cell>
+						<cell header="yes">Description</cell>
+					</row>
+					<row-rule/>
+					<row>
+						<cell><tt><hash/></tt></cell>
+						<cell><code>W_Code</code></cell>
+						<cell>1 character warranty code (see below)</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Duration</code></cell>
+						<cell>In months (see below)</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Distance</code></cell>
+						<cell>In kilometres (see below)</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Description</code></cell>
+						<cell>Up to 250 characters</cell>
+					</row>
+					<row-rule/>
+				</tabular-body>
+			</tabular>
+			
+			<p indent="no">The New Zealand government mandates four categories of dealer warranty for used cars. <code>Warranty</code> is a lookup table that records details of these warranty categories and enables them to be easily changed if the regulations change. An excerpt from a government discussion paper<footnote><em>Discussion Paper on Proposed Consumer Information Standard for Secondhand Motor Vehicles</em>, Ministry of Consumer Affairs, New Zealand Government, May 1998, ISBN 0-478-00075-8.</footnote> defining the different categories of warranty is included as “Appendix 4” at the end of this document; use these details to populate the table with appropriate data.</p>
+			
+			<answer>
+			
+				<p indent="no"><strong>Warranty</strong><left-brace /><underline>W<underscore />Code</underline>, Duration, Distance, Description<right-brace /></p>
+				
+				<code-block>
+CREATE TABLE Warranty
+( W_Code        CHAR(1),
+  Duration      NUMBER(1)       NOT NULL,
+  Distance      NUMBER(4)       NOT NULL,
+  Description   VARCHAR2(250)   NOT NULL,
+  --
+  CONSTRAINT Warranty_PK PRIMARY KEY ( W_Code )
+);
+
+INSERT INTO Warranty ( W_Code, Duration, Distance, Description )
+  VALUES ( 'A' , 3, 5000, 'Category A motor vehicle' );
+INSERT INTO Warranty ( W_Code, Duration, Distance, Description )
+  VALUES ( 'B' , 2, 3000, 'Category B motor vehicle' );
+INSERT INTO Warranty ( W_Code, Duration, Distance, Description )
+  VALUES ( 'C' , 1, 1500, 'Category C motor vehicle' );
+INSERT INTO Warranty ( W_Code, Duration, Distance, Description )
+  VALUES ( 'D' , 0, 0, 'Category D motor vehicle' );
+				</code-block>
+				
+				<p indent="no">This is a lookup table that is intended to define the types of warranties allowed for vehicles. If the regulations change, it’s a simple matter to change the contents of the table to reflect this, which means that the table is effectively acting as a configurable constraint on warranty type. It would therefore be counterproductive to add constraints to the columns of this table based on the values specified in the Appendix, as the whole point of a lookup table is that the <em>contents</em> of the table effectively define a constraint. The values in the Appendix should therefore be used only to determine the data to be inserted into the table.</p>
+				
+				<p>On a similar note, there is little point in trying to enforce constraints between the specification of the warranty type and the <code>First_Registered</code> column in <code>Car</code>. There is no dedicated column in the table to store this information, so it could only be stored in <code>Description</code>, and it would probably be almost impossible in practice to extract anything useful from this column. It could be possible, however, to use a trigger to check that a car is assigned the correct warranty category for it’s odometer reading when it’s sold.</p>
+				
+			</answer>
+				
+		</section>
+
+
+		<section label="sec-purchase">
+		
+			<title>The <tt>Purchase</tt> entity</title>
+
+			<tabular border="1" align="left">
+				<tabular-columns>
+					<column align="center" left-border="|" right-border="|"/>
+					<column align="left" right-border="|"/>
+					<column align="left" right-border="|"/>
+				</tabular-columns>
+				<tabular-body>
+					<row-rule/>
+					<row>
+						<cell header="yes"/>
+						<cell header="yes">Column</cell>
+						<cell header="yes">Description</cell>
+					</row>
+					<row-rule/>
+					<row>
+						<cell><tt><hash/></tt></cell>
+						<cell><code>Purchase_ID</code></cell>
+						<cell>Internally generated 8 digit identifier</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Purchase_Date</code></cell>
+						<cell>Date of purchase</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Details</code></cell>
+						<cell>Arbitrary text</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Amount</code></cell>
+						<cell>Price paid for the car, whole number <ge /><space /><dollar-sign />0</cell>
+					</row>
+					<row-rule/>
+				</tabular-body>
+			</tabular>
+			
+			<p indent="no">Purchases are for a single car only (i.e., no bulk purchases). Trade-ins are effectively treated as a special type of purchase (see <code>Sale</code> below).</p>
+
+			<answer>
+			
+				<p indent="no"><strong>Purchase</strong><left-brace /><underline>Purchase<underscore />ID</underline>, Purchase<underscore />Date, Details, Amount, VIN, Customer<underscore />ID, Salesrep<underscore />ID<right-brace /> (foreign keys: VIN <rightarrow /><space /><strong>Car</strong>, Customer<underscore />ID <rightarrow /><space /><strong>Customer</strong>, Salesrep<underscore />ID <rightarrow /><space /><strong>Sales</strong>)</p>
+				
+				<code-block>
+CREATE SEQUENCE Purchase_ID_Seq START WITH 10000000 MAXVALUE 99999999;
+
+CREATE TABLE Purchase
+( Purchase_ID   NUMBER(8),
+  Purchase_Date DATE            NOT NULL,
+  Details       CLOB            NOT NULL,
+  Amount        NUMBER(6)       NOT NULL
+      CONSTRAINT Purchase_Valid_Amount CHECK ( Amount &gt;= 0 ),
+  VIN           CHAR(17)        NOT NULL,
+  Customer_ID   NUMBER(6)       NOT NULL,
+  Salesrep_ID   NUMBER(4)       NOT NULL,
+  --
+  CONSTRAINT Purchase_PK PRIMARY KEY ( Purchase_ID ),
+  CONSTRAINT Purchase_FK_to_Car FOREIGN KEY ( VIN ) REFERENCES Car,
+  CONSTRAINT Purchase_FK_to_Customer 
+      FOREIGN KEY ( Customer_ID ) REFERENCES Customer,
+  CONSTRAINT Purchase_FK_to_Sales
+      FOREIGN KEY ( Salesrep_ID ) REFERENCES Sales
+);
+				</code-block>
+				
+				<p indent="no">Note the absence of <code>ON DELETE CASCADE</code> on the foreign keys in this table. If we attempt to delete a salesrep, it makes little sense to delete all their associated purchases, especially if they are completed. This would cause a serious accounting problem for the company. A better solution might be to have a “dummy” salesrep that can have “orphaned” purchases assigned to it.</p>
+				
+			</answer>
+				
+		</section>
+	
+
+		<section label="sec-sale">
+
+			<title>The <tt>Sale</tt> entity</title>
+
+			<tabular border="1" align="left">
+				<tabular-columns>
+					<column align="center" left-border="|" right-border="|"/>
+					<column align="left" right-border="|"/>
+					<column align="left" right-border="|"/>
+				</tabular-columns>
+				<tabular-body>
+					<row-rule/>
+					<row>
+						<cell header="yes"/>
+						<cell header="yes">Column</cell>
+						<cell header="yes">Description</cell>
+					</row>
+					<row-rule/>
+					<row>
+						<cell><tt><hash/></tt></cell>
+						<cell><code>Sale_ID</code></cell>
+						<cell>Internally generated 8 digit identifier</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Sale_Date</code></cell>
+						<cell>Date of sale</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Details</code></cell>
+						<cell>Arbitrary text</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Amount</code></cell>
+						<cell>Price the car was sold for, whole number <ge /><space /><dollar-sign />0</cell>
+					</row>
+					<row-rule/>
+				</tabular-body>
+			</tabular>
+
+			<p indent="no">Sales are for a single car only (i.e., no bulk sales). Some sales involve the trade-in of a single car, which is effectively treated as a special type of purchase that is linked to the corresponding sale.</p>
+
+			<answer>
+			
+				<p indent="no"><strong>Sale</strong><left-brace /><underline>Sale<underscore />ID</underline>, Sale<underscore />Date, Details, Amount, VIN, Customer<underscore />ID, Salesrep<underscore />ID, Tradein<underscore />ID<right-brace /> (foreign keys: VIN <rightarrow /><space /><strong>Car</strong>, Customer<underscore />ID <rightarrow /><space /><strong>Customer</strong>, Salesrep<underscore />ID <rightarrow /><space /><strong>Sales</strong>, W<underscore />Code <rightarrow /><space /><strong>Warranty, Tradein<underscore />ID <rightarrow /><space /><strong>Purchase</strong></strong>)</p>
+				
+				<code-block>
+CREATE SEQUENCE Sale_ID_Seq START WITH 10000000 MAXVALUE 99999999;
+
+CREATE TABLE Sale
+( Sale_ID   NUMBER(8),
+  Sale_Date DATE                NOT NULL,
+  Details       CLOB            NOT NULL,
+  Amount        NUMBER(6)       NOT NULL
+      CONSTRAINT Sale_Valid_Amount CHECK ( Amount &gt;= 0 ),
+  VIN           CHAR(17)        NOT NULL,
+  Customer_ID   NUMBER(6)       NOT NULL,
+  Salesrep_ID   NUMBER(4)       NOT NULL,
+  W_Code        CHAR(1)         NOT NULL,
+  Tradein_ID    NUMBER(8),
+  --
+  CONSTRAINT Sale_PK PRIMARY KEY ( Sale_ID ),
+  CONSTRAINT Sale_FK_to_Car FOREIGN KEY ( VIN ) REFERENCES Car,
+  CONSTRAINT Sale_FK_to_Customer 
+      FOREIGN KEY ( Customer_ID ) REFERENCES Customer,
+  CONSTRAINT Sale_FK_to_Warranty
+      FOREIGN KEY ( W_Code ) REFERENCES Warranty,
+  CONSTRAINT Sale_FK_to_Sales
+      FOREIGN KEY ( Salesrep_ID ) REFERENCES Sales,
+  CONSTRAINT Sale_FK_to_Purchase
+      FOREIGN KEY ( Tradein_ID ) REFERENCES Purchase
+);
+				</code-block>
+				
+				<p indent="no">Similar to <code>Purchase</code> above. While the foreign key for trade-ins could go in either table (or even both), it really makes most sense to place it here, since trade-ins only occur as part of a sale transaction.</p>
+				
+			</answer>
+				
+		</section>
+		
+		<newpage />
+		
+		<p indent="no">
+			<image basename="UsedCarWarranties" location="images" latex-options="width=\columnwidth,keepaspectratio">
+				<description>Details of used car dealer warranties in New Zealand</description>
+			</image>
+		</p>
+
+	</section>
+
+</document>

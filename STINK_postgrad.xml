@@ -1,0 +1,515 @@
+<?xml version="1.0" standalone="yes"?>
+
+<document class="fragment">
+
+	<section label="sec:database-info">
+	
+		<title>System specification and details</title>
+		
+		<p>The Southern Technical Institute for Natural Knowledge is a medium-sized tertiary education provider, founded in 1982, which teaches papers across many subjects leading to many different qualifications. They began offering postgraduate degrees in 2008, and are in the process of designing and implementing a database to keep track of their postgraduate students. The requirements analysis and conceptual design phases of the project are complete, and you have been brought in as lead database developer. Your task is to verify the soundness of the conceptual specification by implementing an initial prototype based on it. A design-level entity-relationship diagram of the proposed database is shown in <hyperlink label="fig:erd"><reference label="fig:erd"/></hyperlink>, and more detailed specifications of the database requirements may be found in the following sections.</p>
+
+
+		<figure label="fig:erd" latex-placement="!hb">
+			<caption>Design-level ERD of the proposed database</caption>
+			<image basename="STINK_postgrad" location="images">
+				<description>Design-level ERD of the proposed database</description>
+			</image>
+		</figure>
+
+
+		<section>
+		
+			<title>The <tt>Degree</tt> entity</title>
+
+			<tabular border="1">
+				<tabular-columns>
+					<column align="center" left-border="|" right-border="|"/>
+					<column align="left" right-border="|"/>
+					<column align="left" right-border="|"/>
+				</tabular-columns>
+				<tabular-body>
+					<row-rule/>
+					<row>
+						<cell header="yes"/>
+						<cell header="yes">Column</cell>
+						<cell header="yes">Description</cell>
+					</row>
+					<row-rule/>
+					<row>
+						<cell><tt><hash/></tt></cell>
+						<cell><code>Abbreviation</code></cell>
+						<cell>Up to 10 characters</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Full_Name</code></cell>
+						<cell>Up to 100 characters</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Degree_Type</code></cell>
+						<cell>(see below)</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Funding_Limit</code></cell>
+						<cell>Zero or greater</cell>
+					</row>
+					<row-rule/>
+				</tabular-body>
+			</tabular>
+
+			<itemised-list>
+
+				<item>The abbreviation is a short string identifying the postgraduate degree, for example, <quote>PhD</quote>, <quote>MSc</quote>, <quote>PGDipCom</quote>.</item>
+				
+				<item>The degree type must be one of the following: <quote>Taught</quote>, <quote>Papers <ampersand/> thesis</quote> or <quote>Thesis only</quote>.</item>
+				
+				<item>The funding limit specifies the maximum number of years that the degree will be funded by the government, for example, four years for a PhD. This may not always be a whole number.</item>
+				
+			</itemised-list>
+			
+			<answer>
+			
+				<p><strong>Degree</strong>{<underline>Abbreviation</underline>, Full<underscore />Name, Degree<underscore />Type, Funding<underscore />Limit}</p>
+				
+				<code-block>
+CREATE TABLE Degree
+( Abbreviation      VARCHAR2(10),
+  Full_Name         VARCHAR2(100)   NOT NULL,
+  Degree_Type       VARCHAR2(15)    NOT NULL
+      CHECK ( Degree_Type IN ( 'Taught', 'Papers &amp; thesis', 'Thesis only' ) ),
+  Funding_Limit     NUMBER(3,1)     NOT NULL
+      CHECK ( Funding_Limit &gt;= 0 )
+  --
+  PRIMARY KEY (Abbreviation)
+);
+				</code-block>
+				
+				<p>Some people added lookup tables for things like degree types. Strictly speaking, this isn<apostrophe />t really part of of the schema transformation (the schema will work fine either with or without lookup tables), but in general there is nothing wrong with doing this, <em>as long as it doesn<apostrophe />t change the specification</em>. Some people did do this correctly, by simply using the existing values (which are already unique) as the primary key of the new lookup table. For example, the <code>Degree_Type</code> table would consist of a single column <code>Degree_Type</code>, which contained the valid values for degree types, and was also the primary key. Other people got carried away and invented unnecessary surrogate keys for their lookup tables, thus completely breaking the specification.</p>
+
+			
+			</answer>
+			
+		</section>
+
+
+		<section>
+		
+			<title>The <tt>Student</tt> entity</title>
+
+			<tabular border="1">
+				<tabular-columns>
+					<column align="center" left-border="|" right-border="|"/>
+					<column align="left" right-border="|"/>
+					<column align="left" right-border="|"/>
+				</tabular-columns>
+				<tabular-body>
+					<row-rule/>
+					<row>
+						<cell header="yes"/>
+						<cell header="yes">Column</cell>
+						<cell header="yes">Description</cell>
+					</row>
+					<row-rule/>
+					<row>
+						<cell><tt><hash/></tt></cell>
+						<cell><code>Student_ID</code></cell>
+						<cell>Internally generated 7 digit identifier</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Surname</code></cell>
+						<cell>Up to 50 characters</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Other_Names</code></cell>
+						<cell>Up to 50 characters</cell>
+					</row>
+					<row>
+						<cell><tt>o</tt></cell>
+						<cell><code>Contact_Phone</code></cell>
+						<cell>(see below)</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Contact_Address</code></cell>
+						<cell>Up to 200 characters</cell>
+					</row>
+					<row>
+						<cell><tt>o</tt></cell>
+						<cell><code>Home_Phone</code></cell>
+						<cell>(see below)</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Home_Address</code></cell>
+						<cell>Up to 200 characters</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Username</code></cell>
+						<cell>Up to 50 characters</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>International</code></cell>
+						<cell>Boolean, default false</cell>
+					</row>
+					<row-rule/>
+				</tabular-body>
+			</tabular>
+
+			<vskip size="large"/>
+			
+			<p indent="no">Many students are international, so phone numbers must cater for this.</p>
+			
+			<answer>
+			
+				<p><strong>Student</strong>{<underline>Student<underscore />ID</underline>, Surname, Other<underscore />Names, Contact<underscore />Phone, Contact<underscore />Address, Home<underscore />Phone, Home<underscore />Address, Username, International, Degree<underscore />Code); Degree<underscore />Code FK to <strong>Degree</strong>.</p>
+
+			
+				<code-block>
+CREATE TABLE Student
+( Student_ID        NUMBER(7),
+  Surname           VARCHAR2(50)    NOT NULL,
+  Other_Names       VARCHAR2(50)    NOT NULL,
+  Contact_Phone     VARCHAR2(15),   -- at least 15, maybe more
+                                    -- for international numbers
+  Contact_Address   VARCHAR2(200)   NOT NULL,
+  Home_Phone        VARCHAR2(15),
+  Home_Address      VARCHAR2(200)   NOT NULL,
+  Username          VARCHAR2(50)    NOT NULL,
+  International     CHAR(1)         DEFAULT 'F' NOT NULL
+      CHECK ( International IN ( 'T', 'F' ) ),
+  Degree_Code       VARCHAR2(10)    NOT NULL,
+  --
+  PRIMARY KEY (Student_ID),
+  FOREIGN KEY (Degree_Code) REFERENCES Degree (Abbreviation)
+);
+				</code-block>
+				
+				<p>Remember that <code>ON DELETE CASCADE</code> is not appropriate in all cases! Many people added an <code>ON DELETE CASCADE</code> to the foreign key from <code>Student</code> to <code>Degree</code>, but if you think about how the organisation would work, this doesn<apostrophe />t make any sense. Why should deleting a degree cause all students enrolled in that degree to also be deleted? This is equivalent to expelling the student (actually, worse, since even expelled students probably wouldn<apostrophe />t have their data deleted). It<apostrophe />s much more likely that the affected students would be reassigned to a different degree (or at the very least to a <quote>dummy</quote> placeholder degree until their status is resolved).</p>
+
+			</answer>
+				
+		</section>
+
+
+		<section>
+		
+			<title>The <tt>Enrolment</tt> entity</title>
+
+			<tabular border="1">
+				<tabular-columns>
+					<column align="center" left-border="|" right-border="|"/>
+					<column align="left" right-border="|"/>
+					<column align="left" right-border="|"/>
+				</tabular-columns>
+				<tabular-body>
+					<row-rule/>
+					<row>
+						<cell header="yes"/>
+						<cell header="yes">Column</cell>
+						<cell header="yes">Description</cell>
+					</row>
+					<row-rule/>
+					<row>
+						<cell><tt><hash/></tt></cell>
+						<cell><code>Enrolment_ID</code></cell>
+						<cell>Internally generated 10 digit identifier</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Description</code></cell>
+						<cell>Up to 100 characters</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Year_Enrolled</code></cell>
+						<cell>4 digits</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Grade</code></cell>
+						<cell>(see below)</cell>
+					</row>
+					<row>
+						<cell><tt>o</tt></cell>
+						<cell><code>Comments</code></cell>
+						<cell>Arbitrary text</cell>
+					</row>
+					<row-rule/>
+				</tabular-body>
+			</tabular>
+
+			<itemised-list>
+			
+				<item>The year of enrolment cannot be earlier than the year in which the Institute started offering postgraduate degrees.</item>
+				
+				<item>For a paper, the grade must be one of the following: <quote>E</quote>, <quote>D</quote>, <quote>C<endash/></quote>, <quote>C</quote>, <quote>C+</quote>, <quote>B<endash/></quote>, <quote>B</quote>, <quote>B+</quote>, <quote>A<endash/></quote>, <quote>A</quote> or <quote>A+</quote>. For a thesis, the grade must be one of the following: <quote>Fail</quote>, <quote>Pass</quote>, <quote>Credit</quote>, <quote>Distinction</quote> or <quote>Incomplete</quote>.</item>
+			
+			</itemised-list>
+			
+			<answer>
+			
+				<p><strong>Enrolment</strong>(<underline>Enrolment<underscore />ID</underline>, Description, Year<underscore />Enrolled, Grade, Comments, Component<underscore />Code, Student<underscore />ID); Component<underscore />Code FK to <strong>Component</strong>, Student<underscore />ID FK to <strong>Student</strong></p>
+				
+				<code-block>
+CREATE TABLE Enrolment
+( Enrolment_ID      NUMBER(10),
+  Description       VARCHAR2(100)   NOT NULL,
+  Year_Enrolled     NUMBER(4)       NOT NULL
+    CHECK ( Year_Enrolled &gt;= 2008 ),
+  Result            VARCHAR2(11)    NOT NULL
+    CHECK ( Result IN ( 'E', 'D', 'C-', 'C', 'C+',
+                        'B-', 'B', 'B+', 'A-', 'A', 'A+',
+                         'Fail', 'Pass', 'Credit',
+                         'Distinction', 'Incomplete'
+                       )
+          )
+  Comments          VARCHAR2(4000), -- or CLOB (LONG is deprecated)
+  Student_ID        NUMBER(7)       NOT NULL,
+  Component_Code    CHAR(7)         NOT NULL,
+  --
+  PRIMARY KEY (Enrolment_ID),
+  FOREIGN KEY (Student_ID) REFERENCES Student,
+  FOREIGN KEY (Component_Code) REFERENCES Component
+);
+				</code-block>
+				
+				<p><code>ON DELETE CASCADE</code> <em>does</em> make sense for the <code>Student_ID</code> foreign key here (and also for the foreign keys in <code>Staff_Component</code>), because the existence of these data is very tightly linked with the associated data. This is a very good illustration of the point that we need to consider not just structural aspects of a problem when building a database, but also procedural aspects.</p>
+			
+			</answer>
+			
+		</section>
+	
+
+		<section>
+		
+			<title>The <tt>Component</tt> entity and its subtypes</title>
+
+			<tabular border="1">
+				<tabular-columns>
+					<column align="center" left-border="|" right-border="|"/>
+					<column align="left" right-border="|"/>
+					<column align="left" right-border="|"/>
+				</tabular-columns>
+				<tabular-body>
+					<row>
+						<cell header="yes" columns="3"><tt>Component</tt></cell>
+					</row>
+					<row-rule/>
+					<row>
+						<cell header="yes"/>
+						<cell header="yes">Column</cell>
+						<cell header="yes">Description</cell>
+					</row>
+					<row-rule/>
+					<row>
+						<cell><tt><hash/></tt></cell>
+						<cell><code>Component_Code</code></cell>
+						<cell>7 characters</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Title</code></cell>
+						<cell>Up to 50 characters</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Description</code></cell>
+						<cell>Up to 200 characters</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Points</code></cell>
+						<cell>Integer, default 20 (also see below)</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Period</code></cell>
+						<cell>(see below)</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Component_Type</code></cell>
+						<cell>(see below)</cell>
+					</row>
+					<row-rule/>
+				</tabular-body>
+			</tabular>
+
+			<itemised-list>
+			
+				<item>The component code comprises a four-letter subject code (e.g., <quote>INFO</quote>) followed by a three digit course number (e.g., <quote>212</quote>). The course numbers for Diploma, Masters<apostrophe/> and PhD theses are 480, 580 and 980 respectively.</item>
+				
+				<item>The period of a component must be one of the following: <quote>SS</quote> (Summer School), <quote>S1</quote> (Semester One), <quote>S2</quote> (Semester Two), <quote>FY</quote> (Full Year) or <quote>O</quote> (Other). [<strong>Bonus:</strong> thesis courses must always be Other.]</item>
+				
+				<item>The component type must be one of the following: <quote>Doctoral thesis</quote>, <quote>Masters<apostrophe/> thesis</quote>, <quote>Diploma thesis</quote> or <quote>Paper</quote>.</item>
+				
+				<item>Semester and Summer School papers are worth 20 points, while full year papers are worth 40 points. A Diploma thesis is worth 40 points, a Masters<apostrophe /> thesis 120 points and a PhD thesis 360 points.</item>
+				
+				<item>The <tt>Thesis</tt> and <tt>Paper</tt> subtypes have no additional attributes.</item>
+			
+			</itemised-list>
+			
+			<answer>
+			
+				<p><strong>Component</strong>(<underline>Component_Code</underline>, Title, Description, Points, Period, Component<underscore />Type)</p>
+				
+				<code-block>
+CREATE TABLE Component
+( Component_Code    CHAR(7),
+  Title             VARCHAR2(50)    NOT NULL,
+  Description       VARCHAR2(200)   NOT NULL,
+  Points            NUMBER(2)       NOT NULL
+    CHECK ( Points IN ( 20, 40, 120, 360 ) ),
+  Period            CHAR(2)        NOT NULL
+    CHECK ( Period IN ( 'S1', 'S2', 'SS', 'FY', 'O' ) ),
+  Component_Type    VARCHAR2(15)    NOT NULL
+    CHECK ( Component_Code IN ( 'Doctoral thesis', 'Masters'' thesis',
+                                'Diploma thesis', 'Paper' ) )
+  --
+  PRIMARY KEY (Component_Code)
+);
+				</code-block>
+				
+				<p>This solution uses the integrated approach for transforming subtypes (i.e., one relation containing all the super- and subtype attributes). The reason for this is that the two <code>Component</code> subtypes provide no additional attributes. Splitting them off as separate (single-attribute) relations therefore seems somewhat pointless (but see the further discussion below).</p>
+
+				<p>There is one significant consequence of using the integrated approach. If we collapse all the <code>Component</code> super- and subtypes into a single entity, we may also want to collapse the <strong>supervises</strong> and <strong>teaches</strong> many-to-many relationships into a single relationship (although we aren<apostrophe />t required to do so). If we do nothing else at this point, we have eliminated some important information from the schema: namely the type of relationship between staff and components (a subtle but important distinction). We can re-introduce this information by adding a <code>Type</code> attribute to the <code>Staff_Component</code> relation when we resolve the many-to-many relationship. This has been included in the SQL code for the table.</p>
+
+				<p>Some people stated that the discrete approach (three relations) was the best choice, then gave either no justification at all or simply repeated the advantages of the approach mentioned in lectures, presumably on the theory that <quote>if it was stated in lectures, it <em>must</em> be true</quote>. (It is worth noting that we quite clearly stated in those lectures that you should always consider the context in which subtypes occur when deciding on the best approach to transform them.) This clearly shows that those people had not thought about what the best solution might be <em>for this case</em>, and were instead applying a <quote>one size fits all</quote> mentality, which can be very dangerous. In this case, the discrete approach is perhaps not an ideal solution, as it adds some data redundancy and complicates queries by requiring extra joins.</p>
+			
+				<p>However, you can successfully argue that the Institute might want to add new subtypes in future, which would be difficult to achieve under the integrated approach. This is a perfectly valid solution, <em>as long as you clearly state this assumption</em>. A couple of people did precisely this, and got full marks for the subtype transformation. In other words, the schema presented here is not the only possible solution to this problem.</p>
+				
+				<p>A common error when using the discrete approach was to define all three relations containing the all the <code>Component</code> attributes. However, this defeats the purpose of having a <code>Component</code> supertype relation, as the supertype is supposed to contain the attributes that are shared across all subtypes. Implementing it this way would be little different from the additive approach (which doesn<apostrophe />t really work in this scenario; see below). With three relations, <code>Component</code> should have all the attributes, while <code>Thesis</code> and <code>Paper</code> have only the primary key column (plus a foreign key to <code>Component</code>) and nothing else. Yes, it looks weird, but it works, and the end user never has to see it (logical data independence).</p>
+			
+				<p>As noted above, the integrated approach merges the two many-to-many relationships into one, which means you need some kind of <quote>type</quote> attribute in the intermediate relation. However, as a few observant people noted, you can achieve the same effect by looking up <code>Component_Type</code> in <code>Component</code> (bonus marks were awarded to those who spotted this, although note that this solution would require application developers to join with <code>Component</code> and filter appropriately).</p>
+				
+				<p>The additive approach is definitely inappropriate for this scenario because it would force us to include two foreign keys to <code>Component</code> in <code>Enrolment</code>. Worse, because each enrolment is for a single component, only one of those foreign keys can have a value for any given enrolment. This means that both foreign key columns must allow nulls, which is a significant variation from what the original ERD specified. Also, with this approach it is possible to have two identical components that are both a paper and a thesis at the same time!</p>
+				
+				<p>On a completely different note, most people who implemented the <code>CHECK</code> constraint for <code>Component.Component_Type</code> got it slightly wrong, by checking for <quote>Masters thesis</quote> instead of <quote>Masters<apostrophe /> thesis</quote> (note the apostrophe after <quote>Masters</quote>, and check the code above to see how this is done in SQL). This may seem rather picky, but once again, you have to follow the specification in detail, otherwise you can end up in a situation where the front end supplies what should be a valid value, which is then unexpectedly rejected by the back end!</p>
+
+			
+			</answer>
+
+		</section>
+		
+		
+		<section>
+		
+			<title>The <tt>Staff</tt> entity</title>
+
+			<tabular border="1">
+				<tabular-columns>
+					<column align="center" left-border="|" right-border="|"/>
+					<column align="left" right-border="|"/>
+					<column align="left" right-border="|"/>
+				</tabular-columns>
+				<tabular-body>
+					<row-rule/>
+					<row>
+						<cell header="yes"/>
+						<cell header="yes">Column</cell>
+						<cell header="yes">Description</cell>
+					</row>
+					<row-rule/>
+					<row>
+						<cell><tt><hash/></tt></cell>
+						<cell><code>Staff_ID</code></cell>
+						<cell>Internally generated 5 digit identifier</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Surname</code></cell>
+						<cell>Up to 50 characters</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Other_Names</code></cell>
+						<cell>Up to 50 characters</cell>
+					</row>
+					<row>
+						<cell><tt>o</tt></cell>
+						<cell><code>Contact_Phone</code></cell>
+						<cell>(see below)</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Contact_Address</code></cell>
+						<cell>Up to 200 characters</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Username</code></cell>
+						<cell>Up to 50 characters</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Grade</code></cell>
+						<cell>(see below)</cell>
+					</row>
+					<row>
+						<cell><tt>*</tt></cell>
+						<cell><code>Salary</code></cell>
+						<cell>Monetary, <ge/><dollar-sign/>42<digitsep/>670.00</cell>
+					</row>
+					<row-rule/>
+				</tabular-body>
+			</tabular>
+
+			<itemised-list>
+			
+				<item>Phone numbers must cater for both local landline and cellular numbers.</item>
+				
+				<item>A staff member<apostrophe/>s grade must be one of the following: <quote>AL</quote> (Assistant Lecturer), <quote>L</quote> (Lecturer), <quote>SL</quote> (Senior Lecturer), <quote>AP</quote> (Associate Professor) or <quote>P</quote> (Professor).</item>
+				
+			</itemised-list>
+			
+			<answer>
+			
+				<p><strong>Staff</strong>(<underline>Staff<underscore />ID</underline>, Surname, Other<underscore />Names, Contact<underscore />Phone, Contact<underscore />Address, Username, Grade, Salary)</p>
+				
+				<code-block>
+CREATE TABLE Staff
+( Staff_ID          NUMBER(5),
+  Surname           VARCHAR2(50)    NOT NULL,
+  Other_Names       VARCHAR2(50)    NOT NULL,
+  Contact_Phone     VARCHAR2(10),   -- at least 10, maybe more
+  Contact_Address   VARCHAR2(200)   NOT NULL,
+  Username          VARCHAR2(50)    NOT NULL,
+  Grade             VARCHAR2(2)     NOT NULL
+      CHECK ( Grade IN ( 'AL', 'L', 'SL', 'AP', 'P' ) ),
+  Salary            NUMBER(7,2)     NOT NULL
+      CHECK ( Salary >= 42670 ),
+  --
+  PRIMARY KEY (Staff_ID)
+);
+				</code-block>
+				
+				<p>We also need to add a relation between <code>Staff</code> and <code>Component</code> to resolve the many-to-many relationship:</p>
+				
+				<p><strong>Staff<underscore />Component</strong>(<underline>Staff<underscore />ID, Component<underscore />Code</underline>, Type)</code>; <code>Staff<underscore />ID</code> FK to <code><strong>Staff</strong></code>, <code>Component<underscore />Code</code> FK to <code><strong>Component</strong></p>
+				
+				<code-block>
+CREATE TABLE Staff_Component
+( Staff_ID          NUMBER(5),
+  Component_Code    CHAR(7),
+  Type              VARCHAR2(10)    NOT NULL
+      CHECK ( Type IN ( 'teaches', 'supervises' ) ),
+  --
+  PRIMARY KEY (Staff_ID, Component_Code),
+  FOREIGN KEY (Staff_ID) REFERENCES Staff,
+  FOREIGN KEY (Component_Code) REFERENCES Component
+);
+				</code-block>
+			
+			</answer>
+				
+		</section>
+
+	</section>
+
+</document>
