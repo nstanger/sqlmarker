@@ -99,6 +99,40 @@
 			
 			</itemised-list>
 			
+			<answer>
+				<code-block>
+CREATE TABLE Staff
+( Staff_ID    NUMBER(7),
+  Surname     VARCHAR2(50)  NOT NULL,
+  Firstnames  VARCHAR2(50)  NOT NULL,
+  Phone       VARCHAR2(11)  NOT NULL,
+  Address     VARCHAR2(150) NOT NULL,
+  Department  VARCHAR2(18)  NOT NULL
+    CONSTRAINT Staff_Department_Invalid
+      CHECK ( Department IN ( 'Central Management', 'Personnel',
+                              'Sales ' || CHR(38) || ' Marketing',
+                              'Manufacturing', 'Inventory', 'Accounts' ) ),
+  Position    VARCHAR2(20)  NOT NULL
+    CONSTRAINT Staff_POSITION_INVALID
+      CHECK ( Position IN ( 'CEO', 'CTO', 'CFO', 'CIO', 'Director',
+                            'President', 'Vice-President', 'Manager',
+                            'Personal Assistant', 'Secretary',
+                            'Technician', 'Researcher', 'Designer',
+                            'Assembler', 'Programmer', 'Contractor',
+                            'Sales Representative', 'Accountant',
+                            'Inventory', 'Assistant' ) ),
+  Salary      NUMBER(7,2)   NOT NULL
+    CONSTRAINT Staff_Salary_Range_Invalid
+      CHECK ( Salary BETWEEN 1000 and 99999.99 ),
+  Comments    VARCHAR2(4000),
+  --
+  CONSTRAINT STAFF_PK PRIMARY KEY ( Staff_ID )
+);
+				</code-block>
+				
+				<p indent="no">The most commmon errors here were either renaming some of the columns, or misspelling the values in the <code>Department</code> and <code>Position</code><space /><code>CHECK</code> constraints. Note the use of the <code>CHR</code> function in “Sales <ampersand /> Marketing” to avoid the issue with ampersand (<ampersand />) characters in TOAD. (Alternatively, use <code>SET ESCAPE '\';</code> and change the value to <tt>'Sales <backslash /><ampersand /> Marketing'</tt>.) Remember also that <code>BETWEEN</code> is inclusive of the two endpoint values, so the upper value for <code>Salary</code> should be 99999.99, not 100000.</p>
+			</answer>
+			
 		</section>
 
 
@@ -166,6 +200,26 @@
 
 			<p indent="no">BDL’s customers are retail outlets of various sizes. BDL currently has about <number>400000</number> customers on its books, increasing by about <number>10000</number> per year. The usual details will be recorded for each customer: name, address, phone and optionally the name of a contact person and an email address. The phone number must cater for full international numbers, as many of BDL’s customers are based outside the U.S.</p>
 			
+			<answer>
+				<code-block>
+CREATE TABLE Customer
+( Customer_ID     NUMBER(7),
+  Name            VARCHAR2(50)    NOT NULL,
+  Contact_Person  VARCHAR2(50),
+  Phone           VARCHAR2(12)    NOT NULL,
+  Address         VARCHAR2(200)   NOT NULL,
+  Email           VARCHAR2(50),
+  Comments        VARCHAR2(4000),
+  --
+  CONSTRAINT Customer_PK PRIMARY KEY ( Customer_ID )
+);
+				</code-block>
+				
+				<p indent="no">The most commmon errors here were again renaming some of the columns, or using far too small a size for the <code>Comments</code> column. 150 characters is about the same as a text message, which doesn’t provide a lot of space for meaningful comments! This is one case where it actually does make sense to just set the length to the maximum possible value (4000 for a <code>VARCHAR2</code>), or just use a <code>CLOB</code>, which for the purposes of this system has effectively infinite length.</p>
+				
+				<p>Phone numbers were another trap. A normal American phone number is ten digits, but since BDL’s customers are actually companies, not people, some may have 800 toll-free numbers, which are always prefixed by “1” for long-distance (like “0” for toll calls in New Zealand), i.e., 1 800 xxx xxx xxxx. So eleven digits is really the minimum size here. (If you’re interested, look up the “North American Numbering Plan” in Wikipedia.)</p>
+			</answer>
+			
 		</section>
 
 
@@ -227,6 +281,24 @@
 			
 			<p indent="no">BDL orders components from a small group of trusted suppliers (of which there are currently thirty-three). Many of these suppliers overlap in the components that they supply, thus enabling BDL to take advantage of special deals, and providing alternative sources for components. BDL normally buys components from the supplier offering the best deal at the time of ordering (pricing data will not be stored in the database because they change too frequently). The details to be recorded for suppliers are identical to those for customers.</p>
 
+			<answer>
+				<code-block>
+CREATE TABLE Supplier
+( Supplier_ID     NUMBER(7),
+  Name            VARCHAR2(50)    NOT NULL,
+  Contact_Person  VARCHAR2(50),
+  Phone           VARCHAR2(12)    NOT NULL,
+  Address         VARCHAR2(200)   NOT NULL,
+  Email           VARCHAR2(50),
+  Comments        VARCHAR2(4000),
+  --
+  CONSTRAINT Supplier_PK PRIMARY KEY ( Supplier_ID )
+);
+				</code-block>
+				
+				<p indent="no">This table is essentially identical to Customer, so the same errors tended to apply. Phone numbers are slightly trickier here, because they can be full international numbers. The International Telecommunications Union (ITU) set standards for telecommunications, including phone numbers. They specify the maximum length of a full international phone number to be fifteen digits, including country code, area code and local number (where applicable). An optional “+” can be added at the front, making a total of up to 16 characters However, this doesn’t mean that all international phone numbers are fifteen digits long! New Zealand phone numbers, for example, are between ten and twelve digits depending on whether it’s a landline or a mobile. Twelve digits is probably a reasonable minimum size for the <code>Phone</code> column.</p>
+			</answer>
+			
 		</section>
 
 
@@ -302,6 +374,36 @@
 				
 			</itemised-list>
 			
+			<p indent="no">BDL orders components from a small group of trusted suppliers (of which there are currently thirty-three). Many of these suppliers overlap in the components that they supply, thus enabling BDL to take advantage of special deals, and providing alternative sources for components. BDL normally buys components from the supplier offering the best deal at the time of ordering (pricing data will not be stored in the database because they change too frequently). The details to be recorded for suppliers are identical to those for customers.</p>
+
+			<answer>
+				<code-block>
+CREATE TABLE Product
+( Product_Code      NUMBER(8),
+  Description       VARCHAR2(50)  NOT NULL,
+  Stock_Count       NUMBER(5)     NOT NULL
+    CONSTRAINT Product_Stock_Count_Too_Low
+      CHECK ( Stock_Count BETWEEN 0 AND 99999 ),
+  Restock_Level     NUMBER(5)
+    CONSTRAINT Product_Restock_Level_Too_Low
+      CHECK ( Restock_Level BETWEEN 0 AND 99999 ),
+  Minimum_Level     NUMBER(5),
+  List_Price        NUMBER(7,2)   NOT NULL
+    CONSTRAINT Product_List_Price_Too_Low
+      CHECK ( List_Price BETWEEN 0 AND 99999.99 ),
+  Assembly_Manual   BLOB,
+  Assembly_Program  BLOB,
+  --
+  CONSTRAINT Product_Min_Level_Invalid
+    CHECK ( ( Minimum_Level &gt;= 0 ) AND ( Minimum_Level &lt; Restock_Level ) ),
+  --
+  CONSTRAINT Product_PK PRIMARY KEY ( Product_Code )
+);
+				</code-block>
+				
+				<p indent="no">The most common error here was simply not including range constraints for the various stock count columns. In particular, many people only checked the maximum value and didn’t bother check that they were zero or more.</p>
+			</answer>
+			
 		</section>
 
 
@@ -359,6 +461,27 @@
 				
 			</itemised-list>
 			
+			<answer>
+				<code-block>
+CREATE TABLE Component
+( Component_Code  NUMBER(8),
+  Suppliers_Code  VARCHAR2(25),
+  Description     VARCHAR2(100) NOT NULL,
+  Stock_Count     NUMBER(7)     NOT NULL
+    CONSTRAINT Component_Stk_Count_Too_Low
+      CHECK ( Stock_Count BETWEEN 0 AND 9999999 ),
+  Supplier_ID     NUMBER(7)     NOT NULL,
+  --
+  CONSTRAINT Component_PK PRIMARY KEY ( Component_Code, Suppliers_Code ),
+  --
+  CONSTRAINT Component_FK_To_Supplier
+    FOREIGN KEY ( Supplier_ID ) REFERENCES Supplier
+);
+				</code-block>
+				
+				<p indent="no"><code>Suppliers_Code</code> is technically redundant in the primary key (i.e., the key isn’t minimal), but that’s what was specified, so eliminating it without a good explanation lost marks.</p>
+			</answer>
+			
 		</section>
 
 
@@ -392,6 +515,29 @@
 			<vskip size="medium" />
 
 			<paragraph indent="no">Each product can be made from at least two up to hundreds of distinct components. Some components (e.g., transistors) occur many times in the same product.</paragraph>
+			
+			<answer>
+				<code-block>
+CREATE TABLE Assembly
+( Product_Code    NUMBER(8),
+  Component_Code  NUMBER(8),
+  Suppliers_Code  VARCHAR2(25),
+  Quantity        NUMBER(4)     NOT NULL
+    CONSTRAINT Assembly_Quantity_Too_Low
+      CHECK ( Quantity BETWEEN 1 AND 9999 ),
+  --
+  CONSTRAINT Assembly_PK
+    PRIMARY KEY ( Product_Code, Component_Code, Suppliers_Code ),
+  --
+  CONSTRAINT Assembly_FK_To_Product
+    FOREIGN KEY ( Product_Code ) REFERENCES Product,
+  CONSTRAINT Assembly_FK_To_Component
+    FOREIGN KEY ( Component_Code, Suppliers_Code ) REFERENCES Component
+);
+				</code-block>
+				
+				<p indent="no"><code>Suppliers_Code</code> is part of the primary key of <code>Component</code>, so it must by definition be part of the primary key here (unless we created a surrogate key, but that wasn’t in the specification). It also doesn’t make much sense to allow zero as a value of <code>Quantity</code>; if there are none of a particular component in a product, then you wouldn’t add an entry to this table anyway!</p>
+			</answer>
 			
 		</section>
 
@@ -482,6 +628,49 @@
 				
 			</itemised-list>
 
+			<answer>
+				<code-block>
+CREATE TABLE Sale_Head
+( Sale_Num     NUMBER(10),
+  Sale_Date    DATE           NOT NULL,
+  Status       VARCHAR2(11)   NOT NULL
+    CONSTRAINT Sale_Head_Status_Invalid
+      CHECK ( Status IN ( 'pending', 'in progress', 'cancelled',
+                          'backordered', 'shipped' ) ),
+  Staff_ID     NUMBER(7)      NOT NULL,
+  Customer_ID  NUMBER(7)      NOT NULL,
+  Comments     VARCHAR2(4000),
+  --
+  CONSTRAINT Sale_Head_PK PRIMARY KEY ( Sale_Num ),
+  --
+  CONSTRAINT Sale_Head_FK_To_Staff FOREIGN KEY ( Staff_ID ) REFERENCES Staff,
+  CONSTRAINT Sale_Head_FK_To_Customer
+    FOREIGN KEY ( Customer_ID ) REFERENCES Customer
+);
+
+CREATE TABLE Sale_Line
+( Sale_Num      NUMBER(10),
+  Product_Code  NUMBER(8),
+  Quantity      NUMBER(6)   NOT NULL
+    CONSTRAINT Sale_Line_Quantity_Too_Low CHECK ( Quantity &gt; 0 ),
+  Actual_Price  NUMBER(7,2) NOT NULL
+    CONSTRAINT Sale_Line_Act_Price_Too_Low
+      CHECK ( Actual_Price BETWEEN 0 AND 99999.99 ),
+  --
+  CONSTRAINT Sale_Line_PK PRIMARY KEY ( Sale_Num, Product_Code ),
+  --
+  CONSTRAINT Sale_Line_FK_To_Product
+    FOREIGN KEY ( Product_Code ) REFERENCES Product,
+  CONSTRAINT Sale_Line_FK_To_Sale_Hd
+    FOREIGN KEY ( Sale_Num ) REFERENCES Sale_Head
+);
+				</code-block>
+				
+				<p indent="no">It was great to see people using the workaround for checking the <code>Sale_Date</code> isn’t in the future. However, it was very frustrating to also see of them not bothering to explain it! We were quite happy to accept an extra column to store the sale entry date, as long as there was an explanation of why it was being added. (Note that the code above doesn’t include this to save space.)</p>
+				
+				<p>Once again it doesn’t really make sense for <code>Quantity</code> in <code>Sale_Line</code> to be zero (although it does make sense for <code>Actual_Price</code>).</p>
+			</answer>
+			
 		</section>
 
 
@@ -583,6 +772,52 @@
 				
 			</itemised-list>
 
+			<answer>
+				<code-block>
+CREATE TABLE Order_Head
+( Order_Num    NUMBER(10),
+  Order_Date   DATE           NOT NULL,
+  Due_Date     DATE,
+  Status       VARCHAR2(11)   NOT NULL
+    CONSTRAINT Order_Head_Status_Invalid
+      CHECK ( Status IN ( 'complete', 'in progress' ) ),
+  Staff_ID     NUMBER(7)      NOT NULL,
+  Supplier_ID  NUMBER(7)      NOT NULL,
+  Comments     VARCHAR2(4000),
+  --
+  CONSTRAINT Order_Head_Due_Date_Invalid CHECK ( Due_Date &gt; Order_Date ),
+  --
+  CONSTRAINT Order_Head_PK PRIMARY KEY ( Order_Num ),
+  --
+  CONSTRAINT Order_Head_FK_To_Staff FOREIGN KEY ( Staff_ID ) REFERENCES Staff,
+  CONSTRAINT Order_Head_FK_To_Supp
+    FOREIGN KEY ( Supplier_ID ) REFERENCES Supplier
+);
+
+CREATE TABLE Order_Line
+( Order_Num       NUMBER(10),
+  Component_Code  NUMBER(8),
+  Suppliers_Code  VARCHAR2(25),
+  Qty_Ordered     NUMBER(5)     NOT NULL
+    CONSTRAINT Order_Line_Qty_Ord_Too_Low
+      CHECK ( Qty_Ordered BETWEEN 0 AND 99999 ),
+  Price           NUMBER(6,2)   NOT NULL
+    CONSTRAINT Order_Line_Price_Too_Low
+      CHECK ( Price BETWEEN 0 AND 9999.99 ),
+  Qty_Received    NUMBER(6)     NOT NULL,
+  --
+  CONSTRAINT Order_Line_PK
+    PRIMARY KEY ( Order_Num, Component_Code, Suppliers_Code ),
+  --
+  CONSTRAINT Order_Line_FK_To_Comp
+    FOREIGN KEY ( Component_Code, Suppliers_Code ) REFERENCES Component,
+  CONSTRAINT Order_Line_FK_To_Ord_Hd
+    FOREIGN KEY ( Order_Num ) REFERENCES Order_Head
+);
+				</code-block>
+				
+			</answer>
+			
 		</section>
 	
 	</section>
