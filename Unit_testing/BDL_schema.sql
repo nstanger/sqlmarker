@@ -101,7 +101,7 @@ CREATE TABLE Customer
   --
   Contact_Person  VARCHAR2(50),
   --
-  Phone           VARCHAR2(12)    NOT NULL,
+  Phone           VARCHAR2(14)    NOT NULL,
   --
   Address         VARCHAR2(200)   NOT NULL,
   --

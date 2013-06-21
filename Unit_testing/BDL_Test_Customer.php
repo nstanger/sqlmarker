@@ -1,7 +1,7 @@
 <?php
 require_once "Schema.php";
 
-class BDL_Test_Customer extends PHPUnit_Extensions_Database_TestCase_CreateTable
+abstract class BDL_Test_Customer extends PHPUnit_Extensions_Database_TestCase_CreateTable
 {
 	public function getTableName()
 	{
@@ -30,10 +30,11 @@ class BDL_Test_Customer extends PHPUnit_Extensions_Database_TestCase_CreateTable
 											'nullable'		=>	true,
 											'test_value'	=>	"'Henrietta Bloggs'",	),
 			'PHONE'				=>	array(	'type'			=>	array( 'VARCHAR2', 'CHAR', 'VARCHAR' ),
-											'min_length'	=>	12,
-											'max_length'	=>	25,
+											'min_length'	=>	11,
+											'max_length'	=>	15,
 											'nullable'		=>	false,
-											'test_value'	=>	"'646139981234'",	),
+											'test_value'	=>	"'64613998123'",
+											'legal_values'	=>	array( "'034511010'", "'2718391780'", "'+2496391734'", "'92819209365'" )),
 			'ADDRESS'			=>	array(	'type'			=>	array( 'VARCHAR2', 'VARCHAR' ),
 											'min_length'	=>	200,
 											'max_length'	=>	200,
@@ -62,119 +63,5 @@ class BDL_Test_Customer extends PHPUnit_Extensions_Database_TestCase_CreateTable
 	{
 		return array();
 	}
-	
-	
-	/**
-	 *	Return fixture data set for current database connection.
-	 *
-	 *	@access protected
-	 *	@return PHPUnit_Extensions_Database_DataSet_IDataSet
-	 *	@todo Parameterise the fixture filename.
-	 */
-	protected function getDataSet()
-	{
-		return $this->createXMLDataSet("BDL_Fixture_Customer.xml");
-	}
-	
-	
-	public function testTableExists()
-	{
-		$this->assertTableExists();
-	}
-	
-	
-	/**
-	 *	@dataProvider provideColumnNames
-	 */
-	public function testColumnExists( $columnName )
-	{
-   		$this->assertColumnExists( $columnName );
-	}
-	
-	
-	/**
-	 *	@dataProvider provideColumnTypes
-	 */
-	public function testColumnDataType( $columnName, $columnTypeList )
-	{
-   		$this->assertColumnDataType( $columnName, $columnTypeList );
-	}
-	
-	
-	/**
-	 *	@dataProvider provideColumnLengths
-	 */
-	public function testColumnLength( $columnName, $columnLengthList )
-	{
-   		$this->assertColumnLength( $columnName, $columnLengthList );
-	}
-	
-	
-	/**
-	 *	@dataProvider provideColumnLegalValues
-	 */
-	public function testColumnLegalValue( $columnName, $legalValue )
-	{
-   		$this->assertColumnLegalValue( $columnName, $legalValue );
-	}
-	
-	
-	/**
-	 *	@dataProvider provideColumnUnderflowValues
-	 *	@expectedException PDOException
-	 *	@expectedExceptionMessage check constraint
-	 *	@expectedExceptionCode HY000
-	 */
-	public function testColumnUnderflowValue( $columnName, $underflowValue )
-	{
-   		$this->assertColumnUnderflowValue( $columnName, $underflowValue );
-	}
-	
-	
-	/**
-	 *	@dataProvider provideColumnOverflowValues
-	 *	@expectedException PDOException
-	 *	@expectedExceptionMessage check constraint
-	 *	@expectedExceptionCode HY000
-	 */
-	public function testColumnOverflowValue( $columnName, $overflowValue )
-	{
-   		$this->assertColumnOverflowValue( $columnName, $overflowValue );
-	}
-	
-	
-	/**
-	 *	@dataProvider provideColumnNullabilities
-	 */
-	public function testColumnNullability( $columnName, $columnNullability )
-	{
-   		$this->assertColumnNullability( $columnName, $columnNullability );
-	}
-	
-	
-	public function testPKExists()
-	{
-		return $this->assertPKExists();
-	}
-	
-	
-	/**
-	 *	@depends testPKExists
-	 */
-	public function testPKColumns( $constraintName )
-	{
-		$this->assertPKColumns( $constraintName );
-	}
-	
-	
-	/**
-	 *	@dataProvider provideConstraintNames
-	 */
-	public function testConstraintsNamed( $constraintName, $constraintType )
-	{
-		$this->assertConstraintNamed( $constraintName, $constraintType );
-	}
-	
-	// TODO: test for email constraints?
 }
 ?>
