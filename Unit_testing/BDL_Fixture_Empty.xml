@@ -1,0 +1,85 @@
+<dataset>
+  <table name="staff">
+    <column>staff_id</column>
+    <column>surname</column>
+    <column>firstnames</column>
+    <column>phone</column>
+    <column>address</column>
+    <column>department</column>
+    <column>position</column>
+    <column>salary</column>
+    <column>comments</column>
+  </table>
+  <table name="customer">
+    <column>customer_id</column>
+    <column>name</column>
+    <column>contact_person</column>
+    <column>phone</column>
+    <column>address</column>
+    <column>email</column>
+    <column>comments</column>
+  </table>
+  <table name="supplier">
+    <column>supplier_id</column>
+    <column>name</column>
+    <column>contact_person</column>
+    <column>phone</column>
+    <column>address</column>
+    <column>email</column>
+    <column>comments</column>
+  </table>
+  <table name="product">
+    <column>product_code</column>
+    <column>description</column>
+    <column>stock_count</column>
+    <column>restock_level</column>
+    <column>minimum_level</column>
+    <column>list_price</column>
+    <column>assembly_manual</column>
+    <column>assembly_program</column>
+  </table>
+  <table name="component">
+    <column>component_code</column>
+    <column>suppliers_code</column>
+    <column>description</column>
+    <column>stock_count</column>
+    <column>supplier_id</column>
+  </table>
+  <table name="assembly">
+    <column>product_code</column>
+    <column>component_code</column>
+    <column>suppliers_code</column>
+    <column>quantity</column>
+  </table>
+  <table name="sale_head">
+    <column>sale_num</column>
+    <column>sale_date</column>
+    <column>status</column>
+    <column>staff_id</column>
+    <column>customer_id</column>
+    <column>comments</column>
+  </table>
+  <table name="sale_line">
+    <column>sale_num</column>
+    <column>product_code</column>
+    <column>quantity</column>
+    <column>actual_price</column>
+  </table>
+  <table name="order_head">
+    <column>order_num</column>
+    <column>order_date</column>
+    <column>due_date</column>
+    <column>status</column>
+    <column>staff_id</column>
+    <column>supplier_id</column>
+    <column>comments</column>
+  </table>
+  <table name="order_line">
+    <column>order_num</column>
+    <column>component_code</column>
+    <column>suppliers_code</column>
+    <column>qty_ordered</column>
+    <column>price</column>
+    <column>qty_received</column>
+  </table>
+</dataset>
