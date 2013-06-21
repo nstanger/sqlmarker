@@ -1,0 +1,486 @@
+<dataset>
+  <table name="staff">
+    <column>staff_id</column>
+    <column>surname</column>
+    <column>firstnames</column>
+    <column>phone</column>
+    <column>address</column>
+    <column>department</column>
+    <column>position</column>
+    <column>salary</column>
+    <column>comments</column>
+    <row>
+      <value>326</value>
+      <value>Dyson</value>
+      <value>Sang Russell</value>
+      <value>16139414116</value>
+      <value>74 Patmos Avenue</value>
+      <value>Manufacturing</value>
+      <value>Designer</value>
+      <value>39278.42</value>
+      <value>Good worker.</value>
+    </row>
+    <row>
+      <value>327</value>
+      <value>Soto</value>
+      <value>Teresa Stephanie</value>
+      <value>16137076169</value>
+      <value>21 Elwyn Crescent</value>
+      <value>Inventory</value>
+      <value>Technician</value>
+      <value>34254.4</value>
+      <value />
+    </row>
+    <row>
+      <value>328</value>
+      <value>Kwak</value>
+      <value>Patricia Helen</value>
+      <value>16137254888</value>
+      <value>28 Cherry Drive</value>
+      <value>Manufacturing</value>
+      <value>Technician</value>
+      <value>33809.79</value>
+      <value>Excellent negotiator.</value>
+    </row>
+    <row>
+      <value>329</value>
+      <value>Reed</value>
+      <value>John Clifford</value>
+      <value>16136507402</value>
+      <value>45 Pine Hill Road</value>
+      <value>Manufacturing</value>
+      <value>Researcher</value>
+      <value>51246.01</value>
+      <value>Argumentative.</value>
+    </row>
+    <row>
+      <value>330</value>
+      <value>Barajas</value>
+      <value>Charles William</value>
+      <value>16132104933</value>
+      <value>34 Scobie Road</value>
+      <value>Manufacturing</value>
+      <value>Technician</value>
+      <value>36551.12</value>
+      <value />
+    </row>
+    <row>
+      <value>332</value>
+      <value>Alexander</value>
+      <value>Mary Margaret</value>
+      <value>16134041369</value>
+      <value>166 Moray Place</value>
+      <value>Inventory</value>
+      <value>Assembler</value>
+      <value>52187.45</value>
+      <value />
+    </row>
+    <row>
+      <value>333</value>
+      <value>Hopkins</value>
+      <value>Michael Alex</value>
+      <value>16134838045</value>
+      <value>67 Burgess Street</value>
+      <value>Manufacturing</value>
+      <value>Designer</value>
+      <value>21964.16</value>
+      <value />
+    </row>
+    <row>
+      <value>334</value>
+      <value>Repollet</value>
+      <value>Kit Elsie</value>
+      <value>16138136462</value>
+      <value>38 Massey Avenue</value>
+      <value>Manufacturing</value>
+      <value>Contractor</value>
+      <value>33283.56</value>
+      <value />
+    </row>
+    <row>
+      <value>331</value>
+      <value>Ross</value>
+      <value>Tanya Johanna</value>
+      <value>16137684316</value>
+      <value>107 Braeview Crescent</value>
+      <value>Sales &amp; Marketing</value>
+      <value>Designer</value>
+      <value>46555.36</value>
+      <value>Lazy and shiftless.</value>
+    </row>
+    <row>
+      <value>335</value>
+      <value>Black</value>
+      <value>William Melvin</value>
+      <value>16136246576</value>
+      <value>54 Koremata Street</value>
+      <value>Manufacturing</value>
+      <value>Researcher</value>
+      <value>47618.8</value>
+      <value />
+    </row>
+  </table>
+  <table name="supplier">
+    <column>supplier_id</column>
+    <column>name</column>
+    <column>contact_person</column>
+    <column>phone</column>
+    <column>address</column>
+    <column>email</column>
+    <column>comments</column>
+    <row>
+      <value>1</value>
+      <value>Electrocore</value>
+      <value>Kerwin, Eric Cedrick</value>
+      <value>61134253377399</value>
+      <value>54 Ainslee Place</value>
+      <value>tfodep@pruknl.invalid</value>
+      <value />
+    </row>
+    <row>
+      <value>2</value>
+      <value>Interdyne</value>
+      <value>Fletcher, James Thomas</value>
+      <value>61134259324134</value>
+      <value>112 Alfred Place</value>
+      <value>hflsjo@jgugbf.invalid</value>
+      <value>Top-value supplier.</value>
+    </row>
+    <row>
+      <value>3</value>
+      <value>THR</value>
+      <value>Osorio, Sean Robert</value>
+      <value>61134254185149</value>
+      <value>83 Carnforth Street</value>
+      <value>lubjez@xsgqol.invalid</value>
+      <value>Their range of components is mind-boggling.</value>
+    </row>
+    <row>
+      <value>4</value>
+      <value>DEB</value>
+      <value>Wengerd, Robert Daniel</value>
+      <value>61134256698396</value>
+      <value>48 Tomahawk Road</value>
+      <value>pospil@kwpxdz.invalid</value>
+      <value>Check whether they still supply brazing twine.</value>
+    </row>
+    <row>
+      <value>5</value>
+      <value>Econotronix</value>
+      <value>Chambers, Helen Katie</value>
+      <value>61134259512602</value>
+      <value>246 Helensburgh Road</value>
+      <value>vyzvqq@cggktn.invalid</value>
+      <value />
+    </row>
+    <row>
+      <value>6</value>
+      <value>Anderson, Enriquez &amp; Garza</value>
+      <value>Sierra, Hector Michael</value>
+      <value>61134253607344</value>
+      <value>50 Hanlon Street</value>
+      <value>bjyyht@auroka.invalid</value>
+      <value />
+    </row>
+    <row>
+      <value>7</value>
+      <value>Sloan Ramirez</value>
+      <value>Maney, Jose Gregory</value>
+      <value>61134257280452</value>
+      <value>17 Ardley Place</value>
+      <value>smfern@ofwnmm.invalid</value>
+      <value />
+    </row>
+    <row>
+      <value>8</value>
+      <value>Intertronics</value>
+      <value>Lansing, Tom William</value>
+      <value>61134258162185</value>
+      <value>42 Cowan Road</value>
+      <value>rbbmdu@psfpuh.invalid</value>
+      <value>Quality control is not great.</value>
+    </row>
+    <row>
+      <value>9</value>
+      <value>HAD</value>
+      <value>Streit, Caroline Lora</value>
+      <value>61134252705928</value>
+      <value>12 Hamel Street</value>
+      <value>ioprzh@bfdeev.invalid</value>
+      <value />
+    </row>
+    <row>
+      <value>10</value>
+      <value>Dahl, Olden &amp; Miranda</value>
+      <value>Welsh, Leisa Theodora</value>
+      <value>61134251222033</value>
+      <value>154 Grandview Crescent</value>
+      <value>nabtfm@glqlme.invalid</value>
+      <value />
+    </row>
+  </table>
+  <table name="component">
+    <column>component_code</column>
+    <column>suppliers_code</column>
+    <column>description</column>
+    <column>stock_count</column>
+    <column>supplier_id</column>
+    <row>
+      <value>660</value>
+      <value>9832245</value>
+      <value>osmium Wi-Fi button</value>
+      <value>1111</value>
+      <value>9</value>
+    </row>
+    <row>
+      <value>661</value>
+      <value>6510808</value>
+      <value>invar high power vent</value>
+      <value>1394</value>
+      <value>7</value>
+    </row>
+    <row>
+      <value>663</value>
+      <value>8236779</value>
+      <value>silver electrical vent</value>
+      <value>1300</value>
+      <value>2</value>
+    </row>
+    <row>
+      <value>669</value>
+      <value>257835</value>
+      <value>high current adhesive</value>
+      <value>1403</value>
+      <value>7</value>
+    </row>
+    <row>
+      <value>671</value>
+      <value>4116966</value>
+      <value>radio cable</value>
+      <value>1332</value>
+      <value>8</value>
+    </row>
+    <row>
+      <value>677</value>
+      <value>2095670</value>
+      <value>waterproofing solvent</value>
+      <value>1500</value>
+      <value>7</value>
+    </row>
+    <row>
+      <value>679</value>
+      <value>2682279</value>
+      <value>pewter electrolytic screw</value>
+      <value>1345</value>
+      <value>6</value>
+    </row>
+    <row>
+      <value>683</value>
+      <value>236289</value>
+      <value>62 kilofarad capacitor</value>
+      <value>1600</value>
+      <value>5</value>
+    </row>
+    <row>
+      <value>685</value>
+      <value>280917</value>
+      <value>74 zeptofarad capacitor</value>
+      <value>1486</value>
+      <value>2</value>
+    </row>
+    <row>
+      <value>687</value>
+      <value>4058704</value>
+      <value>94 decihenry inductor</value>
+      <value>1363</value>
+      <value>8</value>
+    </row>
+  </table>
+  <table name="order_head">
+    <column>order_num</column>
+    <column>order_date</column>
+    <column>due_date</column>
+    <column>status</column>
+    <column>staff_id</column>
+    <column>supplier_id</column>
+    <column>comments</column>
+    <row>
+      <value>36</value>
+      <value>13-OCT-2011</value>
+      <value>26-OCT-2011</value>
+      <value>complete</value>
+      <value>335</value>
+      <value>5</value>
+      <value />
+    </row>
+    <row>
+      <value>741</value>
+      <value>26-MAY-2011</value>
+      <value>14-JUN-2011</value>
+      <value>complete</value>
+      <value>330</value>
+      <value>4</value>
+      <value />
+    </row>
+    <row>
+      <value>1799</value>
+      <value>07-NOV-2011</value>
+      <value>22-NOV-2011</value>
+      <value>in progress</value>
+      <value>335</value>
+      <value>8</value>
+      <value>Awaiting backorder from manufacturer.</value>
+    </row>
+    <row>
+      <value>2027</value>
+      <value>27-JUL-2011</value>
+      <value>05-AUG-2011</value>
+      <value>complete</value>
+      <value>332</value>
+      <value>1</value>
+      <value />
+    </row>
+    <row>
+      <value>2154</value>
+      <value>11-MAR-2011</value>
+      <value>28-MAR-2011</value>
+      <value>in progress</value>
+      <value>330</value>
+      <value>6</value>
+      <value />
+    </row>
+    <row>
+      <value>2820</value>
+      <value>15-OCT-2011</value>
+      <value>19-OCT-2011</value>
+      <value>complete</value>
+      <value>331</value>
+      <value>2</value>
+      <value />
+    </row>
+    <row>
+      <value>3642</value>
+      <value>29-DEC-2011</value>
+      <value>15-JAN-2012</value>
+      <value>in progress</value>
+      <value>328</value>
+      <value>2</value>
+      <value />
+    </row>
+    <row>
+      <value>3882</value>
+      <value>04-JUN-2012</value>
+      <value>21-JUN-2012</value>
+      <value>complete</value>
+      <value>334</value>
+      <value>8</value>
+      <value />
+    </row>
+    <row>
+      <value>4381</value>
+      <value>14-MAR-2012</value>
+      <value>20-MAR-2012</value>
+      <value>in progress</value>
+      <value>335</value>
+      <value>2</value>
+      <value />
+    </row>
+    <row>
+      <value>4419</value>
+      <value>20-MAY-2012</value>
+      <value>08-JUN-2012</value>
+      <value>in progress</value>
+      <value>329</value>
+      <value>7</value>
+      <value />
+    </row>
+  </table>
+  <table name="order_line">
+    <column>order_num</column>
+    <column>component_code</column>
+    <column>suppliers_code</column>
+    <column>qty_ordered</column>
+    <column>price</column>
+    <column>qty_received</column>
+    <row>
+      <value>36</value>
+      <value>660</value>
+      <value>9832245</value>
+      <value>6388</value>
+      <value>2.86</value>
+      <value>6388</value>
+    </row>
+    <row>
+      <value>741</value>
+      <value>660</value>
+      <value>9832245</value>
+      <value>14988</value>
+      <value>0.58</value>
+      <value>10988</value>
+    </row>
+    <row>
+      <value>1799</value>
+      <value>660</value>
+      <value>9832245</value>
+      <value>7491</value>
+      <value>4.61</value>
+      <value>0</value>
+    </row>
+    <row>
+      <value>2027</value>
+      <value>660</value>
+      <value>9832245</value>
+      <value>8277</value>
+      <value>5.06</value>
+      <value>8277</value>
+    </row>
+    <row>
+      <value>2154</value>
+      <value>660</value>
+      <value>9832245</value>
+      <value>7343</value>
+      <value>6.29</value>
+      <value>0</value>
+    </row>
+    <row>
+      <value>2820</value>
+      <value>660</value>
+      <value>9832245</value>
+      <value>9826</value>
+      <value>0.01</value>
+      <value>9826</value>
+    </row>
+    <row>
+      <value>3642</value>
+      <value>660</value>
+      <value>9832245</value>
+      <value>8796</value>
+      <value>3.78</value>
+      <value>0</value>
+    </row>
+    <row>
+      <value>3882</value>
+      <value>660</value>
+      <value>9832245</value>
+      <value>9613</value>
+      <value>2.73</value>
+      <value>9613</value>
+    </row>
+    <row>
+      <value>4381</value>
+      <value>660</value>
+      <value>9832245</value>
+      <value>6854</value>
+      <value>6.03</value>
+      <value>0</value>
+    </row>
+    <row>
+      <value>4419</value>
+      <value>660</value>
+      <value>9832245</value>
+      <value>9864</value>
+      <value>5.52</value>
+      <value>0</value>
+    </row>
+  </table>
+</dataset>

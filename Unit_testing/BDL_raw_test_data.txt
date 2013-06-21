@@ -1,0 +1,119 @@
+Staff
+326	Dyson	Sang Russell	941-4116 	74 Patmos Avenue	Manufacturing	Designer	39278.42	Good worker.
+327	Soto	Teresa Stephanie	707-6169 	21 Elwyn Crescent	Inventory	Technician	34254.4	
+328	Kwak	Patricia Helen	725-4888 	28 Cherry Drive	Manufacturing	Technician	33809.79	Excellent negotiator.
+329	Reed	John Clifford	650-7402 	45 Pine Hill Road	Manufacturing	Researcher	51246.01	Argumentative.
+330	Barajas	Charles William	210-4933 	34 Scobie Road	Manufacturing	Technician	36551.12	
+332	Alexander	Mary Margaret	404-1369 	166 Moray Place	Inventory	Assembler	52187.45	
+333	Hopkins	Michael Alex	483-8045 	67 Burgess Street	Manufacturing	Designer	21964.16	
+334	Repollet	Kit Elsie	813-6462 	38 Massey Avenue	Manufacturing	Contractor	33283.56	
+331	Ross	Tanya Johanna	768-4316 	107 Braeview Crescent	Sales & Marketing	Designer	46555.36	Lazy and shiftless.
+335	Black	William Melvin	624-6576	54 Koremata Street	Manufacturing	Researcher	47618.8	
+
+Customer
+303	GloboSolv	Sanchez, Sherry Sue	319-9562 	237 Princes Street	kyddxh@crvvio.invalid	Best. Customer. Ever.
+304	Swanson Doughty	Revell, Charlotte Brandi	431-9028 	76 Dey Street	wsxkfh@gwmizf.invalid	Disputes almost every transaction.
+305	Megatronix	Hunt, Bruce Michael	561-3706 	235 Campbells Road	zktazb@acpkwy.invalid	
+306	HEE	Place, Kristin Phoebe	347-3298 	49 Gorman Street	pwjgqp@mibgxa.invalid	
+307	Bell, Savary & Avila	Mawson, Ursula Frances	139-9124 	15 Melrose Street	kpykjf@ajgjlh.invalid	One of our top buyers.
+308	Hypertron	Bitter, Ella Alice	662-3737 	38 Beverley Place	wlagwx@zrhgcd.invalid	
+309	SEA	Tejada, Ruby Michelle	764-8147 	46 Edith Street	agvggg@ejdokk.invalid	Remember to ask after the children.
+310	AIM	Mcdevitt, Thomas Nathan	540-1998 	190 Paterson Road	qrfayc@mjkopx.invalid	
+311	Ultratronics	Huynh, Oscar Robert	943-1298 	79 Craigleith Street	syxxjk@brwuzu.invalid	
+312	InterLite	Montgomery, Kyle Williams	311-4399 	127 Lombardy Street	mszdvk@hhyzyl.invalid	
+
+Supplier
+1	Electrocore	Kerwin, Eric Cedrick	337-7399 	54 Ainslee Place	tfodep@pruknl.invalid	
+2	Interdyne	Fletcher, James Thomas	932-4134 	112 Alfred Place	hflsjo@jgugbf.invalid	Top-value supplier.
+3	THR	Osorio, Sean Robert	418-5149 	83 Carnforth Street	lubjez@xsgqol.invalid	Their range of components is mind-boggling.
+4	DEB	Wengerd, Robert Daniel	669-8396 	48 Tomahawk Road	pospil@kwpxdz.invalid	Check whether they still supply brazing twine.
+5	Econotronix	Chambers, Helen Katie	951-2602 	246 Helensburgh Road	vyzvqq@cggktn.invalid	
+6	Anderson, Enriquez & Garza	Sierra, Hector Michael	360-7344 	50 Hanlon Street	bjyyht@auroka.invalid	
+7	Sloan Ramirez	Maney, Jose Gregory	728-0452 	17 Ardley Place	smfern@ofwnmm.invalid	
+8	Intertronics	Lansing, Tom William	816-2185 	42 Cowan Road	rbbmdu@psfpuh.invalid	Quality control is not great.
+9	HAD	Streit, Caroline Lora	270-5928 	12 Hamel Street	ioprzh@bfdeev.invalid	
+10	Dahl, Olden & Miranda	Welsh, Leisa Theodora	122-2033 	154 Grandview Crescent	nabtfm@glqlme.invalid	
+
+Product
+237	electrostatic wireless headphones	542	393	245	63.91	(BLOB)	(BLOB)
+238	noise-cancelling headphones	410	376	169	55.89	(BLOB)	(BLOB)
+239	8-port 10/100/1000 Mb/s Ethernet hub	627	517	223	22.7	(BLOB)	(BLOB)
+240	home theatre system	469	458	214	16.41	(BLOB)	(BLOB)
+241	amplifier	494	554	230	40.93	(BLOB)	(BLOB)
+242	dynamic microphone	608	566	111	2	(BLOB)	(BLOB)
+243	fog machine	85	418	126	41.24	(BLOB)	(BLOB)
+244	5-port 10/100/1000 Mb/s Ethernet switch	72	419	168	54.35	(BLOB)	(BLOB)
+245	16-port 10/100/1000 Mb/s Ethernet hub	318	432	128	44.48	(BLOB)	(BLOB)
+246	electrostatic BlueTooth noise-cancelling headphone	634	365	107	2	(BLOB)	(BLOB)
+
+Component
+660	9832245	osmium Wi-Fi button	1111	9
+661	6510808	invar high power vent	1394	7
+663	8236779	silver electrical vent	1300	2
+669	257835	high current adhesive	1403	7
+671	4116966	radio cable	1332	8
+677	2095670	waterproofing solvent	1500	7
+679	2682279	pewter electrolytic screw	1345	6
+683	236289	62 kilofarad capacitor	1600	5
+685	280917	74 zeptofarad capacitor	1486	2
+687	4058704	94 decihenry inductor	1363	8
+
+Assembly
+238	661	6510808	8
+238	669	257835	2
+238	677	2095670	7
+238	685	280917	21
+240	661	6510808	27
+240	663	8236779	1
+240	679	2682279	46
+242	660	9832245	50
+242	687	4058704	5
+245	683	236289	7
+
+Sale_head
+223	2011-01-22	shipped	332	306	
+891	2011-09-13	shipped	326	308	
+1199	2011-12-31	shipped	331	304	
+1882	2011-03-08	shipped	333	308	Slight delay on shipping.
+2538	2011-12-19	shipped	334	312	
+4185	2012-03-12	shipped	329	311	
+4992	2012-04-26	shipped	327	311	First shipment lost; reshipped.
+5589	2011-07-09	shipped	330	309	
+5709	2011-06-13	shipped	331	305	
+6613	2011-06-24	shipped	335	310	
+
+Sale_line
+223	237	370	65.93
+891	237	1665	54.33
+1199	237	1198	59.83
+1882	237	808	66.03
+2538	237	1801	54.51
+4185	237	1306	67.02
+4992	237	1087	66.8
+5589	237	1376	55.82
+5709	237	897	59.25
+6613	237	1091	63.54
+
+Order_head
+36	2011-10-13	2011-10-26	complete	335	5	
+741	2011-05-26	2011-06-14	complete	330	4	
+1799	2011-11-07	2011-11-22	in progress	335	8	Awaiting backorder from manufacturer.
+2027	2011-07-27	2011-08-05	complete	332	1	
+2154	2011-03-11	2011-03-28	in progress	330	6	
+2820	2011-10-15	2011-10-19	complete	331	2	
+3642	2011-12-29	2012-01-15	in progress	328	2	
+3882	2012-06-04	2012-06-21	complete	334	8	
+4381	2012-03-14	2012-03-20	in progress	335	2	
+4419	2012-05-20	2012-06-08	in progress	329	7	
+
+Order_line
+36	660	9832245	6388	2.86	6388
+741	660	9832245	4988	0.58	4988
+1799	660	9832245	7491	4.61	0
+2027	660	9832245	8277	5.06	8277
+2154	660	9832245	7343	6.29	0
+2820	660	9832245	9826	0.01	9826
+3642	660	9832245	8796	3.78	0
+3882	660	9832245	9613	2.73	9613
+4381	660	9832245	6854	6.03	0
+4419	660	9832245	9864	5.52	0

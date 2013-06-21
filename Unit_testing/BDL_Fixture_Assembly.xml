@@ -1,0 +1,354 @@
+<dataset>
+  <table name="supplier">
+    <column>supplier_id</column>
+    <column>name</column>
+    <column>contact_person</column>
+    <column>phone</column>
+    <column>address</column>
+    <column>email</column>
+    <column>comments</column>
+    <row>
+      <value>1</value>
+      <value>Electrocore</value>
+      <value>Kerwin, Eric Cedrick</value>
+      <value>61134253377399</value>
+      <value>54 Ainslee Place</value>
+      <value>tfodep@pruknl.invalid</value>
+      <value />
+    </row>
+    <row>
+      <value>2</value>
+      <value>Interdyne</value>
+      <value>Fletcher, James Thomas</value>
+      <value>61134259324134</value>
+      <value>112 Alfred Place</value>
+      <value>hflsjo@jgugbf.invalid</value>
+      <value>Top-value supplier.</value>
+    </row>
+    <row>
+      <value>3</value>
+      <value>THR</value>
+      <value>Osorio, Sean Robert</value>
+      <value>61134254185149</value>
+      <value>83 Carnforth Street</value>
+      <value>lubjez@xsgqol.invalid</value>
+      <value>Their range of components is mind-boggling.</value>
+    </row>
+    <row>
+      <value>4</value>
+      <value>DEB</value>
+      <value>Wengerd, Robert Daniel</value>
+      <value>61134256698396</value>
+      <value>48 Tomahawk Road</value>
+      <value>pospil@kwpxdz.invalid</value>
+      <value>Check whether they still supply brazing twine.</value>
+    </row>
+    <row>
+      <value>5</value>
+      <value>Econotronix</value>
+      <value>Chambers, Helen Katie</value>
+      <value>61134259512602</value>
+      <value>246 Helensburgh Road</value>
+      <value>vyzvqq@cggktn.invalid</value>
+      <value />
+    </row>
+    <row>
+      <value>6</value>
+      <value>Anderson, Enriquez &amp; Garza</value>
+      <value>Sierra, Hector Michael</value>
+      <value>61134253607344</value>
+      <value>50 Hanlon Street</value>
+      <value>bjyyht@auroka.invalid</value>
+      <value />
+    </row>
+    <row>
+      <value>7</value>
+      <value>Sloan Ramirez</value>
+      <value>Maney, Jose Gregory</value>
+      <value>61134257280452</value>
+      <value>17 Ardley Place</value>
+      <value>smfern@ofwnmm.invalid</value>
+      <value />
+    </row>
+    <row>
+      <value>8</value>
+      <value>Intertronics</value>
+      <value>Lansing, Tom William</value>
+      <value>61134258162185</value>
+      <value>42 Cowan Road</value>
+      <value>rbbmdu@psfpuh.invalid</value>
+      <value>Quality control is not great.</value>
+    </row>
+    <row>
+      <value>9</value>
+      <value>HAD</value>
+      <value>Streit, Caroline Lora</value>
+      <value>61134252705928</value>
+      <value>12 Hamel Street</value>
+      <value>ioprzh@bfdeev.invalid</value>
+      <value />
+    </row>
+    <row>
+      <value>10</value>
+      <value>Dahl, Olden &amp; Miranda</value>
+      <value>Welsh, Leisa Theodora</value>
+      <value>61134251222033</value>
+      <value>154 Grandview Crescent</value>
+      <value>nabtfm@glqlme.invalid</value>
+      <value />
+    </row>
+  </table>
+  <table name="product">
+    <column>product_code</column>
+    <column>description</column>
+    <column>stock_count</column>
+    <column>restock_level</column>
+    <column>minimum_level</column>
+    <column>list_price</column>
+    <column>assembly_manual</column>
+    <column>assembly_program</column>
+    <row>
+      <value>237</value>
+      <value>electrostatic wireless headphones</value>
+      <value>542</value>
+      <value>393</value>
+      <value>245</value>
+      <value>63.91</value>
+      <value>00</value>
+      <value>00</value>
+    </row>
+    <row>
+      <value>238</value>
+      <value>noise-cancelling headphones</value>
+      <value>410</value>
+      <value>376</value>
+      <value>169</value>
+      <value>55.89</value>
+      <value>00</value>
+      <value>00</value>
+    </row>
+    <row>
+      <value>239</value>
+      <value>8-port 10/100/1000 Mb/s Ethernet hub</value>
+      <value>627</value>
+      <value>517</value>
+      <value>223</value>
+      <value>22.7</value>
+      <value>00</value>
+      <value>00</value>
+    </row>
+    <row>
+      <value>240</value>
+      <value>home theatre system</value>
+      <value>469</value>
+      <value>458</value>
+      <value>214</value>
+      <value>16.41</value>
+      <value>00</value>
+      <value>00</value>
+    </row>
+    <row>
+      <value>241</value>
+      <value>amplifier</value>
+      <value>494</value>
+      <value>554</value>
+      <value>230</value>
+      <value>40.93</value>
+      <value>00</value>
+      <value>00</value>
+    </row>
+    <row>
+      <value>242</value>
+      <value>dynamic microphone</value>
+      <value>608</value>
+      <value>566</value>
+      <value>111</value>
+      <value>2</value>
+      <value>00</value>
+      <value>00</value>
+    </row>
+    <row>
+      <value>243</value>
+      <value>fog machine</value>
+      <value>85</value>
+      <value>418</value>
+      <value>126</value>
+      <value>41.24</value>
+      <value>00</value>
+      <value>00</value>
+    </row>
+    <row>
+      <value>244</value>
+      <value>5-port 10/100/1000 Mb/s Ethernet switch</value>
+      <value>72</value>
+      <value>419</value>
+      <value>168</value>
+      <value>54.35</value>
+      <value>00</value>
+      <value>00</value>
+    </row>
+    <row>
+      <value>245</value>
+      <value>16-port 10/100/1000 Mb/s Ethernet hub</value>
+      <value>318</value>
+      <value>432</value>
+      <value>128</value>
+      <value>44.48</value>
+      <value>00</value>
+      <value>00</value>
+    </row>
+    <row>
+      <value>246</value>
+      <value>electrostatic BlueTooth noise-cancelling headphone</value>
+      <value>634</value>
+      <value>365</value>
+      <value>107</value>
+      <value>2</value>
+      <value>00</value>
+      <value>00</value>
+    </row>
+  </table>
+  <table name="component">
+    <column>component_code</column>
+    <column>suppliers_code</column>
+    <column>description</column>
+    <column>stock_count</column>
+    <column>supplier_id</column>
+    <row>
+      <value>660</value>
+      <value>9832245</value>
+      <value>osmium Wi-Fi button</value>
+      <value>1111</value>
+      <value>9</value>
+    </row>
+    <row>
+      <value>661</value>
+      <value>6510808</value>
+      <value>invar high power vent</value>
+      <value>1394</value>
+      <value>7</value>
+    </row>
+    <row>
+      <value>663</value>
+      <value>8236779</value>
+      <value>silver electrical vent</value>
+      <value>1300</value>
+      <value>2</value>
+    </row>
+    <row>
+      <value>669</value>
+      <value>257835</value>
+      <value>high current adhesive</value>
+      <value>1403</value>
+      <value>7</value>
+    </row>
+    <row>
+      <value>671</value>
+      <value>4116966</value>
+      <value>radio cable</value>
+      <value>1332</value>
+      <value>8</value>
+    </row>
+    <row>
+      <value>677</value>
+      <value>2095670</value>
+      <value>waterproofing solvent</value>
+      <value>1500</value>
+      <value>7</value>
+    </row>
+    <row>
+      <value>679</value>
+      <value>2682279</value>
+      <value>pewter electrolytic screw</value>
+      <value>1345</value>
+      <value>6</value>
+    </row>
+    <row>
+      <value>683</value>
+      <value>236289</value>
+      <value>62 kilofarad capacitor</value>
+      <value>1600</value>
+      <value>5</value>
+    </row>
+    <row>
+      <value>685</value>
+      <value>280917</value>
+      <value>74 zeptofarad capacitor</value>
+      <value>1486</value>
+      <value>2</value>
+    </row>
+    <row>
+      <value>687</value>
+      <value>4058704</value>
+      <value>94 decihenry inductor</value>
+      <value>1363</value>
+      <value>8</value>
+    </row>
+  </table>
+  <table name="assembly">
+    <column>product_code</column>
+    <column>component_code</column>
+    <column>suppliers_code</column>
+    <column>quantity</column>
+    <row>
+      <value>238</value>
+      <value>661</value>
+      <value>6510808</value>
+      <value>8</value>
+    </row>
+    <row>
+      <value>238</value>
+      <value>669</value>
+      <value>257835</value>
+      <value>2</value>
+    </row>
+    <row>
+      <value>238</value>
+      <value>677</value>
+      <value>2095670</value>
+      <value>7</value>
+    </row>
+    <row>
+      <value>238</value>
+      <value>685</value>
+      <value>280917</value>
+      <value>21</value>
+    </row>
+    <row>
+      <value>240</value>
+      <value>661</value>
+      <value>6510808</value>
+      <value>27</value>
+    </row>
+    <row>
+      <value>240</value>
+      <value>663</value>
+      <value>8236779</value>
+      <value>1</value>
+    </row>
+    <row>
+      <value>240</value>
+      <value>679</value>
+      <value>2682279</value>
+      <value>46</value>
+    </row>
+    <row>
+      <value>242</value>
+      <value>660</value>
+      <value>9832245</value>
+      <value>50</value>
+    </row>
+    <row>
+      <value>242</value>
+      <value>687</value>
+      <value>4058704</value>
+      <value>1515</value>
+    </row>
+    <row>
+      <value>245</value>
+      <value>683</value>
+      <value>236289</value>
+      <value>1007</value>
+    </row>
+  </table>
+</dataset>
