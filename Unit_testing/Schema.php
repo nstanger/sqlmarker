@@ -180,7 +180,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	 */
 	protected function getConnection()
 	{
-		$pdo = new PDO( "oci:dbname=isorcl-214", "stani797", "b1ggles" );
+		$pdo = new PDO( "oci:dbname=isorcl-400", "stani797", "b1ggles" );
 		return $this->createDefaultDBConnection( $pdo, "stani797" );
 	}
 	
@@ -684,16 +684,24 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		// This is pretty unlikely in practice, but you never know...
 		if ( $columnName == '___NO_DATA___' )
 		{
-			$this->markTestSkipped( 'no columns with enmuerated legal values' );
+			$this->markTestSkipped( 'no columns with enumerated legal values' );
 		}
 	
-		echo "\n[[ Checking " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " length is between " . $columnLengthList[0] . " and " . $columnLengthList[1];
+		echo "\n[[ Checking " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " length is ";
+		if ( $columnLengthList[0] != $columnLengthList[1] )
+		{
+			echo "between " . $columnLengthList[0] . " and ";
+		}
+		echo $columnLengthList[1];
 		
 		// If there are three elements in $columnLengthList, then this is a
 		// numeric column, and the third element is the scale (decimal places).
 		if ( array_key_exists( 2, $columnLengthList ) )
 		{
-			echo " (including " . $columnLengthList[2] . " decimal places)";
+			if ( $columnLengthList[2] > 0 )
+			{
+				echo " (including " . $columnLengthList[2] . " decimal places)";
+			}
 		}
 		
 		echo " ]]\n";
@@ -914,9 +922,8 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	 *	This attempts to insert a known illegal overflow value into a particular column of the current table, which should fail. Tests that use this should use provideColumnOverflowValues as their data provider. Tests will also need to include the following expected exception annotations:
 	 *
 	 *	@expectedException PDOException
+	 *	@expectedExceptionMessage check constraint
 	 *	@expectedExceptionCode HY000
-	 *
-	 *	(Note that we don't include expectedExceptionMessage, because we could get either a constraint violation or a "value larger than specified precision" error. TODO: is there a better way to check for this? Currently this will report success on /any/ error, not just those listed.)
 	 *
 	 *	@access protected
 	 *	@return void
@@ -942,8 +949,24 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			$overflowValue,
 			$this->markAdjustments['incorrectCheck']
 		);
-						
-		$this->assertTrue( $stmt->execute(), $errorString );
+		
+	 	/*	Note that if the test value being inserted is larger than the column allows, then we'll get a "value larger than specified precision" error rather than a "check constraint" error. We therefore need to manually catch the exception and throw a "check constraint" exception for these two cases. (Otherwise we just let the exception propagate up the chain as normal.)
+		*/
+		try
+		{
+			$this->assertTrue( $stmt->execute(), $errorString );
+		}
+		catch ( PDOException $e )
+		{
+			if ( strpos( $e->getMessage(), "value larger than specified precision" ) !== FALSE )
+			{
+				throw new PDOException( "check constraint" );
+			}
+			else
+			{
+				throw $e;
+			}
+		}
 	}
 	
 	
@@ -994,7 +1017,12 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		$expected = $this->getPKColumnListAsDataSet( $tableName );
 		
 		echo "\n[[ Checking " . ucfirst( strtolower( $this->getTableName() ) ) .
-			" table primary key constraint contains (only) the column(s) " . ucwords( strtolower( implode( ', ', $this->getPKColumnList() ) ) ) . " ]]\n";
+			" table primary key constraint contains (only) the column";
+		if ( count( $this->getPKColumnlist() ) > 1 )
+		{
+			echo "s";
+		}
+		echo " " . ucwords( strtolower( implode( ', ', $this->getPKColumnList() ) ) ) . " ]]\n";
 
 		$queryString = sprintf(
 			"SELECT Column_Name
@@ -1066,7 +1094,12 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		$expected = $this->getFKColumnListForTableAsDataSet( $referencedTableName, $tableName );
 		
 		echo "\n[[ Checking " . ucfirst( strtolower( $this->getTableName() ) ) .
-			" table foreign key constraint referencing " . ucfirst( strtolower( $referencedTableName ) ) . " contains (only) the columns " . ucwords( strtolower( implode( ', ', $this->getFKColumnListForTable( $referencedTableName ) ) ) ) . " ]]\n";
+			" table foreign key constraint referencing " . ucfirst( strtolower( $referencedTableName ) ) . " contains (only) the column";
+		if ( count( $this->getFKColumnlist() ) > 1 )
+		{
+			echo "s";
+		}
+		echo " " . ucwords( strtolower( implode( ', ', $this->getFKColumnListForTable( $referencedTableName ) ) ) ) . " ]]\n";
 
 		$queryString = sprintf(
 			"SELECT User_Cons_Columns.Column_Name
