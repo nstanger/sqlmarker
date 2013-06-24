@@ -960,7 +960,14 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		{
 			if ( strpos( $e->getMessage(), "value larger than specified precision" ) !== FALSE )
 			{
+				// Need to check if there is actually a constraint there or not.
+				echo "    ...does so implicitly via column length\n";
 				throw new PDOException( "check constraint" );
+			}
+			elseif ( strpos( $e->getMessage(), "check constraint" ) !== FALSE )
+			{
+				echo "    ...does so explicitly via constraint\n";
+				throw $e;
 			}
 			else
 			{
