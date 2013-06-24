@@ -269,7 +269,7 @@ CREATE TABLE Order_Head
   --
   Order_Date   DATE           NOT NULL,
   --
-  Due_Date     DATE,
+  Due_Date     DATE           NOT NULL,
   --
   Status       VARCHAR2(11)   NOT NULL
     CONSTRAINT Order_Head_Status_Invalid CHECK ( Status IN ( 'complete', 'in progress' ) ),
