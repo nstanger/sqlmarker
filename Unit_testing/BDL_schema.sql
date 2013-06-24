@@ -302,12 +302,13 @@ CREATE TABLE Order_Line
   Suppliers_Code  VARCHAR2(25),
   --
   Qty_Ordered     NUMBER(5)     NOT NULL
-    CONSTRAINT Order_Line_Qty_Ord_Too_Low CHECK ( Qty_Ordered BETWEEN 0 AND 99999 ),
+    CONSTRAINT Order_Line_Qty_Ord_Too_Low CHECK ( Qty_Ordered BETWEEN 1 AND 99999 ),
   --
   Price           NUMBER(6,2)   NOT NULL
     CONSTRAINT Order_Line_Price_Too_Low CHECK ( Price BETWEEN 0 AND 9999.99 ),
   --
-  Qty_Received    NUMBER(6)     NOT NULL,
+  Qty_Received    NUMBER(6)     NOT NULL
+    CONSTRAINT Order_Line_Qty_Rec_Too_Low CHECK ( Qty_Received >= 0 ),
   --
   CONSTRAINT Order_Line_PK PRIMARY KEY ( Order_Num, Component_Code, Suppliers_Code ),
   --
