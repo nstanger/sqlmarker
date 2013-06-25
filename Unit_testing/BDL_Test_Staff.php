@@ -36,6 +36,7 @@ abstract class BDL_Test_Staff extends PHPUnit_Extensions_Database_TestCase_Creat
 										'min_length'	=>	11,
 										'max_length'	=>	20,
 										'nullable'		=>	false,
+											'legal_values'	=>	array( "034511010", "2718391780", "+2496391734", "92819209365" ),
 										'test_value'	=>	"16139981234",	),
 			'ADDRESS'		=>	array(	'generic_type'	=>	'TEXT',
 										'sql_type'		=>	array( 'VARCHAR2', 'VARCHAR' ),
