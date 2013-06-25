@@ -25,30 +25,6 @@ class BDL_Test_Customer_data extends BDL_Test_Customer
 	}
 	
 	
-	/**
-	 *	@dataProvider provideColumnUnderflowValues
-	 *	@expectedException PDOException
-	 *	@expectedExceptionMessage check constraint
-	 *	@expectedExceptionCode HY000
-	 */
-	public function testColumnUnderflowValue( $columnName, $underflowValue )
-	{
-   		$this->assertColumnUnderflowValue( $columnName, $underflowValue );
-	}
-	
-	
-	/**
-	 *	@dataProvider provideColumnOverflowValues
-	 *	@expectedException PDOException
-	 *	@expectedExceptionMessage check constraint
-	 *	@expectedExceptionCode HY000
-	 */
-	public function testColumnOverflowValue( $columnName, $overflowValue )
-	{
-   		$this->assertColumnOverflowValue( $columnName, $overflowValue );
-	}
-	
-	
 	// TODO: test for email constraints?
 }
 ?>

@@ -43,9 +43,9 @@ class BDL_Test_Customer_structure extends BDL_Test_Customer
 	/**
 	 *	@dataProvider provideColumnLengths
 	 */
-	public function testColumnLength( $columnName, $columnLengthList )
+	public function testColumnLength( $columnName, $columnType, $minLength, $maxLength, $numDecimals )
 	{
-   		$this->assertColumnLength( $columnName, $columnLengthList );
+   		$this->assertColumnLength( $columnName, $columnType, $minLength, $maxLength, $numDecimals );
 	}
 	
 	
