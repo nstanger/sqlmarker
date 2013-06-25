@@ -43,9 +43,9 @@ class BDL_Test_Assembly_structure extends BDL_Test_Assembly
 	/**
 	 *	@dataProvider provideColumnLengths
 	 */
-	public function testColumnLength( $columnName, $columnLengthList )
+	public function testColumnLength( $columnName, $columnType, $minLength, $maxLength, $numDecimals )
 	{
-   		$this->assertColumnLength( $columnName, $columnLengthList );
+   		$this->assertColumnLength( $columnName, $columnType, $minLength, $maxLength, $numDecimals );
 	}
 	
 	

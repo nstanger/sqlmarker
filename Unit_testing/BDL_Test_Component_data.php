@@ -17,15 +17,6 @@ class BDL_Test_Component_data extends BDL_Test_Component
 	
 	
 	/**
-	 *	@dataProvider provideColumnLegalValues
-	 */
-	public function testColumnLegalValue( $columnName, $legalValue )
-	{
-   		$this->assertColumnLegalValue( $columnName, $legalValue );
-	}
-	
-	
-	/**
 	 *	@dataProvider provideColumnUnderflowValues
 	 *	@expectedException PDOException
 	 *	@expectedExceptionMessage check constraint
@@ -43,9 +34,21 @@ class BDL_Test_Component_data extends BDL_Test_Component
 	 *	@expectedExceptionMessage check constraint
 	 *	@expectedExceptionCode HY000
 	 */
-	public function testColumnOverflowValue( $columnName, $overflowValue )
+	public function testColumnOverflowValueExplicit( $columnName, $overflowValue )
 	{
-   		$this->assertColumnOverflowValue( $columnName, $overflowValue );
+   		$this->assertColumnOverflowValueExplicit( $columnName, $overflowValue );
+	}
+	
+	
+	/**
+	 *	@dataProvider provideColumnOverflowValues
+	 *	@expectedException PDOException
+	 *	@expectedExceptionMessage length exceeded
+	 *	@expectedExceptionCode HY000
+	 */
+	public function testColumnOverflowValueImplicit( $columnName, $overflowValue )
+	{
+   		$this->assertColumnOverflowValueImplicit( $columnName, $overflowValue );
 	}
 }
 ?>

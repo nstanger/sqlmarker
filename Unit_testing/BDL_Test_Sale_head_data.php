@@ -31,21 +31,21 @@ class BDL_Test_Sale_head_data extends BDL_Test_Sale_head
 	 *	@expectedExceptionMessage check constraint
 	 *	@expectedExceptionCode HY000
 	 */
-	public function testColumnIllegalValue( $columnName, $illegalValue )
+	public function testColumnIllegalValueExplicit( $columnName, $illegalValue )
 	{
-   		$this->assertColumnIllegalValue( $columnName, $illegalValue );
+   		$this->assertColumnIllegalValueExplicit( $columnName, $illegalValue );
 	}
 	
 	
 	/**
-	 *	@dataProvider provideColumnUnderflowValues
+	 *	@dataProvider provideColumnIllegalValues
 	 *	@expectedException PDOException
-	 *	@expectedExceptionMessage check constraint
+	 *	@expectedExceptionMessage length exceeded
 	 *	@expectedExceptionCode HY000
 	 */
-	public function testColumnUnderflowValue( $columnName, $underflowValue )
+	public function testColumnIllegalValueImplicit( $columnName, $illegalValue )
 	{
-   		$this->assertColumnUnderflowValue( $columnName, $underflowValue );
+   		$this->assertColumnIllegalValueImplicit( $columnName, $illegalValue );
 	}
 	
 	
@@ -55,9 +55,21 @@ class BDL_Test_Sale_head_data extends BDL_Test_Sale_head
 	 *	@expectedExceptionMessage check constraint
 	 *	@expectedExceptionCode HY000
 	 */
-	public function testColumnOverflowValue( $columnName, $overflowValue )
+	public function testColumnOverflowValueExplicit( $columnName, $overflowValue )
 	{
-   		$this->assertColumnOverflowValue( $columnName, $overflowValue );
+   		$this->assertColumnOverflowValueExplicit( $columnName, $overflowValue );
+	}
+	
+	
+	/**
+	 *	@dataProvider provideColumnOverflowValues
+	 *	@expectedException PDOException
+	 *	@expectedExceptionMessage length exceeded
+	 *	@expectedExceptionCode HY000
+	 */
+	public function testColumnOverflowValueImplicit( $columnName, $overflowValue )
+	{
+   		$this->assertColumnOverflowValueImplicit( $columnName, $overflowValue );
 	}
 }
 ?>
