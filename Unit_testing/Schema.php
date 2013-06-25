@@ -27,6 +27,26 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	);
 	
 	
+	/**
+	 *	Convert the input text into a form that is acceptable to SQL. Text values are wrapped in '', and any embedded ' are converted to ''. "&" is also converted to "'||chr(38)||'" (mainly for Oracle).
+	 */
+	protected function sqlifyValue( $srcValue, $srcType )
+	{
+		$sqlifiedValue = $srcValue;
+		if ( $srcType === 'TEXT' )
+		{
+			$sqlifiedValue = str_replace( "'", "''", $sqlifiedValue );
+			$sqlifiedValue = str_replace( '&', "' || chr(38) || '", $sqlifiedValue );
+		}
+		if ( ( $srcType === 'TEXT' ) || ( $srcType === 'DATE' ) )
+		{
+			$sqlifiedValue = "'" . $sqlifiedValue . "'";
+		}
+		
+		return $sqlifiedValue;
+	}
+	
+	
 	/**#@+
 	 *	Return table name, list of columns, etc.
 	 *
@@ -141,12 +161,12 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		{
 			if ( array_key_exists( $name, $substitutions ) )
 			{
-				$columnValues[] = $substitutions[$name];
+				$columnValues[] = $this->sqlifyValue( $substitutions[$name], $details['generic_type'] );
 				unset( $substitutions[$name] );
 			}
 			else
 			{
-				$columnValues[] = $details['test_value'];
+				$columnValues[] = $this->sqlifyValue( $details['test_value'], $details['generic_type'] );
 			}
 		}
 		return sprintf(
@@ -253,7 +273,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		$theList = array();
 		foreach ( $this->getColumnList() as $columnName => $columnDetails )
 		{
-			array_push( $theList, array( $columnName, $columnDetails['type'] ) );
+			array_push( $theList, array( $columnName, $columnDetails['sql_type'] ) );
 		}
 		
 		return $theList;
@@ -577,7 +597,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	 */
 	protected function assertTableExists()
 	{
-		echo "\n[[ Checking " . ucfirst( strtolower( $this->getTableName() ) ) . " table exists ]]\n";
+		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . " table exists ]]\n";
 		
 		$queryString = sprintf(
 			"SELECT Table_Name
@@ -610,7 +630,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	 */
 	protected function assertColumnExists( $columnName )
 	{
-		echo "\n[[ Checking " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " exists ]]\n";
+		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " exists ]]\n";
 		
 		$queryString = sprintf(
 			"SELECT Column_Name
@@ -645,7 +665,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	 */
 	protected function assertColumnDataType( $columnName, $columnTypeList )
 	{
-		echo "\n[[ Checking " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " data type is " . implode( ' | ', $columnTypeList ) . " ]]\n";
+		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " data type is " . implode( ' | ', $columnTypeList ) . " ]]\n";
 		
 		$queryString = sprintf(
 			"SELECT Data_Type
@@ -687,7 +707,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			$this->markTestSkipped( 'no columns with enumerated legal values' );
 		}
 	
-		echo "\n[[ Checking " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " length is ";
+		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " length is ";
 		if ( $columnLengthList[0] != $columnLengthList[1] )
 		{
 			echo "between " . $columnLengthList[0] . " and ";
@@ -781,7 +801,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	 */
 	protected function assertColumnNullability( $columnName, $columnNullability )
 	{
-		echo "\n[[ Checking " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " nullability is " . $columnNullability . " ]]\n";
+		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " nullability is " . $columnNullability . " ]]\n";
 		
 		$queryString = sprintf(
 			"SELECT Nullable
@@ -809,7 +829,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	/**
 	 *	Assert that a column accepts a particular legal value.
 	 *
-	 *	This attempts to insert a known legal value into a particular column of the current table, which should succeed. Tests that use this should use provideColumnLegalValues as their data provider.
+	 *	This attempts to insert a known legal value into a particular column of the current table, which should succeed. This should only be applied to columns with an enumerated set of possible values. Tests that use this should use provideColumnLegalValues as their data provider.
 	 *
 	 *	@access protected
 	 *	@return void
@@ -821,7 +841,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			$this->markTestSkipped( 'no columns with enmuerated legal values' );
 		}
 	
-		echo "\n[[ Checking " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " accepts value " . $legalValue . " ]]\n";
+		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " accepts legal value [" . $legalValue . "] ]]\n";
 		
 		$substitutions[$columnName] = $legalValue;
 		$insertString = $this->constructInsert( $substitutions );
@@ -841,9 +861,64 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	
 	
 	/**
-	 *	Assert that a text column rejects a particular illegal value.
+	 *	Assert that a text column rejects a particular illegal value, implicitly enforced by exceeding the column length.
 	 *
-	 *	This attempts to insert a known illegal value into a particular text column of the current table, which should fail. Tests that use this should use provideColumnIllegalValues as their data provider. Tests will also need to include the following expected exception annotations:
+	 *	This attempts to insert a known illegal value into a particular text column of the current table, which should fail because it's larger than the specified column length. (Relying on this kind of implicit enforcement is bad practice in general, as the column length can be changed, but it's better than no enforcement at all!). This should only be applied to columns with an enumerated set of possible values. Tests that use this should use provideColumnIllegalValues as their data provider. Tests will also need to include the following expected exception annotations:
+	 *
+	 *	@expectedException PDOException
+	 *	@expectedExceptionMessage length exceeded
+	 *	@expectedExceptionCode HY000
+	 *
+	 *	@access protected
+	 *	@return void
+	 */
+	protected function assertColumnIllegalValueImplicit( $columnName, $illegalValue )
+	{
+		if ( $columnName == '___NO_DATA___' )
+		{
+			$this->markTestSkipped( 'no columns with enmuerated illegal values' );
+		}
+	
+		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " rejects illegal value [" . $illegalValue . "] using the column length (implicit) ]]\n";
+		
+		$substitutions[$columnName] = $illegalValue;
+		$insertString = $this->constructInsert( $substitutions );
+		
+ 		$stmt = $this->getConnection()->getConnection()->prepare( $insertString );
+		
+		$errorString = sprintf(
+			"column %s.%s accepts illegal value %s [%+1.1f]",
+			ucfirst( strtolower( $this->getTableName() ) ),
+			ucfirst( strtolower( $columnName ) ),
+			$illegalValue,
+			$this->markAdjustments['incorrectCheck']
+		);
+						
+	 	/*	Note that if the column being tested is a number or date, the error returned will be "value larger than specified precision", whereas for text columns, the error returned will be "value too large for column". We therefore need to manually catch the exception and throw a new "length exceeded" exception for these two cases. Otherwise we just let the exception propagate up the chain as normal. This somewhat subverts the normal unit testing methodology of one case per test, but this is really a single "logical" test case. Plus this isn't really a conventional use of unit testing anyway!
+		*/
+		try
+		{
+			$this->assertTrue( $stmt->execute(), $errorString );
+		}
+		catch ( PDOException $e )
+		{
+			if ( ( strpos( $e->getMessage(), "value larger than specified precision" ) !== FALSE ) ||
+			     ( strpos( $e->getMessage(), "value too large for column" ) !== FALSE ) )
+			{
+				throw new PDOException( "length exceeded" );
+			}
+			else
+			{
+				throw $e;
+			}
+		}
+	}
+	
+	
+	/**
+	 *	Assert that a text column rejects a particular illegal value, explicitly enforced by a CHECK constraint.
+	 *
+	 *	This attempts to insert a known illegal value into a particular text column of the current table, which should fail with a CHECK constraint violation. This should only be applied to columns with an enumerated set of possible values. Tests that use this should use provideColumnIllegalValues as their data provider. Tests will also need to include the following expected exception annotations:
 	 *
 	 *	@expectedException PDOException
 	 *	@expectedExceptionMessage check constraint
@@ -852,14 +927,14 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	 *	@access protected
 	 *	@return void
 	 */
-	protected function assertColumnIllegalValue( $columnName, $illegalValue )
+	protected function assertColumnIllegalValueExplicit( $columnName, $illegalValue )
 	{
 		if ( $columnName == '___NO_DATA___' )
 		{
 			$this->markTestSkipped( 'no columns with enmuerated illegal values' );
 		}
 	
-		echo "\n[[ Checking " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " rejects value " . $illegalValue . " ]]\n";
+		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " rejects illegal value [" . $illegalValue . "] using a CHECK constraint ]]\n";
 		
 		$substitutions[$columnName] = $illegalValue;
 		$insertString = $this->constructInsert( $substitutions );
@@ -879,13 +954,15 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	
 	
 	/**
-	 *	Assert that a column only accepts values greater than its underflow value.
+	 *	Assert that a column only accepts values greater than its underflow value, explicitly enforced by a CHECK constraint.
 	 *
-	 *	This attempts to insert a known illegal underflow value into a particular column of the current table, which should fail. Tests that use this should use provideColumnUnderflowValues as their data provider. Tests will also need to include the following expected exception annotations:
+	 *	This attempts to insert a known illegal underflow value into a particular column of the current table, which should fail with a CHECK constraint violation. This should only be applied to columns with a continuous range of values, usually numbers and dates. Tests that use this should use provideColumnUnderflowValues as their data provider. Tests will also need to include the following expected exception annotations:
 	 *
 	 *	@expectedException PDOException
 	 *	@expectedExceptionMessage check constraint
 	 *	@expectedExceptionCode HY000
+	 *
+	 *	Note that there's no need for explicit/implicit variants like there is with overflow values, as an underflow value should never be rejected by exceeding the column length. Something much more fundamental is wrong if this happens!
 	 *
 	 *	@access protected
 	 *	@return void
@@ -897,7 +974,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			$this->markTestSkipped( 'no columns with underflow values' );
 		}
 	
-		echo "\n[[ Checking " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " doesn't accept values <= " . $underflowValue . " ]]\n";
+		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " rejects illegal values <= [" . $underflowValue . "] using a CHECK constraint ]]\n";
 		
 		$substitutions[$columnName] = $underflowValue;
 		$insertString = $this->constructInsert( $substitutions );
@@ -917,25 +994,25 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	
 	
 	/**
-	 *	Assert that a column only accepts values less than its overflow value.
+	 *	Assert that a column only accepts values less than its overflow value, implicitly enforced by exceeding the column length.
 	 *
-	 *	This attempts to insert a known illegal overflow value into a particular column of the current table, which should fail. Tests that use this should use provideColumnOverflowValues as their data provider. Tests will also need to include the following expected exception annotations:
+	 *	This attempts to insert a known illegal overflow value into a particular column of the current table, which should fail because it's larger than the specified column length. (Relying on this kind of implicit enforcement is bad practice in general, as the column length can be changed, but it's better than no enforcement at all!) This should only be applied to columns with a continuous range of values, usually numbers and dates. Tests that use this should use provideColumnOverflowValues as their data provider. Tests will also need to include the following expected exception annotations:
 	 *
 	 *	@expectedException PDOException
-	 *	@expectedExceptionMessage check constraint
+	 *	@expectedExceptionMessage length exceeded
 	 *	@expectedExceptionCode HY000
 	 *
 	 *	@access protected
 	 *	@return void
 	 */
-	protected function assertColumnOverflowValue( $columnName, $overflowValue )
+	protected function assertColumnOverflowValueImplicit( $columnName, $overflowValue )
 	{
 		if ( $columnName == '___NO_DATA___' )
 		{
 			$this->markTestSkipped( 'no columns with overflow values' );
 		}
 	
-		echo "\n[[ Checking " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " doesn't accept values >= " . $overflowValue . " ]]\n";
+		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " rejects illgal values >= [" . $overflowValue . "] using the column length (implicit) ]]\n";
 		
 		$substitutions[$columnName] = $overflowValue;
 		$insertString = $this->constructInsert( $substitutions );
@@ -950,7 +1027,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			$this->markAdjustments['incorrectCheck']
 		);
 		
-	 	/*	Note that if the test value being inserted is larger than the column allows, then we'll get a "value larger than specified precision" error rather than a "check constraint" error. We therefore need to manually catch the exception and throw a "check constraint" exception for these two cases. (Otherwise we just let the exception propagate up the chain as normal.)
+	 	/*	Note that if the column being tested is a number or date, the error returned will be "value larger than specified precision", whereas for text columns, the error returned will be "value too large for column". We therefore need to manually catch the exception and throw a new "length exceeded" exception for these two cases. Otherwise we just let the exception propagate up the chain as normal. This somewhat subverts the normal unit testing methodology of one case per test, but this is really a single "logical" test case. Plus this isn't really a conventional use of unit testing anyway!
 		*/
 		try
 		{
@@ -958,22 +1035,54 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		}
 		catch ( PDOException $e )
 		{
-			if ( strpos( $e->getMessage(), "value larger than specified precision" ) !== FALSE )
+			if ( ( strpos( $e->getMessage(), "value larger than specified precision" ) !== FALSE ) ||
+			     ( strpos( $e->getMessage(), "value too large for column" ) !== FALSE ) )
 			{
-				// Need to check if there is actually a constraint there or not.
-				echo "    ...does so implicitly via column length\n";
-				throw new PDOException( "check constraint" );
-			}
-			elseif ( strpos( $e->getMessage(), "check constraint" ) !== FALSE )
-			{
-				echo "    ...does so explicitly via constraint\n";
-				throw $e;
+				throw new PDOException( "length exceeded" );
 			}
 			else
 			{
 				throw $e;
 			}
 		}
+	}
+	
+	
+	/**
+	 *	Assert that a column only accepts values less than its overflow value, explicitly enforced by a CHECK constraint.
+	 *
+	 *	This attempts to insert a known illegal overflow value into a particular column of the current table, which should fail with a CHECK constraint violation. This should only be applied to columns with a continuous range of values, usually numbers and dates. Tests that use this should use provideColumnOverflowValues as their data provider. Tests will also need to include the following expected exception annotations:
+	 *
+	 *	@expectedException PDOException
+	 *	@expectedExceptionMessage check constraint
+	 *	@expectedExceptionCode HY000
+	 *
+	 *	@access protected
+	 *	@return void
+	 */
+	protected function assertColumnOverflowValueExplicit( $columnName, $overflowValue )
+	{
+		if ( $columnName == '___NO_DATA___' )
+		{
+			$this->markTestSkipped( 'no columns with overflow values' );
+		}
+	
+		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " rejects illegal values >= [" . $overflowValue . "] using a CHECK constraint (explicit) ]]\n";
+		
+		$substitutions[$columnName] = $overflowValue;
+		$insertString = $this->constructInsert( $substitutions );
+		
+ 		$stmt = $this->getConnection()->getConnection()->prepare( $insertString );
+		
+		$errorString = sprintf(
+			"column %s.%s accepts illegal values >= %s [%+1.1f]",
+			ucfirst( strtolower( $this->getTableName() ) ),
+			ucfirst( strtolower( $columnName ) ),
+			$overflowValue,
+			$this->markAdjustments['incorrectCheck']
+		);
+		
+		$this->assertTrue( $stmt->execute(), $errorString );
 	}
 	
 	
@@ -987,7 +1096,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	 */
 	public function assertPKExists()
 	{
-		echo "\n[[ Checking " . ucfirst( strtolower( $this->getTableName() ) ) . " table primary key constraint exists ]]\n";
+		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . " table primary key constraint exists ]]\n";
 		
 		$queryString = sprintf(
 			"SELECT Constraint_Name
@@ -1023,7 +1132,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		$tableName = $this->getTableName() . '_PK_cols';
 		$expected = $this->getPKColumnListAsDataSet( $tableName );
 		
-		echo "\n[[ Checking " . ucfirst( strtolower( $this->getTableName() ) ) .
+		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) .
 			" table primary key constraint contains (only) the column";
 		if ( count( $this->getPKColumnlist() ) > 1 )
 		{
@@ -1061,7 +1170,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	 */
 	public function assertFKsExist( $referencedTableName )
 	{
-		echo "\n[[ Checking " . ucfirst( strtolower( $this->getTableName() ) ) . " table foreign key constraint referencing " . ucfirst( strtolower( $referencedTableName ) ) . " exists ]]\n";
+		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . " table foreign key constraint referencing " . ucfirst( strtolower( $referencedTableName ) ) . " exists ]]\n";
 		
 		$queryString = sprintf(
 			"SELECT Child.Constraint_Name
@@ -1100,7 +1209,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		$tableName = $referencedTableName . '_FK_cols';
 		$expected = $this->getFKColumnListForTableAsDataSet( $referencedTableName, $tableName );
 		
-		echo "\n[[ Checking " . ucfirst( strtolower( $this->getTableName() ) ) .
+		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) .
 			" table foreign key constraint referencing " . ucfirst( strtolower( $referencedTableName ) ) . " contains (only) the column";
 		if ( count( $this->getFKColumnlist() ) > 1 )
 		{
@@ -1180,7 +1289,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 				break;
 		}
 	
-		echo "\n[[ Checking " . ucfirst( strtolower( $this->getTableName() ) ) .
+		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) .
 			" table " . $longType . " constraint " . $constraintName . " is explicitly named ]]\n";
 
 		$errorString = sprintf(
@@ -1202,7 +1311,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	 */
 //	 protected function testPrimaryKeyUnique()
 //	 {
-//	 	echo "\n[[ Checking " . ucfirst( strtolower( $this->getTableName() ) ) . " table primary key (UNIQUE) ]]\n";
+//	 	echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . " table primary key (UNIQUE) ]]\n";
 //	 	$stmt = $this->getConnection()->getConnection()->prepare( "INSERT INTO $this->getTableName() VALUES ( 326, 'foo', 'bar', '1234567', 'baz', 'Manufacturing', 'Technician', 12345, 'quux' )" );
 //	 	$this->assertTrue( $stmt->execute(), ucfirst( strtolower( $this->getTableName() ) ) . " PK constraint is missing or incorrectly implemented (permits duplicates) [-1]" );
 //	 }
@@ -1214,7 +1323,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	 */
 //	 protected function testPrimaryKeyNotNull()
 //	 {
-//	 	echo "\n[[ Checking " . ucfirst( strtolower( $this->getTableName() ) ) . " table primary key (NOT NULL) ]]\n";
+//	 	echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . " table primary key (NOT NULL) ]]\n";
 //	 	$stmt = $this->getConnection()->getConnection()->prepare( "INSERT INTO $this->getTableName() VALUES ( null, 'foo', 'bar', '1234567', 'baz', 'Manufacturing', 'Technician', 12345, 'quux' )" );
 //	 	$this->assertTrue( $stmt->execute(), ucfirst( strtolower( $this->getTableName() ) ) . " PK constraint is missing or incorrectly implemented (permits nulls) [-1]" );
 //	 }
@@ -1226,7 +1335,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	 */
 //	 protected function testStaffIdDataType()
 //	 {
-//	 	echo "\n[[ Checking " . ucfirst( strtolower( $this->getTableName() ) ) . ".Staff_ID data type (NUMBER) ]]\n";
+//	 	echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . ".Staff_ID data type (NUMBER) ]]\n";
 //	 	$stmt = $this->getConnection()->getConnection()->prepare( "INSERT INTO $this->getTableName() VALUES ( 'abc', 'foo', 'bar', '1234567', 'baz', 'Manufacturing', 'Technician', 12345, 'quux' )" );
 //	 	$this->assertTrue( $stmt->execute(), ucfirst( strtolower( $this->getTableName() ) ) . '.Staff_ID data type is not NUMBER [-1]' );
 //	 }
@@ -1238,7 +1347,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	 */
 //	 protected function testStaffIdMaximumValue()
 //	 {
-//	 	echo "\n[[ Checking " . ucfirst( strtolower( $this->getTableName() ) ) . ".Staff_ID maximum value (9999999) ]]\n";
+//	 	echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . ".Staff_ID maximum value (9999999) ]]\n";
 //	 	$stmt = $this->getConnection()->getConnection()->prepare( "INSERT INTO $this->getTableName() VALUES ( 9999999, 'foo', 'bar', '1234567', 'baz', 'Manufacturing', 'Technician', 12345, 'quux' )" );
 //	 	$this->assertTrue( $stmt->execute(), ucfirst( strtolower( $this->getTableName() ) ) . '.Staff_ID size is too small (< 7 digits) [-0.5]' );
 //	 }
@@ -1250,7 +1359,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	 */
 //	 protected function testStaffIdMaximumSize()
 //	 {
-//	 	echo "\n[[ Checking " . ucfirst( strtolower( $this->getTableName() ) ) . ".Staff_ID maximum size (7 digits) ]]\n";
+//	 	echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . ".Staff_ID maximum size (7 digits) ]]\n";
 //	 	$stmt = $this->getConnection()->getConnection()->prepare( "INSERT INTO $this->getTableName() VALUES ( 99999999, 'foo', 'bar', '1234567', 'baz', 'Manufacturing', 'Technician', 12345, 'quux' )" );
 //	 	$this->assertTrue( $stmt->execute(), ucfirst( strtolower( $this->getTableName() ) ) . '.Staff_ID size is too large (> 7-digits) [-0.5]' );
 //	 }
