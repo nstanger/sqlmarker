@@ -431,7 +431,7 @@ CREATE TABLE Product
 						<cell>Internally generated 8 digit identifier</cell>
 					</row>
 					<row>
-						<cell><tt><hash/></tt></cell>
+						<cell><tt>*</tt></cell>
 						<cell><code>Suppliers_Code</code></cell>
 						<cell>Up to 25 character identifier provided by supplier</cell>
 					</row>
@@ -472,14 +472,12 @@ CREATE TABLE Component
       CHECK ( Stock_Count BETWEEN 0 AND 9999999 ),
   Supplier_ID     NUMBER(7)     NOT NULL,
   --
-  CONSTRAINT Component_PK PRIMARY KEY ( Component_Code, Suppliers_Code ),
+  CONSTRAINT Component_PK PRIMARY KEY ( Component_Code ),
   --
   CONSTRAINT Component_FK_To_Supplier
     FOREIGN KEY ( Supplier_ID ) REFERENCES Supplier
 );
 				</code-block>
-				
-				<p indent="no"><code>Suppliers_Code</code> is technically redundant in the primary key (i.e., the key isn’t minimal), but that’s what was specified, so eliminating it without a good explanation lost marks.</p>
 			</answer>
 			
 		</section>
@@ -521,22 +519,21 @@ CREATE TABLE Component
 CREATE TABLE Assembly
 ( Product_Code    NUMBER(8),
   Component_Code  NUMBER(8),
-  Suppliers_Code  VARCHAR2(25),
   Quantity        NUMBER(4)     NOT NULL
     CONSTRAINT Assembly_Quantity_Too_Low
       CHECK ( Quantity BETWEEN 1 AND 9999 ),
   --
   CONSTRAINT Assembly_PK
-    PRIMARY KEY ( Product_Code, Component_Code, Suppliers_Code ),
+    PRIMARY KEY ( Product_Code, Component_Code ),
   --
   CONSTRAINT Assembly_FK_To_Product
     FOREIGN KEY ( Product_Code ) REFERENCES Product,
   CONSTRAINT Assembly_FK_To_Component
-    FOREIGN KEY ( Component_Code, Suppliers_Code ) REFERENCES Component
+    FOREIGN KEY ( Component_Code ) REFERENCES Component
 );
 				</code-block>
 				
-				<p indent="no"><code>Suppliers_Code</code> is part of the primary key of <code>Component</code>, so it must by definition be part of the primary key here (unless we created a surrogate key, but that wasn’t in the specification). It also doesn’t make much sense to allow zero as a value of <code>Quantity</code>; if there are none of a particular component in a product, then you wouldn’t add an entry to this table anyway!</p>
+				<p indent="no">It doesn’t make sense to allow zero as a value of <code>Quantity</code>; if there are none of a particular component in a product, then you wouldn’t add an entry to this table anyway!</p>
 			</answer>
 			
 		</section>
@@ -797,7 +794,6 @@ CREATE TABLE Order_Head
 CREATE TABLE Order_Line
 ( Order_Num       NUMBER(10),
   Component_Code  NUMBER(8),
-  Suppliers_Code  VARCHAR2(25),
   Qty_Ordered     NUMBER(5)     NOT NULL
     CONSTRAINT Order_Line_Qty_Ord_Too_Low
       CHECK ( Qty_Ordered BETWEEN 0 AND 99999 ),
@@ -807,10 +803,10 @@ CREATE TABLE Order_Line
   Qty_Received    NUMBER(6)     NOT NULL,
   --
   CONSTRAINT Order_Line_PK
-    PRIMARY KEY ( Order_Num, Component_Code, Suppliers_Code ),
+    PRIMARY KEY ( Order_Num, Component_Code ),
   --
   CONSTRAINT Order_Line_FK_To_Comp
-    FOREIGN KEY ( Component_Code, Suppliers_Code ) REFERENCES Component,
+    FOREIGN KEY ( Component_Code ) REFERENCES Component,
   CONSTRAINT Order_Line_FK_To_Ord_Hd
     FOREIGN KEY ( Order_Num ) REFERENCES Order_Head
 );
