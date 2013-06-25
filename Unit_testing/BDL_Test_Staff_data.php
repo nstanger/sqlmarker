@@ -31,9 +31,21 @@ class BDL_Test_Staff_data extends BDL_Test_Staff
 	 *	@expectedExceptionMessage check constraint
 	 *	@expectedExceptionCode HY000
 	 */
-	public function testColumnIllegalValue( $columnName, $illegalValue )
+	public function testColumnIllegalValueExplicit( $columnName, $illegalValue )
 	{
-   		$this->assertColumnIllegalValue( $columnName, $illegalValue );
+   		$this->assertColumnIllegalValueExplicit( $columnName, $illegalValue );
+	}
+	
+	
+	/**
+	 *	@dataProvider provideColumnIllegalValues
+	 *	@expectedException PDOException
+	 *	@expectedExceptionMessage length exceeded
+	 *	@expectedExceptionCode HY000
+	 */
+	public function testColumnIllegalValueImplicit( $columnName, $illegalValue )
+	{
+   		$this->assertColumnIllegalValueImplicit( $columnName, $illegalValue );
 	}
 	
 	
@@ -55,9 +67,21 @@ class BDL_Test_Staff_data extends BDL_Test_Staff
 	 *	@expectedExceptionMessage check constraint
 	 *	@expectedExceptionCode HY000
 	 */
-	public function testColumnOverflowValue( $columnName, $overflowValue )
+	public function testColumnOverflowValueExplicit( $columnName, $overflowValue )
 	{
-   		$this->assertColumnOverflowValue( $columnName, $overflowValue );
+   		$this->assertColumnOverflowValueExplicit( $columnName, $overflowValue );
+	}
+	
+	
+	/**
+	 *	@dataProvider provideColumnOverflowValues
+	 *	@expectedException PDOException
+	 *	@expectedExceptionMessage length exceeded
+	 *	@expectedExceptionCode HY000
+	 */
+	public function testColumnOverflowValueImplicit( $columnName, $overflowValue )
+	{
+   		$this->assertColumnOverflowValueImplicit( $columnName, $overflowValue );
 	}
 }
 ?>
