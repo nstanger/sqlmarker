@@ -17,7 +17,6 @@ abstract class BDL_Test_Staff extends PHPUnit_Extensions_Database_TestCase_Creat
 										'min_length'	=>	7,
 										'max_length'	=>	7,
 										'decimals'		=>	0,
-// 										'underflow'		=>	-1,
 										'nullable'		=>	false,
 										'test_value'	=>	"123456",	),
 			'SURNAME'		=>	array(	'generic_type'	=>	'TEXT',
@@ -78,7 +77,6 @@ abstract class BDL_Test_Staff extends PHPUnit_Extensions_Database_TestCase_Creat
 			'COMMENTS'		=>	array(	'generic_type'	=>	'TEXT',
 										'sql_type'		=>	array( 'VARCHAR2', 'CLOB' ),
 										'min_length'	=>	500,
-										'max_length'	=>	4000,
 										'nullable'		=>	true,
 										'test_value'	=>	"Blah blah blah",	),	);
 	}

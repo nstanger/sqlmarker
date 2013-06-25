@@ -281,38 +281,33 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	
 	
 	/**
-	 *	Data provider to return a list of all columns and their lengths.
+	 *	Data provider to return a list of all columns and their length-related information.
 	 *
-	 *	If your test needs to iterate through all column lengths of a table, then use this method as the data provider. Each column name plus a list of possible lengths is presented to the consumer in turn. The first two elements of the list are the minimum and maximum lengths of the column (for a numeric column, this represents the precision). The optional third element is the number of decimal places (technically, the scale) for a numeric column. Columns with fixed lengths (e.g., dates, BLOBs, CLOBs) should not have their min_length and max_length values set (although CLOBs are a slightly tricky case where the same effect could be achieved using a largish VARCHAR2 --- this is handled as a special case in assertColumnLengths() below).
+	 *	If your test needs to iterate through all column lengths of a table, then use this method as the data provider. Each column name plus its generic data type, minimum length, maximum length (for a numeric column, this represents the precision) and number of decimal places (technically, the scale) are presented to the consumer in turn. Columns with no specified length (e.g., dates, BLOBs, CLOBs) should not have their min_length and max_length values set (although CLOBs are a slightly tricky case where the same effect could be achieved using a largish VARCHAR2 --- this is handled as a special case in assertColumnLength() below).
 	 *
 	 *	@access public
-	 *	@return array( array( string, array( integer+ ) )* )
+	 *	@return array( array( string, string, int, int, int )* )
 	 */
 	public function provideColumnLengths()
 	{
 		$theList = array();
 		foreach ( $this->getColumnList() as $columnName => $columnDetails )
 		{
-			// If min_length is missing, then it has no length at all (e.g., DATE, BLOB, CLOB).
-			if ( array_key_exists( 'min_length', $columnDetails ) )
+			$minLength = ( array_key_exists( 'min_length', $columnDetails ) ) ? $columnDetails['min_length'] : 0;
+			$maxLength = ( array_key_exists( 'max_length', $columnDetails ) ) ? $columnDetails['max_length'] : 0;
+			$numDecimals = ( array_key_exists( 'decimals', $columnDetails ) ) ? $columnDetails['decimals'] : 0;
+			
+			// If min_length and max_length are missing, then it has no length at all (e.g., DATE, BLOB, CLOB).
+			if ( ( $minLength > 0 ) || ( $maxLength > 0 ) )
 			{
-				if ( array_key_exists( 'decimals', $columnDetails ) )
-				{
-					$lengthList = array( $columnDetails['min_length'], $columnDetails['max_length'], $columnDetails['decimals'] );
-				}
-				else
-				{
-					$lengthList = array( $columnDetails['min_length'], $columnDetails['max_length'] );
-				}
-				
-				array_push( $theList, array( $columnName, $lengthList ) );
+				array_push( $theList, array( $columnName, $columnDetails['generic_type'], $minLength, $maxLength, $numDecimals ) );
 			}
 		}
 		
 		// If there are none (pretty unlikely), push a marker onto the stack so that we can skip the test.
 		if ( count( $theList ) == 0 )
 		{
-			array_push( $theList, array( '___NO_DATA___', array() ) );
+			array_push( $theList, array( '___NO_DATA___', 'NULL', 0, 0, 0 ) );
 		}
 		
 		return $theList;
@@ -373,7 +368,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	
 	
 	/**
-	 *	Data provider to return a list of all text columns and some illegal values.
+	 *	Data provider to return a list of all text columns and some illegal (enumerated) values.
 	 *
 	 *	If your test needs to iterate through some illegal values of the columns of a table, then use this method as the data provider. Each column name plus a known illegal value is presented to the consumer in turn. (Only for those columns that have them.)
 	 *
@@ -698,7 +693,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	 *	@access protected
 	 *	@return void
 	 */
-	protected function assertColumnLength( $columnName, $columnLengthList )
+	protected function assertColumnLength( $columnName, $columnType, $minLength, $maxLength, $numDecimals )
 	{
 		// This can only happen if all of the columns are things like DATE, BLOB or CLOB.
 		// This is pretty unlikely in practice, but you never know...
@@ -708,25 +703,34 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		}
 	
 		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " length is ";
-		if ( $columnLengthList[0] != $columnLengthList[1] )
+		if ( $maxLength == 0 )
 		{
-			echo "between " . $columnLengthList[0] . " and ";
+			echo "at least " . $minLength;
 		}
-		echo $columnLengthList[1];
-		
-		// If there are three elements in $columnLengthList, then this is a
-		// numeric column, and the third element is the scale (decimal places).
-		if ( array_key_exists( 2, $columnLengthList ) )
+		elseif ( $minLength == 0 )
 		{
-			if ( $columnLengthList[2] > 0 )
+			echo "at most " . $maxLength;
+		}
+		elseif ( $minLength != $maxLength )
+		{
+			echo "between " . $minLength . " and " . $maxLength;
+		}
+		else
+		{
+			echo $maxLength;
+		}
+		
+		if ( $columnType === 'NUMBER' )
+		{
+			if ( $numDecimals > 0 ) // technically if could also be < 0, but this is uncommon
 			{
-				echo " (including " . $columnLengthList[2] . " decimal places)";
+				echo " (including " . $numDecimals . " decimal places)";
 			}
 		}
 		
 		echo " ]]\n";
 		
-		if ( array_key_exists( 2, $columnLengthList ) )
+		if ( $columnType === 'NUMBER' )
 		{
 			$queryString = sprintf(
 				"SELECT Data_Type, Data_Precision, Data_Scale
@@ -750,30 +754,30 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		
 		$actual = $this->getConnection()->createQueryTable( $this->getTableName() . '_' . $columnName, $queryString );
 		
-		// We might encounter CLOBs as an alternative for a large VARCHAR2.
-		// Ignore these, as they have no particular length. BLOBs, DATEs and
-		// standalone CLOBs should never show up in the list in the first place,
-		// as they should have no length specified.
-		if ( $actual->getValue( 0, 'DATA_TYPE' ) != 'CLOB' )
+		if ( $columnType === 'NUMBER' )
 		{
-			if ( array_key_exists( 2, $columnLengthList ) )
-			{
-				$errorString = sprintf(
-					'column %s.%s has incorrect length %d, %d [%+1.1f]',
-					ucfirst( strtolower( $this->getTableName() ) ),
-					ucfirst( strtolower( $columnName ) ),
-					$actual->getValue( 0, 'DATA_PRECISION' ),
-					$actual->getValue( 0, 'DATA_SCALE' ),
-					$this->markAdjustments['incorrectLength']
-				);
-								
-				$this->assertGreaterThanOrEqual( $columnLengthList[0], $actual->getValue( 0, 'DATA_PRECISION' ), $errorString );
-								
-				$this->assertLessThanOrEqual( $columnLengthList[1], $actual->getValue( 0, 'DATA_PRECISION' ), $errorString );
-								
-				$this->assertEquals( $columnLengthList[2], $actual->getValue( 0, 'DATA_SCALE' ), $errorString );
-			}
-			else
+			$errorString = sprintf(
+				'column %s.%s has incorrect length %d, %d [%+1.1f]',
+				ucfirst( strtolower( $this->getTableName() ) ),
+				ucfirst( strtolower( $columnName ) ),
+				$actual->getValue( 0, 'DATA_PRECISION' ),
+				$actual->getValue( 0, 'DATA_SCALE' ),
+				$this->markAdjustments['incorrectLength']
+			);
+							
+			$this->assertGreaterThanOrEqual( $minLength, $actual->getValue( 0, 'DATA_PRECISION' ), $errorString );
+							
+			$this->assertLessThanOrEqual( $maxLength, $actual->getValue( 0, 'DATA_PRECISION' ), $errorString );
+							
+			$this->assertEquals( $numDecimals, $actual->getValue( 0, 'DATA_SCALE' ), $errorString );
+		}
+		else
+		{
+			// We might encounter CLOBs as an alternative for a large VARCHAR2.
+			// Ignore these, as they have no particular length. BLOBs, DATEs and
+			// standalone CLOBs should never show up in the list in the first place,
+			// as they should have no length specified.
+			if ( $actual->getValue( 0, 'DATA_TYPE' ) != 'CLOB' )
 			{
 				$errorString = sprintf(
 					'column %s.%s has incorrect length %d [%+1.1f]',
@@ -783,9 +787,9 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 					$this->markAdjustments['incorrectLength']
 				);
 								
-				$this->assertGreaterThanOrEqual( $columnLengthList[0], $actual->getValue( 0, 'CHAR_LENGTH' ), $errorString );
+				$this->assertGreaterThanOrEqual( $minLength, $actual->getValue( 0, 'CHAR_LENGTH' ), $errorString );
 								
-				$this->assertLessThanOrEqual( $columnLengthList[1], $actual->getValue( 0, 'CHAR_LENGTH' ), $errorString );
+				$this->assertLessThanOrEqual( $maxLength, $actual->getValue( 0, 'CHAR_LENGTH' ), $errorString );
 			}
 		}
 	}
