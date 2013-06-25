@@ -765,10 +765,16 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 				$this->markAdjustments['incorrectLength']
 			);
 							
-			$this->assertGreaterThanOrEqual( $minLength, $actual->getValue( 0, 'DATA_PRECISION' ), $errorString );
+			if ( $minLength > 0 )
+			{
+				$this->assertGreaterThanOrEqual( $minLength, $actual->getValue( 0, 'DATA_PRECISION' ), $errorString );
+			}
 							
-			$this->assertLessThanOrEqual( $maxLength, $actual->getValue( 0, 'DATA_PRECISION' ), $errorString );
-							
+			if ( $maxLength > 0 )
+			{
+				$this->assertLessThanOrEqual( $maxLength, $actual->getValue( 0, 'DATA_PRECISION' ), $errorString );
+			}
+						
 			$this->assertEquals( $numDecimals, $actual->getValue( 0, 'DATA_SCALE' ), $errorString );
 		}
 		else
@@ -787,9 +793,15 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 					$this->markAdjustments['incorrectLength']
 				);
 								
-				$this->assertGreaterThanOrEqual( $minLength, $actual->getValue( 0, 'CHAR_LENGTH' ), $errorString );
+				if ( $maxLength > 0 )
+				{
+					$this->assertLessThanOrEqual( $maxLength, $actual->getValue( 0, 'CHAR_LENGTH' ), $errorString );
+				}
+				if ( $minLength > 0 )
+				{
+					$this->assertGreaterThanOrEqual( $minLength, $actual->getValue( 0, 'CHAR_LENGTH' ), $errorString );
+				}
 								
-				$this->assertLessThanOrEqual( $maxLength, $actual->getValue( 0, 'CHAR_LENGTH' ), $errorString );
 			}
 		}
 	}
