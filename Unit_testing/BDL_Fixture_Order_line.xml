@@ -398,14 +398,12 @@
   <table name="order_line">
     <column>order_num</column>
     <column>component_code</column>
-    <column>suppliers_code</column>
     <column>qty_ordered</column>
     <column>price</column>
     <column>qty_received</column>
     <row>
       <value>36</value>
       <value>660</value>
-      <value>9832245</value>
       <value>6388</value>
       <value>2.86</value>
       <value>6388</value>
@@ -413,7 +411,6 @@
     <row>
       <value>741</value>
       <value>660</value>
-      <value>9832245</value>
       <value>14988</value>
       <value>0.58</value>
       <value>10988</value>
@@ -421,7 +418,6 @@
     <row>
       <value>1799</value>
       <value>660</value>
-      <value>9832245</value>
       <value>7491</value>
       <value>4.61</value>
       <value>0</value>
@@ -429,7 +425,6 @@
     <row>
       <value>2027</value>
       <value>660</value>
-      <value>9832245</value>
       <value>8277</value>
       <value>5.06</value>
       <value>8277</value>
@@ -437,7 +432,6 @@
     <row>
       <value>2154</value>
       <value>660</value>
-      <value>9832245</value>
       <value>7343</value>
       <value>6.29</value>
       <value>0</value>
@@ -445,7 +439,6 @@
     <row>
       <value>2820</value>
       <value>660</value>
-      <value>9832245</value>
       <value>9826</value>
       <value>0.01</value>
       <value>9826</value>
@@ -453,7 +446,6 @@
     <row>
       <value>3642</value>
       <value>660</value>
-      <value>9832245</value>
       <value>8796</value>
       <value>3.78</value>
       <value>0</value>
@@ -461,7 +453,6 @@
     <row>
       <value>3882</value>
       <value>660</value>
-      <value>9832245</value>
       <value>9613</value>
       <value>2.73</value>
       <value>9613</value>
@@ -469,7 +460,6 @@
     <row>
       <value>4381</value>
       <value>660</value>
-      <value>9832245</value>
       <value>6854</value>
       <value>6.03</value>
       <value>0</value>
@@ -477,7 +467,6 @@
     <row>
       <value>4419</value>
       <value>660</value>
-      <value>9832245</value>
       <value>9864</value>
       <value>5.52</value>
       <value>0</value>

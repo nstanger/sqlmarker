@@ -48,7 +48,6 @@
   <table name="assembly">
     <column>product_code</column>
     <column>component_code</column>
-    <column>suppliers_code</column>
     <column>quantity</column>
   </table>
   <table name="sale_head">
@@ -77,7 +76,6 @@
   <table name="order_line">
     <column>order_num</column>
     <column>component_code</column>
-    <column>suppliers_code</column>
     <column>qty_ordered</column>
     <column>price</column>
     <column>qty_received</column>

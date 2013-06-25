@@ -24,11 +24,6 @@ abstract class BDL_Test_Order_line extends PHPUnit_Extensions_Database_TestCase_
 											'decimals'		=>	0,
 											'nullable'		=>	false,
 											'test_value'	=>	"687",	),
-			'SUPPLIERS_CODE'	=>	array(	'type'			=>	array( 'VARCHAR2', 'VARCHAR' ),
-											'min_length'	=>	25,
-											'max_length'	=>	25,
-											'nullable'		=>	false,
-											'test_value'	=>	"'4058704'",	),
 			'QTY_ORDERED'		=>	array(	'type'			=>	array( 'NUMBER', 'INTEGER', 'SMALLINT' ),
 											'min_length'	=>	5,
 											'max_length'	=>	5,
@@ -58,7 +53,7 @@ abstract class BDL_Test_Order_line extends PHPUnit_Extensions_Database_TestCase_
 	
 	public function getPKColumnList()
 	{
-		return array( 'ORDER_NUM', 'COMPONENT_CODE', 'SUPPLIERS_CODE' );
+		return array( 'ORDER_NUM', 'COMPONENT_CODE' );
 	}
 	
 	
@@ -66,7 +61,7 @@ abstract class BDL_Test_Order_line extends PHPUnit_Extensions_Database_TestCase_
 	{
 		return array(
 			'ORDER_HEAD' => array( 'ORDER_NUM' ),
-			'COMPONENT' => array( 'COMPONENT_CODE', 'SUPPLIERS_CODE' ),
+			'COMPONENT' => array( 'COMPONENT_CODE' ),
 		);
 	}
 }

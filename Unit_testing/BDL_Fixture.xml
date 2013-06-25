@@ -508,66 +508,55 @@
   <table name="assembly">
     <column>product_code</column>
     <column>component_code</column>
-    <column>suppliers_code</column>
     <column>quantity</column>
     <row>
       <value>238</value>
       <value>661</value>
-      <value>6510808</value>
       <value>8</value>
     </row>
     <row>
       <value>238</value>
       <value>669</value>
-      <value>257835</value>
       <value>2</value>
     </row>
     <row>
       <value>238</value>
       <value>677</value>
-      <value>2095670</value>
       <value>7</value>
     </row>
     <row>
       <value>238</value>
       <value>685</value>
-      <value>280917</value>
       <value>21</value>
     </row>
     <row>
       <value>240</value>
       <value>661</value>
-      <value>6510808</value>
       <value>27</value>
     </row>
     <row>
       <value>240</value>
       <value>663</value>
-      <value>8236779</value>
       <value>1</value>
     </row>
     <row>
       <value>240</value>
       <value>679</value>
-      <value>2682279</value>
       <value>46</value>
     </row>
     <row>
       <value>242</value>
       <value>660</value>
-      <value>9832245</value>
       <value>50</value>
     </row>
     <row>
       <value>242</value>
       <value>687</value>
-      <value>4058704</value>
       <value>5</value>
     </row>
     <row>
       <value>245</value>
       <value>683</value>
-      <value>236289</value>
       <value>7</value>
     </row>
   </table>
@@ -827,14 +816,12 @@
   <table name="order_line">
     <column>order_num</column>
     <column>component_code</column>
-    <column>suppliers_code</column>
     <column>qty_ordered</column>
     <column>price</column>
     <column>qty_received</column>
     <row>
       <value>36</value>
       <value>660</value>
-      <value>9832245</value>
       <value>6388</value>
       <value>2.86</value>
       <value>6388</value>
@@ -842,7 +829,6 @@
     <row>
       <value>741</value>
       <value>660</value>
-      <value>9832245</value>
       <value>4988</value>
       <value>0.58</value>
       <value>4988</value>
@@ -850,7 +836,6 @@
     <row>
       <value>1799</value>
       <value>660</value>
-      <value>9832245</value>
       <value>7491</value>
       <value>4.61</value>
       <value>0</value>
@@ -858,7 +843,6 @@
     <row>
       <value>2027</value>
       <value>660</value>
-      <value>9832245</value>
       <value>8277</value>
       <value>5.06</value>
       <value>8277</value>
@@ -866,7 +850,6 @@
     <row>
       <value>2154</value>
       <value>660</value>
-      <value>9832245</value>
       <value>7343</value>
       <value>6.29</value>
       <value>0</value>
@@ -874,7 +857,6 @@
     <row>
       <value>2820</value>
       <value>660</value>
-      <value>9832245</value>
       <value>9826</value>
       <value>0.01</value>
       <value>9826</value>
@@ -882,7 +864,6 @@
     <row>
       <value>3642</value>
       <value>660</value>
-      <value>9832245</value>
       <value>8796</value>
       <value>3.78</value>
       <value>0</value>
@@ -890,7 +871,6 @@
     <row>
       <value>3882</value>
       <value>660</value>
-      <value>9832245</value>
       <value>9613</value>
       <value>2.73</value>
       <value>9613</value>
@@ -898,7 +878,6 @@
     <row>
       <value>4381</value>
       <value>660</value>
-      <value>9832245</value>
       <value>6854</value>
       <value>6.03</value>
       <value>0</value>
@@ -906,7 +885,6 @@
     <row>
       <value>4419</value>
       <value>660</value>
-      <value>9832245</value>
       <value>9864</value>
       <value>5.52</value>
       <value>0</value>

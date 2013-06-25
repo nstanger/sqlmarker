@@ -288,66 +288,55 @@
   <table name="assembly">
     <column>product_code</column>
     <column>component_code</column>
-    <column>suppliers_code</column>
     <column>quantity</column>
     <row>
       <value>238</value>
       <value>661</value>
-      <value>6510808</value>
       <value>8</value>
     </row>
     <row>
       <value>238</value>
       <value>669</value>
-      <value>257835</value>
       <value>2</value>
     </row>
     <row>
       <value>238</value>
       <value>677</value>
-      <value>2095670</value>
       <value>7</value>
     </row>
     <row>
       <value>238</value>
       <value>685</value>
-      <value>280917</value>
       <value>21</value>
     </row>
     <row>
       <value>240</value>
       <value>661</value>
-      <value>6510808</value>
       <value>27</value>
     </row>
     <row>
       <value>240</value>
       <value>663</value>
-      <value>8236779</value>
       <value>1</value>
     </row>
     <row>
       <value>240</value>
       <value>679</value>
-      <value>2682279</value>
       <value>46</value>
     </row>
     <row>
       <value>242</value>
       <value>660</value>
-      <value>9832245</value>
       <value>50</value>
     </row>
     <row>
       <value>242</value>
       <value>687</value>
-      <value>4058704</value>
       <value>1515</value>
     </row>
     <row>
       <value>245</value>
       <value>683</value>
-      <value>236289</value>
       <value>1007</value>
     </row>
   </table>

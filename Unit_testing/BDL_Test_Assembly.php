@@ -24,11 +24,6 @@ abstract class BDL_Test_Assembly extends PHPUnit_Extensions_Database_TestCase_Cr
 											'decimals'		=>	0,
 											'nullable'		=>	false,
 											'test_value'	=>	"660",	),
-			'SUPPLIERS_CODE'	=>	array(	'type'			=>	array( 'VARCHAR2', 'VARCHAR' ),
-											'min_length'	=>	25,
-											'max_length'	=>	25,
-											'nullable'		=>	false,
-											'test_value'	=>	"'9832245'",	),
 			'QUANTITY'			=>	array(	'type'			=>	array( 'NUMBER', 'INTEGER', 'SMALLINT' ),
 											'min_length'	=>	4,
 											'max_length'	=>	4,
@@ -42,7 +37,7 @@ abstract class BDL_Test_Assembly extends PHPUnit_Extensions_Database_TestCase_Cr
 	
 	public function getPKColumnList()
 	{
-		return array( 'PRODUCT_CODE', 'COMPONENT_CODE', 'SUPPLIERS_CODE' );
+		return array( 'PRODUCT_CODE', 'COMPONENT_CODE' );
 	}
 	
 	
@@ -50,7 +45,7 @@ abstract class BDL_Test_Assembly extends PHPUnit_Extensions_Database_TestCase_Cr
 	{
 		return array(
 			'PRODUCT' => array ( 'PRODUCT_CODE' ),
-			'COMPONENT' => array ( 'COMPONENT_CODE', 'SUPPLIERS_CODE' ),
+			'COMPONENT' => array ( 'COMPONENT_CODE' ),
 		);
 	}
 }
