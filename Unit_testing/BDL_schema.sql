@@ -1,7 +1,5 @@
 --------------------------------------------------------------------------------
 --
--- File: $Id: BDL_schema.sql,v 1.21 2011/08/24 04:00:32 cedwards Exp $
---
 -- SQL schema definition of the Better Digital, Ltd. (BDL) corporate
 -- database, as specified in INFO 214 Assignment 1.
 --
@@ -56,7 +54,7 @@ CREATE TABLE Staff
   --
   Firstnames  VARCHAR2(50)  NOT NULL,
   --
-  Phone       VARCHAR2(11)  NOT NULL,
+  Phone       VARCHAR2(15)  NOT NULL,
   --
   Address     VARCHAR2(150) NOT NULL,
   --
@@ -101,7 +99,7 @@ CREATE TABLE Customer
   --
   Contact_Person  VARCHAR2(50),
   --
-  Phone           VARCHAR2(14)    NOT NULL,
+  Phone           VARCHAR2(15)    NOT NULL,
   --
   Address         VARCHAR2(200)   NOT NULL,
   --
@@ -124,7 +122,7 @@ CREATE TABLE Supplier
   --
   Contact_Person  VARCHAR2(50),
   --
-  Phone           VARCHAR2(12)    NOT NULL,
+  Phone           VARCHAR2(15)    NOT NULL,
   --
   Address         VARCHAR2(200)   NOT NULL,
   --
@@ -173,7 +171,7 @@ CREATE TABLE Product
 CREATE TABLE Component
 ( Component_Code  NUMBER(8),
   --
-  Suppliers_Code  VARCHAR2(25),
+  Suppliers_Code  VARCHAR2(25)  NOT NULL,
   --
   Description     VARCHAR2(100) NOT NULL,
   --
@@ -182,7 +180,7 @@ CREATE TABLE Component
   --
   Supplier_ID     NUMBER(7)     NOT NULL,
   --
-  CONSTRAINT Component_PK PRIMARY KEY ( Component_Code, Suppliers_Code ),
+  CONSTRAINT Component_PK PRIMARY KEY ( Component_Code ),
   --
   CONSTRAINT Component_FK_To_Supplier FOREIGN KEY ( Supplier_ID ) REFERENCES Supplier
 );
@@ -197,16 +195,14 @@ CREATE TABLE Assembly
   --
   Component_Code  NUMBER(8),
   --
-  Suppliers_Code  VARCHAR2(25),
-  --
   Quantity        NUMBER(4)     NOT NULL
     CONSTRAINT Assembly_Quantity_Too_Low CHECK ( Quantity BETWEEN 1 AND 9999 ),
   --
-  CONSTRAINT Assembly_PK PRIMARY KEY ( Product_Code, Component_Code, Suppliers_Code ),
+  CONSTRAINT Assembly_PK PRIMARY KEY ( Product_Code, Component_Code ),
   --
   CONSTRAINT Assembly_FK_To_Product FOREIGN KEY ( Product_Code ) REFERENCES Product,
   --
-  CONSTRAINT Assembly_FK_To_Component FOREIGN KEY ( Component_Code, Suppliers_Code ) REFERENCES Component
+  CONSTRAINT Assembly_FK_To_Component FOREIGN KEY ( Component_Code ) REFERENCES Component
 );
 
 
@@ -219,6 +215,8 @@ CREATE TABLE Sale_Head
   --
   Sale_Date    DATE           NOT NULL,
   --
+  Date_Entered DATE           DEFAULT SYSDATE NOT NULL,
+  --
   Status       VARCHAR2(11)   NOT NULL
     CONSTRAINT Sale_Head_Status_Invalid
       CHECK ( Status IN ( 'pending', 'in progress', 'cancelled', 'backordered', 'shipped' ) ),
@@ -228,6 +226,8 @@ CREATE TABLE Sale_Head
   Customer_ID  NUMBER(7)      NOT NULL,
   --
   Comments     VARCHAR2(4000),
+  --
+  CONSTRAINT Sale_Head_Date_In_Future CHECK ( Sale_Date <= Date_Entered ),
   --
   CONSTRAINT Sale_Head_PK PRIMARY KEY ( Sale_Num ),
   --
@@ -269,6 +269,8 @@ CREATE TABLE Order_Head
   --
   Order_Date   DATE           NOT NULL,
   --
+  Date_Entered DATE           DEFAULT SYSDATE NOT NULL,
+  --
   Due_Date     DATE           NOT NULL,
   --
   Status       VARCHAR2(11)   NOT NULL
@@ -279,6 +281,8 @@ CREATE TABLE Order_Head
   Supplier_ID  NUMBER(7)      NOT NULL,
   --
   Comments     VARCHAR2(4000),
+  --
+  CONSTRAINT Order_Head_Date_In_Future CHECK ( Order_Date <= Date_Entered ),
   --
   CONSTRAINT Order_Head_Due_Date_Invalid CHECK ( Due_Date > Order_Date ),
   --
@@ -299,8 +303,6 @@ CREATE TABLE Order_Line
   --
   Component_Code  NUMBER(8),
   --
-  Suppliers_Code  VARCHAR2(25),
-  --
   Qty_Ordered     NUMBER(5)     NOT NULL
     CONSTRAINT Order_Line_Qty_Ord_Too_Low CHECK ( Qty_Ordered BETWEEN 1 AND 99999 ),
   --
@@ -310,9 +312,9 @@ CREATE TABLE Order_Line
   Qty_Received    NUMBER(6)     NOT NULL
     CONSTRAINT Order_Line_Qty_Rec_Too_Low CHECK ( Qty_Received >= 0 ),
   --
-  CONSTRAINT Order_Line_PK PRIMARY KEY ( Order_Num, Component_Code, Suppliers_Code ),
+  CONSTRAINT Order_Line_PK PRIMARY KEY ( Order_Num, Component_Code ),
   --
-  CONSTRAINT Order_Line_FK_To_Comp FOREIGN KEY ( Component_Code, Suppliers_Code ) REFERENCES Component,
+  CONSTRAINT Order_Line_FK_To_Comp FOREIGN KEY ( Component_Code ) REFERENCES Component,
   --
   CONSTRAINT Order_Line_FK_To_Ord_Hd FOREIGN KEY ( Order_Num ) REFERENCES Order_Head
 );
