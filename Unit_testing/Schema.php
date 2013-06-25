@@ -1028,7 +1028,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			$this->markTestSkipped( 'no columns with overflow values' );
 		}
 	
-		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " rejects illgal values >= [" . $overflowValue . "] using the column length (implicit) ]]\n";
+		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " rejects illegal values >= [" . $overflowValue . "] using the column length (implicit) ]]\n";
 		
 		$substitutions[$columnName] = $overflowValue;
 		$insertString = $this->constructInsert( $substitutions );
