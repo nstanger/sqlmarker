@@ -58,7 +58,11 @@
 	$listener = new SimpleTestListener;
 	$result->addListener($listener);
 	
-	$suite->run( $result, '/test(Table|Column)Exists/' );
+	$testresult = $suite->run( $result, '/testTableExists/' );
 	
-	if ( count( $result->passed() ) == 10 ) echo "Table exists with all the expected columns.\n";
+	if ( count( $testresult->passed() ) == 1 ) echo "Table exists.\n";
+	
+	$testresult = $suite->run( $result, '/testColumnExists/' );
+	
+	if ( count( $testresult->passed() ) == 9 ) echo "Table has all the expected columns.\n";
 ?>
