@@ -4,6 +4,22 @@ require_once "ArrayDataSet.php";
 abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_Extensions_Database_TestCase
 {
 	/**
+	 *	Only instantiate PDO once for test clean-up/fixture load.
+	 *
+	 *	@access private
+	 */
+	static private $pdo = null;
+	
+	
+	/**
+	 *	Only instantiate PHPUnit_Extensions_Database_DB_IDatabaseConnection once per test.
+	 *
+	 *	@access private
+	 */
+	private $conn = null;
+	
+	
+	/**
 	 *	List of possible mark adjustments for errors (negative) or bonuses (positive).
 	 *
 	 *	@access protected
@@ -200,8 +216,16 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	 */
 	protected function getConnection()
 	{
-		$pdo = new PDO( "oci:dbname=isorcl-400", "stani797", "b1ggles" );
-		return $this->createDefaultDBConnection( $pdo, "stani797" );
+		if ( $this->conn === null )
+		{
+			if ( self::$pdo == null )
+			{
+				self::$pdo = new PDO( "oci:dbname=isorcl-400", "stani797", "b1ggles" );
+			}
+			$this->conn = $this->createDefaultDBConnection( self::$pdo, "stani797" );
+		}
+
+		return $this->conn;
 	}
 	
 	
@@ -592,7 +616,8 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	 */
 	protected function assertTableExists()
 	{
-		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . " table exists ]]\n";
+// 		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . " table exists ]]\n";
+		echo "[[ " . ucfirst( strtolower( $this->getTableName() ) ) . " ]] ";
 		
 		$queryString = sprintf(
 			"SELECT Table_Name
@@ -625,7 +650,8 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	 */
 	protected function assertColumnExists( $columnName )
 	{
-		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " exists ]]\n";
+// 		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " exists ]]\n";
+		echo "[[ " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " ]] ";
 		
 		$queryString = sprintf(
 			"SELECT Column_Name
@@ -660,7 +686,8 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	 */
 	protected function assertColumnDataType( $columnName, $columnTypeList )
 	{
-		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " data type is " . implode( ' | ', $columnTypeList ) . " ]]\n";
+// 		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " data type is " . implode( ' | ', $columnTypeList ) . " ]]\n";
+		echo "[[ " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . ": " . implode( ' | ', $columnTypeList ) . " ]] ";
 		
 		$queryString = sprintf(
 			"SELECT Data_Type
@@ -702,18 +729,45 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			$this->markTestSkipped( 'no columns with enumerated legal values' );
 		}
 	
-		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " length is ";
+// 		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " length is ";
+// 		if ( $maxLength == 0 )
+// 		{
+// 			echo "at least " . $minLength;
+// 		}
+// 		elseif ( $minLength == 0 )
+// 		{
+// 			echo "at most " . $maxLength;
+// 		}
+// 		elseif ( $minLength != $maxLength )
+// 		{
+// 			echo "between " . $minLength . " and " . $maxLength;
+// 		}
+// 		else
+// 		{
+// 			echo $maxLength;
+// 		}
+// 		
+// 		if ( $columnType === 'NUMBER' )
+// 		{
+// 			if ( $numDecimals > 0 ) // technically if could also be < 0, but this is uncommon
+// 			{
+// 				echo " (including " . $numDecimals . " decimal places)";
+// 			}
+// 		}
+// 		
+// 		echo " ]]\n";
+		echo "[[ " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " length ";
 		if ( $maxLength == 0 )
 		{
-			echo "at least " . $minLength;
+			echo "≥ " . $minLength;
 		}
 		elseif ( $minLength == 0 )
 		{
-			echo "at most " . $maxLength;
+			echo "≤ " . $maxLength;
 		}
 		elseif ( $minLength != $maxLength )
 		{
-			echo "between " . $minLength . " and " . $maxLength;
+			echo $minLength . "–" . $maxLength;
 		}
 		else
 		{
@@ -724,11 +778,11 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		{
 			if ( $numDecimals > 0 ) // technically if could also be < 0, but this is uncommon
 			{
-				echo " (including " . $numDecimals . " decimal places)";
+				echo " (including " . $numDecimals . " d.p.)";
 			}
 		}
 		
-		echo " ]]\n";
+		echo " ]] ";
 		
 		if ( $columnType === 'NUMBER' )
 		{
@@ -817,7 +871,8 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	 */
 	protected function assertColumnNullability( $columnName, $columnNullability )
 	{
-		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " nullability is " . $columnNullability . " ]]\n";
+// 		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " nullability is " . $columnNullability . " ]]\n";
+		echo "[[ " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " nulls: " . $columnNullability . " ]] ";
 		
 		$queryString = sprintf(
 			"SELECT Nullable
@@ -857,7 +912,8 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			$this->markTestSkipped( 'no columns with enmuerated legal values' );
 		}
 	
-		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " accepts legal value [" . $legalValue . "] ]]\n";
+// 		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " accepts legal value [" . $legalValue . "] ]]\n";
+		echo "[[ " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " accepts “" . $legalValue . "” ]] ";
 		
 		$substitutions[$columnName] = $legalValue;
 		$insertString = $this->constructInsert( $substitutions );
@@ -895,7 +951,8 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			$this->markTestSkipped( 'no columns with enmuerated illegal values' );
 		}
 	
-		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " rejects illegal value [" . $illegalValue . "] using the column length (implicit) ]]\n";
+// 		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " rejects illegal value [" . $illegalValue . "] using the column length (implicit) ]]\n";
+		echo "[[ " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " rejects “" . $illegalValue . "” using column length (implicit) ]] ";
 		
 		$substitutions[$columnName] = $illegalValue;
 		$insertString = $this->constructInsert( $substitutions );
@@ -950,7 +1007,8 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			$this->markTestSkipped( 'no columns with enmuerated illegal values' );
 		}
 	
-		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " rejects illegal value [" . $illegalValue . "] using a CHECK constraint ]]\n";
+// 		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " rejects illegal value [" . $illegalValue . "] using a CHECK constraint ]]\n";
+		echo "[[ " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " rejects “" . $illegalValue . "” using CHECK ]] ";
 		
 		$substitutions[$columnName] = $illegalValue;
 		$insertString = $this->constructInsert( $substitutions );
@@ -1112,7 +1170,8 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	 */
 	public function assertPKExists()
 	{
-		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . " table primary key constraint exists ]]\n";
+// 		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . " table primary key constraint exists ]]\n";
+		echo "[[ " . ucfirst( strtolower( $this->getTableName() ) ) . " PK ]] ";
 		
 		$queryString = sprintf(
 			"SELECT Constraint_Name
@@ -1148,13 +1207,15 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		$tableName = $this->getTableName() . '_PK_cols';
 		$expected = $this->getPKColumnListAsDataSet( $tableName );
 		
-		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) .
-			" table primary key constraint contains (only) the column";
-		if ( count( $this->getPKColumnlist() ) > 1 )
-		{
-			echo "s";
-		}
-		echo " " . ucwords( strtolower( implode( ', ', $this->getPKColumnList() ) ) ) . " ]]\n";
+// 		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) .
+// 			" table primary key constraint contains (only) the column";
+// 		if ( count( $this->getPKColumnlist() ) > 1 )
+// 		{
+// 			echo "s";
+// 		}
+// 		echo " " . ucwords( strtolower( implode( ', ', $this->getPKColumnList() ) ) ) . " ]]\n";
+		echo "[[ " . ucfirst( strtolower( $this->getTableName() ) ) .
+			" PK: " . ucwords( strtolower( implode( ', ', $this->getPKColumnList() ) ) ) . " ]] ";
 
 		$queryString = sprintf(
 			"SELECT Column_Name
@@ -1305,8 +1366,10 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 				break;
 		}
 	
-		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) .
-			" table " . $longType . " constraint " . $constraintName . " is explicitly named ]]\n";
+// 		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) .
+// 			" table " . $longType . " constraint " . $constraintName . " is explicitly named ]]\n";
+		echo "[[ " . ucfirst( strtolower( $this->getTableName() ) ) .
+			" " . $longType . " constraint " . $constraintName . " ]] ";
 
 		$errorString = sprintf(
 			"the %s constraint %s for %s hasn't been explicitly named [%+1.1f]",

@@ -1,6 +1,10 @@
 <?php
 require_once "BDL_Test_Staff.php";
 
+/**
+ *	@backupGlobals disabled
+ *	@backupStaticAttributes disabled
+ */
 class BDL_Test_Staff_structure extends BDL_Test_Staff
 {
 	/**
