@@ -26,6 +26,12 @@
 			return $this->passes[ $name ];
 		}
 		
+		// Should this also include incompletes?
+		public function countNonPasses( $name )
+		{
+			return $this->tests[ $name ] - $this->passes[ $name ];
+		}
+		
 		public function countFails( $name )
 		{
 			return $this->fails[ $name ];
@@ -54,6 +60,12 @@
 		public function wasSuccessful( $name )
 		{
 			return ( $this->countPasses( $name ) === $this->countTests( $name ) );
+		}
+		
+		public function getPasses( $name = NULL )
+		{
+			if ( $name === NULL ) return $this->passes;
+			else return $this->passes[ $name ];
 		}
 		
 		public function addError(PHPUnit_Framework_Test $test, Exception $e, $time)
@@ -112,12 +124,18 @@
 		public function endTestSuite(PHPUnit_Framework_TestSuite $suite)
 		{
 // 			printf("@@@ TestSuite '%s' ended.\n", $suite->getName());
-			$this->passes[ $suite->getName() ] = $this->suitePassCount;
-			$this->fails[ $suite->getName() ] = $this->suiteFailCount;
-			$this->errors[ $suite->getName() ] = $this->suiteErrorCount;
-			$this->incompletes[ $suite->getName() ] = $this->incompleteCount;
-			$this->skips[ $suite->getName() ] = $this->suiteSkipCount;
-			$this->tests[ $suite->getName() ] = $this->suiteTestCount;
+			/*
+				The suite registers as having been started even if its tests have been filtered out. If so, the number of tests will be zero, and the results shouldn't be recorded, otherwise this could wipe out the results of earlier actual runs.
+			*/
+			if ( $this->suiteTestCount )
+			{
+				$this->passes[ $suite->getName() ] = $this->suitePassCount;
+				$this->fails[ $suite->getName() ] = $this->suiteFailCount;
+				$this->errors[ $suite->getName() ] = $this->suiteErrorCount;
+				$this->incompletes[ $suite->getName() ] = $this->incompleteCount;
+				$this->skips[ $suite->getName() ] = $this->suiteSkipCount;
+				$this->tests[ $suite->getName() ] = $this->suiteTestCount;
+			}
 		}
 	}
 ?>
