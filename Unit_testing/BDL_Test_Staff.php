@@ -47,7 +47,7 @@ abstract class BDL_Test_Staff extends PHPUnit_Extensions_Database_TestCase_Creat
 			'DEPARTMENT'	=>	array(	'generic_type'	=>	'TEXT',
 										'sql_type'		=>	array( 'VARCHAR2', 'VARCHAR' ),
 										'min_length'	=>	18,
-										'max_length'	=>	25,
+										'max_length'	=>	30,
 										'nullable'		=>	false,
 										'legal_values'	=> array(
 											"Central Management", "Sales & Marketing", "Personnel",
