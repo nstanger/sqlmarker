@@ -52,7 +52,7 @@ abstract class BDL_Test_Staff extends PHPUnit_Extensions_Database_TestCase_Creat
 										'legal_values'	=> array(
 											"Central Management", "Sales & Marketing", "Personnel",
 											"Manufacturing", "Inventory", "Accounts"	),
-										'illegal_values' => array(	"Sales and Marketing", "foobar", "blurk", "   "	),
+										'illegal_values' => array(	"personnel", "ACCOUNTS", "foobar", "blurk", "   "	),
 										'test_value'	=>	"Accounts",	),
 			'POSITION'		=>	array(	'generic_type'	=>	'TEXT',
 										'sql_type'		=>	array( 'VARCHAR2', 'VARCHAR' ),
@@ -64,7 +64,7 @@ abstract class BDL_Test_Staff extends PHPUnit_Extensions_Database_TestCase_Creat
 											"Manager", "Personal Assistant", "Secretary", "Technician", "Researcher",
 											"Designer", "Assembler", "Programmer", "Contractor", "Sales Representative",
 											"Accountant", "Inventory", "Assistant"	),
-										'illegal_values' => array(	"barfoo", "blargh", "   "	),
+										'illegal_values' => array(	"ceo", "ASSISTANT", "barfoo", "blargh", "   "	),
 										'test_value'	=>	"CEO",	),
 			'SALARY'		=>	array(	'generic_type'	=>	'NUMBER',
 										'sql_type'		=>	array( 'NUMBER', 'DECIMAL' ),
