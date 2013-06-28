@@ -2,8 +2,8 @@
 
 require_once "PHPUnit/Autoload.php";
 require_once 'SimpleTestListener.php';
-require_once "BDL_Test_Staff_structure.php";
-require_once "BDL_Test_Staff_data.php";
+require_once "Staff/BDL_Test_Staff_structure.php";
+require_once "Staff/BDL_Test_Staff_data.php";
 
 $result = new PHPUnit_Framework_TestResult;
 $listener = new SimpleTestListener;

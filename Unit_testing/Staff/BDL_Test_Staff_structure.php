@@ -1,5 +1,5 @@
 <?php
-require_once "BDL_Test_Staff.php";
+require_once "Staff/BDL_Test_Staff.php";
 
 /**
  *	@backupGlobals disabled
@@ -16,7 +16,7 @@ class BDL_Test_Staff_structure extends BDL_Test_Staff
 	 */
 	protected function getDataSet()
 	{
-		return $this->createXMLDataSet("BDL_Fixture_Staff_Empty.xml");
+		return $this->createXMLDataSet("Staff/BDL_Fixture_Staff_Empty.xml");
 	}
 	
 	
