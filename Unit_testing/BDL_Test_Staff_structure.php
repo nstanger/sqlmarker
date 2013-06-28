@@ -16,7 +16,7 @@ class BDL_Test_Staff_structure extends BDL_Test_Staff
 	 */
 	protected function getDataSet()
 	{
-		return $this->createXMLDataSet("BDL_Fixture_Empty.xml");
+		return $this->createXMLDataSet("BDL_Fixture_Staff_Empty.xml");
 	}
 	
 	
