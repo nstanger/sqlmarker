@@ -1,0 +1,10 @@
+<dataset>
+  <table name="sale_head">
+    <column>sale_num</column>
+    <column>sale_date</column>
+    <column>status</column>
+    <column>staff_id</column>
+    <column>customer_id</column>
+    <column>comments</column>
+  </table>
+</dataset>
