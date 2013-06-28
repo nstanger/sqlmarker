@@ -12,54 +12,109 @@ $result->addListener( $listener );
 $suite = new PHPUnit_Framework_TestSuite( 'BDL_Test_Staff_structure' );
 
 // Critical to data testing.
+// TODO: is $testResult needed anymore?
 $testResult = $suite->run( $result, '/testTableExists/' );
-if ( $listener->wasSuccessful( 'testTableExists' ) )
+$structurePassed = $listener->wasSuccessful( 'testTableExists' );
+if ( $structurePassed )
 {
-	echo ">>> Table exists.\n";
+	echo "+++ PASSED: Table exists.\n";
 	
 	// Critical to data testing.
 	$testResult = $suite->run( $result, '/testColumnExists/' );
-	if ( $listener->wasSuccessful( 'BDL_Test_Staff_structure::testColumnExists' ) )
+	$structurePassed = $listener->wasSuccessful( 'BDL_Test_Staff_structure::testColumnExists' );
+	if ( $structurePassed )
 	{
-		echo ">>> Table contains all the expected columns.\n";
+		echo "+++ PASSED: Table contains all the expected columns.\n";
 	
 		$testResult = $suite->run( $result, '/testColumnDataType/' );
-		if ( $listener->wasSuccessful( 'BDL_Test_Staff_structure::testColumnDataType' ) ) echo ">>> All columns have the expected data types.\n";
+		$structurePassed = $listener->wasSuccessful( 'BDL_Test_Staff_structure::testColumnDataType' );
+		if ( $structurePassed )
+		{
+			echo "+++ PASSED: All columns have the expected data types.\n";
+		}
+		else
+		{
+			printf( "--- FAILED: %d of the %d columns %s unexpected data types.\n",
+				$listener->countNonPasses( 'BDL_Test_Staff_structure::testColumnDataType' ),
+				$listener->countPasses( 'BDL_Test_Staff_structure::testColumnDataType' ),
+				$listener->countNonPasses( 'BDL_Test_Staff_structure::testColumnDataType' ) > 1 ? "have" : "has"
+			);
+		}
 		
 		$testResult = $suite->run( $result, '/testColumnLength/' );
-		if ( $listener->wasSuccessful( 'BDL_Test_Staff_structure::testColumnLength' ) ) echo ">>> All columns have the expected lengths.\n";
+		$structurePassed = $listener->wasSuccessful( 'BDL_Test_Staff_structure::testColumnLength' );
+		if ( $structurePassed )
+		{
+			echo "+++ PASSED: All columns have the expected lengths.\n";
+		}
+		else
+		{
+			printf( "--- FAILED: %d of the %d columns %s an unexpected column length.\n",
+				$listener->countNonPasses( 'BDL_Test_Staff_structure::testColumnLength' ),
+				$listener->countPasses( 'BDL_Test_Staff_structure::testColumnLength' ),
+				$listener->countNonPasses( 'BDL_Test_Staff_structure::testColumnLength' ) > 1 ? "have" : "has"
+			);
+		}
 		
 		$testResult = $suite->run( $result, '/testColumnNullability/' );
-		if ( $listener->wasSuccessful( 'BDL_Test_Staff_structure::testColumnNullability' ) ) echo ">>> All columns have the expected nullability.\n";
+		if ( $listener->wasSuccessful( 'BDL_Test_Staff_structure::testColumnNullability' ) )
+		{
+			echo "+++ PASSED: All columns have the expected nullability.\n";
+		}
+		else
+		{
+			printf( "--- FAILED: %d of the %d columns %s unexpected nullability.\n",
+				$listener->countNonPasses( 'BDL_Test_Staff_structure::testColumnNullability' ),
+				$listener->countPasses( 'BDL_Test_Staff_structure::testColumnNullability' ),
+				$listener->countNonPasses( 'BDL_Test_Staff_structure::testColumnNullability' ) > 1 ? "have" : "has"
+			);
+		}
+	}
+	else
+	{
+		printf( "--- FAILED: %d of the %d expected columns %s either missing or misnamed.\n",
+			$listener->countNonPasses( 'BDL_Test_Staff_structure::testColumnExists' ),
+			$listener->countPasses( 'BDL_Test_Staff_structure::testColumnExists' ),
+			$listener->countNonPasses( 'BDL_Test_Staff_structure::testColumnExists' ) > 1 ? "are" : "is"
+		);
+		echo ">>> SKIPPED: data type, length and nullability tests as they will include spurious errors.\n";
 	}
 	
-	// Not critical to data testing.
+	// Not critical to data testing. Need to run both tests in one pass as the columns test depends on the existence test.
 	$testResult = $suite->run( $result, '/testPK.*/' );
 	if ( $listener->wasSuccessful( 'testPKExists' ) )
 	{
-		echo ">>> Primary key exists.\n";
+		echo "+++ PASSED: Primary key exists.\n";
+	}
+	else
+	{
+		echo "--- FAILED: Primary key missing.\n";
 	}
 	if ( $listener->wasSuccessful( 'testPKColumns' ) )
 	{
-		echo ">>> Primary key includes only the expected columns.\n";
+		echo "+++ PASSED: Primary key includes (only) the expected columns.\n";
+	}
+	else
+	{
+		echo "--- FAILED: Primary key does not include (only) the expected columns.\n";
 	}
 	
 	// Not critical to data testing.
 	$testResult = $suite->run( $result, '/testConstraintsNamed/' );
-	if ( $listener->wasSuccessful( 'BDL_Test_Staff_structure::testConstraintsNamed' ) ) echo ">>> All constraints that should be are explicitly named.\n";
+	if ( $listener->wasSuccessful( 'BDL_Test_Staff_structure::testConstraintsNamed' ) ) echo "+++ PASSED: All constraints that should be are explicitly named.\n";
 }
 
 /*
 	If the table or required columns are missing or misnamed, we need to skip the data testing entirely, as the INSERTs will just error out. We can't incorporate this into the if above, because we're using a completely different test suite.
 */
-if ( ( $listener->wasSuccessful( 'testTableExists' ) ) && ( $listener->wasSuccessful( 'BDL_Test_Staff_structure::testColumnExists' ) ) )
+if ( $structurePassed )
 {
 	$suite = new PHPUnit_Framework_TestSuite( 'BDL_Test_Staff_data' );
 	
 	$testResult = $suite->run( $result, '/testColumnLegalValue/' );
 	if ( $listener->wasSuccessful( 'BDL_Test_Staff_data::testColumnLegalValue' ) )
 	{
-		printf( ">>> All %d legal values tested were accepted.\n",
+		printf( "+++ PASSED: All %d legal values tested were accepted.\n",
 			$listener->countTests( 'BDL_Test_Staff_data::testColumnLegalValue' )
 		);
 	}
@@ -67,26 +122,26 @@ if ( ( $listener->wasSuccessful( 'testTableExists' ) ) && ( $listener->wasSucces
 	$testResult = $suite->run( $result, '/testColumnIllegalValueExplicit/' );
 	if ( $listener->wasSuccessful( 'BDL_Test_Staff_data::testColumnIllegalValueExplicit' ) )
 	{
-		printf( ">>> All %d illegal values tested were rejected by a CHECK constraint.\n",
+		printf( "+++ PASSED: All %d illegal values tested were rejected by a CHECK constraint.\n",
 			$listener->countTests( 'BDL_Test_Staff_data::testColumnIllegalValueExplicit' )
 		);
 	}
 	else
 	{
 		$checkFails = $listener->countFails( 'BDL_Test_Staff_data::testColumnIllegalValueExplicit' );
-		printf( ">>> %d of %d illegal values tested %s not rejected by a CHECK constraint.\n",
+		printf( "!!! ALERT: %d of %d illegal values tested %s not rejected by a CHECK constraint.\n",
 			$checkFails,
 			$listener->countTests( 'BDL_Test_Staff_data::testColumnIllegalValueExplicit' ),
 			( $checkFails > 1 ) ? "were" : "was"
 		);
-		echo ">>> Checking values against column length...\n";
+		echo "!!! ALERT: Checking values against column length...\n";
 		
 		/*
 			Unfortunately, we can't test just the columns that failed the CHECK test. The failed TestCases are in $testResult->failures(), but we need the column name, which is hidden away in the private $data member of TestCase. We therefore have to test all the illegal values again to see if they're larger than the column. We then make the big assumption that if all the values that failed the CHECK test did so because they exceeded the column length. If this is correct, then the number of CHECK fails will equal the number of column length passes. If not, then something more serious has probably gone wrong!
 		*/
 		$testResult = $suite->run( $result, '/testColumnIllegalValueImplicit/' );
 		$implicitPasses = $listener->countPasses( 'BDL_Test_Staff_data::testColumnIllegalValueImplicit' );
-		printf( ">>> %d of %d illegal values tested %s rejected by exceeding the column length.\n",
+		printf( "+++ PASSED: %d of %d illegal values tested %s rejected by exceeding the column length.\n",
 			$implicitPasses,
 			$listener->countTests( 'BDL_Test_Staff_data::testColumnIllegalValueImplicit' ),
 			( $implicitPasses > 1 ) ? "were" : "was"
@@ -100,16 +155,20 @@ if ( ( $listener->wasSuccessful( 'testTableExists' ) ) && ( $listener->wasSucces
 				
 				For example, suppose that two values fail the CHECK test with "length exceeded", one fails with "foo exception" and the remaining two pass. The first two will pass the column length test, and the remaining three will fail.
 			*/
-			printf( ">>> %d illegal values %s were rejected in both tests—check for something unusual.\n",
+			printf( "--- FAILED: %d illegal values %s rejected in both tests—check for something unusual.\n",
 				$checkFails - $implicitPasses,
 				( ( $checkFails - $implicitPasses ) > 1 ) ? "were" : "was"
 			);
 		}
 		else
 		{
-			echo ">>> This is OK, but not necessarily safe, as the column length may change in future.\n";
+			echo "!!! NOTE: This is OK, but not necessarily safe, as the column length may change in future.\n";
 		}
 	}
+}
+else
+{
+	echo ">>> SKIPPED: data tests, as failures in the structure testing mean that they may not work.\n";
 }
 	
 ?>
