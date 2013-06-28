@@ -3,6 +3,7 @@
 require_once "PHPUnit/Autoload.php";
 require_once 'SimpleTestListener.php';
 require_once 'Reporter/TextReporter.php';
+require_once 'Reporter/HTMLReporter.php';
 require_once "Staff/BDL_Test_Staff_structure.php";
 require_once "Staff/BDL_Test_Staff_data.php";
 
@@ -15,6 +16,9 @@ $verbosity = 2;
 
 switch ( $mode )
 {
+	case 'HTML':
+		$reporter = new HTMLReporter( $verbosity );
+		break;
 	case 'TEXT':
 		$reporter = new TextReporter( $verbosity );
 		break;

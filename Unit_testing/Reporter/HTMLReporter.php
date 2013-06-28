@@ -1,43 +1,43 @@
 <?php
 require_once( 'Reporter.php' );
 
-class TextReporter extends Reporter
+class HTMLReporter extends Reporter
 {
 	public function report ( $status, $reportText, $printfArguments )
 	{
 		if ( $this->getVerbosity() )
 		{
-			$statusText = '';
+			$statusText = '<p><span';
 			switch ( $status )
 			{
 				case Reporter::STATUS_PASS:
-					$statusText .= '+++ ';
+					$statusText .= ' style="color: green;">✔✔✔ ';
 					break;
 				case Reporter::STATUS_SKIPPED:
-					$statusText .= '### ';
+					$statusText .= '>### ';
 					break;
 				case Reporter::STATUS_INCOMPLETE:
-					$statusText .= '%%% ';
+					$statusText .= ' style="background-color: yellow;">%%% ';
 					break;
 				case Reporter::STATUS_FAILURE:
-					$statusText .= '--- ';
+					$statusText .= ' style="color: red;">✘✘✘ ';
 					break;
 				case Reporter::STATUS_ERROR:
-					$statusText .= 'EEE ';
+					$statusText .= ' style="color: red;">☠☠☠ ';
 					break;
 				case Reporter::STATUS_WARNING:
-					$statusText .= '!!! ';
+					$statusText .= ' style="color: orange;">!!! ';
 					break;
 				case Reporter::STATUS_NOTE:
-					$statusText .= '!!! ';
+					$statusText .= ' style="background-color: yellow;">!!! ';
 					break;
 				default:
-					$statusText .= '??? ';
+					$statusText .= ' style="background-color: yellow;">??? ';
 					break;
 			}
 			if ( $this->getVerbosity() > 1 ) $statusText .= $status . ': ';
 			
-			parent::report( $statusText, $reportText . "\n", $printfArguments );
+			parent::report( $statusText, $reportText . "</span></p>\n", $printfArguments );
 		}
 	}
 }
