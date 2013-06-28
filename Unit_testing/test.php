@@ -2,12 +2,23 @@
 
 require_once "PHPUnit/Autoload.php";
 require_once 'SimpleTestListener.php';
+require_once 'Reporter/TextReporter.php';
 require_once "Staff/BDL_Test_Staff_structure.php";
 require_once "Staff/BDL_Test_Staff_data.php";
 
 $result = new PHPUnit_Framework_TestResult;
 $listener = new SimpleTestListener;
 $result->addListener( $listener );
+
+$mode = 'TEXT';
+$verbosity = 2;
+
+switch ( $mode )
+{
+	case 'TEXT':
+		$reporter = new TextReporter( $verbosity );
+		break;
+}
 
 $suite = new PHPUnit_Framework_TestSuite( 'BDL_Test_Staff_structure' );
 
@@ -17,91 +28,103 @@ $testResult = $suite->run( $result, '/testTableExists/' );
 $structurePassed = $listener->wasSuccessful( 'testTableExists' );
 if ( $structurePassed )
 {
-	echo "+++ PASSED: Table exists.\n";
+	$reporter->report( Reporter::STATUS_PASS, 'Table exists.', null );
 	
 	// Critical to data testing.
 	$testResult = $suite->run( $result, '/testColumnExists/' );
 	$structurePassed = $listener->wasSuccessful( 'BDL_Test_Staff_structure::testColumnExists' );
 	if ( $structurePassed )
 	{
-		echo "+++ PASSED: Table contains all the expected columns.\n";
+		$reporter->report( Reporter::STATUS_PASS, 'Table contains all the expected columns.', null );
 	
 		$testResult = $suite->run( $result, '/testColumnDataType/' );
 		$structurePassed = $listener->wasSuccessful( 'BDL_Test_Staff_structure::testColumnDataType' );
 		if ( $structurePassed )
 		{
-			echo "+++ PASSED: All columns have the expected data types.\n";
-		}
-		else
-		{
-			printf( "--- FAILED: %d of the %d columns %s unexpected data types.\n",
-				$listener->countNonPasses( 'BDL_Test_Staff_structure::testColumnDataType' ),
-				$listener->countPasses( 'BDL_Test_Staff_structure::testColumnDataType' ),
-				$listener->countNonPasses( 'BDL_Test_Staff_structure::testColumnDataType' ) > 1 ? "have" : "has"
-			);
-		}
+			$reporter->report( Reporter::STATUS_PASS, 'All columns have the expected data types.', null );
 		
-		$testResult = $suite->run( $result, '/testColumnLength/' );
-		$structurePassed = $listener->wasSuccessful( 'BDL_Test_Staff_structure::testColumnLength' );
-		if ( $structurePassed )
-		{
-			echo "+++ PASSED: All columns have the expected lengths.\n";
+			$testResult = $suite->run( $result, '/testColumnLength/' );
+			$structurePassed = $listener->wasSuccessful( 'BDL_Test_Staff_structure::testColumnLength' );
+			if ( $structurePassed )
+			{
+				$reporter->report( Reporter::STATUS_PASS, 'All columns have the expected lengths.', null );
+			}
+			else
+			{
+				$reporter->report( Reporter::STATUS_FAILURE, '%d of the %d columns %s an unexpected column length.',
+					array(
+						$listener->countNonPasses( 'BDL_Test_Staff_structure::testColumnLength' ),
+						$listener->countPasses( 'BDL_Test_Staff_structure::testColumnLength' ),
+						Reporter::pluralise( 'BDL_Test_Staff_structure::testColumnLength' )
+					) ) ;
+			}
 		}
 		else
 		{
-			printf( "--- FAILED: %d of the %d columns %s an unexpected column length.\n",
-				$listener->countNonPasses( 'BDL_Test_Staff_structure::testColumnLength' ),
-				$listener->countPasses( 'BDL_Test_Staff_structure::testColumnLength' ),
-				$listener->countNonPasses( 'BDL_Test_Staff_structure::testColumnLength' ) > 1 ? "have" : "has"
-			);
+			$reporter->report( Reporter::STATUS_FAILURE, '%d of the %d columns %s unexpected data types.',
+				array(
+					$listener->countNonPasses( 'BDL_Test_Staff_structure::testColumnDataType' ),
+					$listener->countPasses( 'BDL_Test_Staff_structure::testColumnDataType' ),
+					Reporter::pluralise( $listener->countNonPasses( 'BDL_Test_Staff_structure::testColumnDataType' ), "has", "have" )
+				) ) ;
+			$reporter->report( Reporter::STATUS_SKIPPED, 'column length tests, as the data types do not match what was expected.', null );
 		}
 		
 		$testResult = $suite->run( $result, '/testColumnNullability/' );
 		if ( $listener->wasSuccessful( 'BDL_Test_Staff_structure::testColumnNullability' ) )
 		{
-			echo "+++ PASSED: All columns have the expected nullability.\n";
+			$reporter->report( Reporter::STATUS_PASS, 'All columns have the expected nullability.', null );
 		}
 		else
 		{
-			printf( "--- FAILED: %d of the %d columns %s unexpected nullability.\n",
-				$listener->countNonPasses( 'BDL_Test_Staff_structure::testColumnNullability' ),
-				$listener->countPasses( 'BDL_Test_Staff_structure::testColumnNullability' ),
-				$listener->countNonPasses( 'BDL_Test_Staff_structure::testColumnNullability' ) > 1 ? "have" : "has"
-			);
+			$reporter->report( Reporter::STATUS_FAILURE, '%d of the %d columns %s unexpected nullability.',
+				array(
+					$listener->countNonPasses( 'BDL_Test_Staff_structure::testColumnNullability' ),
+					$listener->countPasses( 'BDL_Test_Staff_structure::testColumnNullability' ),
+					Reporter::pluralise( $listener->countNonPasses( 'BDL_Test_Staff_structure::testColumnNullability' ), "has", "have" )
+				) ) ;
 		}
 	}
 	else
 	{
-		printf( "--- FAILED: %d of the %d expected columns %s either missing or misnamed.\n",
-			$listener->countNonPasses( 'BDL_Test_Staff_structure::testColumnExists' ),
-			$listener->countPasses( 'BDL_Test_Staff_structure::testColumnExists' ),
-			$listener->countNonPasses( 'BDL_Test_Staff_structure::testColumnExists' ) > 1 ? "are" : "is"
-		);
-		echo ">>> SKIPPED: data type, length and nullability tests as they will include spurious errors.\n";
+		$reporter->report( Reporter::STATUS_FAILURE, '%d of the %d expected columns %s either missing or misnamed.',
+			array(
+				$listener->countNonPasses( 'BDL_Test_Staff_structure::testColumnExists' ),
+				$listener->countPasses( 'BDL_Test_Staff_structure::testColumnExists' ),
+				Reporter::pluralise( $listener->countNonPasses( 'BDL_Test_Staff_structure::testColumnExists' ), 'is', 'are' )
+			) ) ;
+		$reporter->report( Reporter::STATUS_SKIPPED, 'data type, length and nullability tests as they will include spurious errors.', null );
 	}
 	
 	// Not critical to data testing. Need to run both tests in one pass as the columns test depends on the existence test.
 	$testResult = $suite->run( $result, '/testPK.*/' );
 	if ( $listener->wasSuccessful( 'testPKExists' ) )
 	{
-		echo "+++ PASSED: Primary key exists.\n";
+		$reporter->report( Reporter::STATUS_PASS, 'Primary key exists.', null );
 	}
 	else
 	{
-		echo "--- FAILED: Primary key missing.\n";
+		$reporter->report( Reporter::STATUS_FAILURE, 'Primary key missing.', null );
 	}
 	if ( $listener->wasSuccessful( 'testPKColumns' ) )
 	{
-		echo "+++ PASSED: Primary key includes (only) the expected columns.\n";
+		$reporter->report( Reporter::STATUS_PASS, 'Primary key includes (only) the expected columns.', null );
 	}
 	else
 	{
-		echo "--- FAILED: Primary key does not include (only) the expected columns.\n";
+		$reporter->report( Reporter::STATUS_FAILURE, 'Primary key does not include (only) the expected columns.', null );
 	}
 	
 	// Not critical to data testing.
 	$testResult = $suite->run( $result, '/testConstraintsNamed/' );
-	if ( $listener->wasSuccessful( 'BDL_Test_Staff_structure::testConstraintsNamed' ) ) echo "+++ PASSED: All constraints that should be are explicitly named.\n";
+	if ( $listener->wasSuccessful( 'BDL_Test_Staff_structure::testConstraintsNamed' ) )
+	{
+		$reporter->report( Reporter::STATUS_PASS, 'All constraints that should be are explicitly named.', null );
+	}
+	else
+	{
+		$reporter->report( Reporter::STATUS_FAILURE, 'Some constraints are not explicitly named that should be.', null );
+	}
 }
 
 /*
@@ -114,38 +137,38 @@ if ( $structurePassed )
 	$testResult = $suite->run( $result, '/testColumnLegalValue/' );
 	if ( $listener->wasSuccessful( 'BDL_Test_Staff_data::testColumnLegalValue' ) )
 	{
-		printf( "+++ PASSED: All %d legal values tested were accepted.\n",
-			$listener->countTests( 'BDL_Test_Staff_data::testColumnLegalValue' )
-		);
+		$reporter->report( Reporter::STATUS_PASS, 'All %d legal values tested were accepted.', 
+			array( $listener->countTests( 'BDL_Test_Staff_data::testColumnLegalValue' ) ) );
 	}
 
 	$testResult = $suite->run( $result, '/testColumnIllegalValueExplicit/' );
 	if ( $listener->wasSuccessful( 'BDL_Test_Staff_data::testColumnIllegalValueExplicit' ) )
 	{
-		printf( "+++ PASSED: All %d illegal values tested were rejected by a CHECK constraint.\n",
-			$listener->countTests( 'BDL_Test_Staff_data::testColumnIllegalValueExplicit' )
-		);
+		$reporter->report( Reporter::STATUS_PASS, 'All %d illegal values tested were rejected by a CHECK constraint.', 
+			array( $listener->countTests( 'BDL_Test_Staff_data::testColumnIllegalValueExplicit' ) ) );
 	}
 	else
 	{
 		$checkFails = $listener->countFails( 'BDL_Test_Staff_data::testColumnIllegalValueExplicit' );
-		printf( "!!! ALERT: %d of %d illegal values tested %s not rejected by a CHECK constraint.\n",
-			$checkFails,
-			$listener->countTests( 'BDL_Test_Staff_data::testColumnIllegalValueExplicit' ),
-			( $checkFails > 1 ) ? "were" : "was"
-		);
-		echo "!!! ALERT: Checking values against column length...\n";
+		$reporter->report( Reporter::STATUS_ALERT, '%d of %d illegal values tested %s not rejected by a CHECK constraint.',
+			array(
+				$checkFails,
+				$listener->countTests( 'BDL_Test_Staff_data::testColumnIllegalValueExplicit' ),
+				Reporter::pluralise( $checkFails, 'was', 'were' )
+			) ) ;
+		$reporter->report( Reporter::STATUS_ALERT, 'Checking values against column length...', null );
 		
 		/*
 			Unfortunately, we can't test just the columns that failed the CHECK test. The failed TestCases are in $testResult->failures(), but we need the column name, which is hidden away in the private $data member of TestCase. We therefore have to test all the illegal values again to see if they're larger than the column. We then make the big assumption that if all the values that failed the CHECK test did so because they exceeded the column length. If this is correct, then the number of CHECK fails will equal the number of column length passes. If not, then something more serious has probably gone wrong!
 		*/
 		$testResult = $suite->run( $result, '/testColumnIllegalValueImplicit/' );
 		$implicitPasses = $listener->countPasses( 'BDL_Test_Staff_data::testColumnIllegalValueImplicit' );
-		printf( "+++ PASSED: %d of %d illegal values tested %s rejected by exceeding the column length.\n",
-			$implicitPasses,
-			$listener->countTests( 'BDL_Test_Staff_data::testColumnIllegalValueImplicit' ),
-			( $implicitPasses > 1 ) ? "were" : "was"
-		);
+		$reporter->report( Reporter::STATUS_PASSED, '%d of %d illegal values tested %s rejected by exceeding the column length.',
+			array(
+				$implicitPasses,
+				$listener->countTests( 'BDL_Test_Staff_data::testColumnIllegalValueImplicit' ),
+				Reporter::pluralise( $implicitPasses, 'was', 'were' )
+			) ) ;
 		
 		// Any leftovers?
 		if ( $implicitPasses != $checkFails )
@@ -155,20 +178,21 @@ if ( $structurePassed )
 				
 				For example, suppose that two values fail the CHECK test with "length exceeded", one fails with "foo exception" and the remaining two pass. The first two will pass the column length test, and the remaining three will fail.
 			*/
-			printf( "--- FAILED: %d illegal values %s rejected in both tests—check for something unusual.\n",
-				$checkFails - $implicitPasses,
-				( ( $checkFails - $implicitPasses ) > 1 ) ? "were" : "was"
-			);
+			$reporter->report( Reporter::STATUS_FAILURE, '%d illegal values %s rejected in both tests—check for something unusual.',
+				array(
+					$checkFails - $implicitPasses,
+					Reporter::pluralise( $checkFails - $implicitPasses, 'was', 'were' )
+				) ) ;
 		}
 		else
 		{
-			echo "!!! NOTE: This is OK, but not necessarily safe, as the column length may change in future.\n";
+			$reporter->report( Reporter::STATUS_NOTE, 'This is OK, but not necessarily safe, as the column length may change in future.', null );
 		}
 	}
 }
 else
 {
-	echo ">>> SKIPPED: data tests, as failures in the structure testing mean that they may not work.\n";
+	$reporter->report( Reporter::STATUS_SKIPPED, 'data tests, as failures in the structure testing mean that they may not work.', null );
 }
 	
 ?>
