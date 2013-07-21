@@ -6,13 +6,13 @@
 
 		<title>System specification and details</title>
 
-		<p>The Southern Technical Institute for Natural Knowledge is a medium-sized tertiary education provider (founded in 1982) that teaches papers across many subjects, which lead to several different qualifications. They are currently in the process of designing and implementing a new student records database. The requirements analysis phase of the project is complete, and you have been brought in as a lead database developer. It will be your task to implement an initial prototype of the specification resulting from the requirements analysis phase. An ERD of the proposed database is shown in <hyperlink label="fig:erd"><reference label="fig:erd" /></hyperlink>, and more detailed specifications of the database requirements may be found in the following sections.</p>
+		<p>The Southern Technical Institute for Natural Knowledge is a medium-sized tertiary education provider (founded in 1982) that teaches papers across many subjects, which lead to several different qualifications. They are currently in the process of designing and implementing a new student records database. The requirements analysis phase of the project is complete, and you have been brought in as lead database developer. It will be your task to implement an initial prototype of the database specification resulting from the requirements analysis phase. An ERD of the proposed database is shown in <hyperlink label="fig:erd"><reference label="fig:erd" /></hyperlink>, and more detailed specifications of the database requirements may be found in the following sections.</p>
 
 
 		<figure label="fig:erd" latex-placement="!hb">
-			<caption>Design-level ERD of the proposed database (Barker notation)</caption>
+			<caption>ERD of the proposed database (Barker notation)</caption>
 			<image basename="STINK_student_records_barker" location="images">
-				<description>Design-level ERD of the proposed database (Barker notation)</description>
+				<description>ERD of the proposed database (Barker notation)</description>
 			</image>
 		</figure>
 
@@ -136,7 +136,7 @@ CREATE TABLE Qualification
 			
 				<item>The paper code comprises a four-letter subject code (e.g., “INFO”) followed by a three digit course number (e.g., “214”).</item>
 			
-				<item>The period of a paper must be one of the following: “SS” (Summer School), “S1” (Semester One), “S2” (Semester Two) or “FY” (Full Year).</item>
+				<item>The period must be one of the following: “SS”, “S1”, “S2” or “FY” (representing Summer School, Semester One, Semester Two and Full Year, respectively).</item>
 			
 			</itemised-list>
 				
@@ -271,7 +271,7 @@ CREATE TABLE Schedule
 					<row>
 						<cell><tt>*</tt></cell>
 						<cell><code>Salary</code></cell>
-						<cell>Monetary, <ge /><dollar-sign /><number>40450.00</number></cell>
+						<cell>Money, <ge /><dollar-sign /><number>40450.00</number></cell>
 					</row>
 					<row-rule />
 					<row>
@@ -316,11 +316,11 @@ CREATE TABLE Schedule
 			
 			<itemised-list>
 			
-				<item><tt>Staff</tt> and <tt>Student</tt> are subtypes of <tt>Person</tt>, and thus share the same primary key values.</item>
+				<item><tt>Staff</tt> and <tt>Student</tt> are subtypes of <tt>Person</tt>, and thus share primary key values.</item>
 				
-				<item>Contact phone numbers must cater for full national landline and mobile numbers. Students’ home phone numbers must cater for full international numbers, as many students are from overseas.</item>
+				<item>Contact phone numbers must cater for full New Zealand landline and mobile numbers. Students’ home phone numbers must cater for full international numbers, as many students are from overseas.</item>
 				
-				<item>A staff member’s rank must be one of the following: “AL” (Assistant Lecturer), “L” (Lecturer), “SL” (Senior Lecturer), “AP” (Associate Professor) or “P” (Professor). Salaries for the highest level positions are over <dollar-sign /><number>100000</number>.</item>
+				<item>A staff member’s rank must be one of the following: “T”, “AL”, “L”, “SL”, “AP” or “P” (representing Tutor, Assistant Lecturer, Lecturer, Senior Lecturer, Associate Professor and Professor, respectively). Salaries for senior positions exceed <dollar-sign /><number>100000</number>.</item>
 				
 			</itemised-list>
 
@@ -424,7 +424,7 @@ CREATE TABLE Student
 			
 			<itemised-list>
 			
-				<item>The teaching year cannot be earlier than the year in which the Institute was founded. (Technically it should also not be in the future, but this is surprisingly difficult to check in <OracleServer />! You are welcome to try <em>if you have already completed the rest of the assignment</em>.)</item>
+				<item>The teaching year cannot be earlier than the year that the Institute was founded. (Technically it should also not be in the future, but this is surprisingly difficult to check in <OracleServer />! You are welcome to try, but please ensure that you complete the rest of the assignment <em>first</em>.)</item>
 
 				<item>The role must be one of the following: “Coordinator”, “Lecturer” or “Tutor”.</item>
 				
@@ -489,7 +489,7 @@ CREATE TABLE Teach
 					<row>
 						<cell><tt>o</tt></cell>
 						<cell><code>Comments</code></cell>
-						<cell>Arbitrary text</cell>
+						<cell>Text (see below)</cell>
 					</row>
 					<row-rule />
 				</tabular-body>
@@ -499,9 +499,9 @@ CREATE TABLE Teach
 			
 			<itemised-list>
 			
-				<item>The year of enrolment cannot be earlier than the year in which the Institute was founded (nor in the future—see the note above under the <hyperlink label="entity:teach"><tt>Teach</tt><space />entity</hyperlink>).</item>
+				<item>The enrolment year cannot be earlier than the year that the Institute was founded (nor in the future—see the note above under the <hyperlink label="entity:teach"><tt>Teach</tt><space />entity</hyperlink>).</item>
 			
-				<item>The <tt>Comments</tt> attribute is used to record details of any issues relating to the enrolment, e.g., a detailed explanation of the reasons for waiving a prerequisite, or a description of how a timetable clash is to be resolved.</item>
+				<item>Comments are used to record details of any issues relating to the enrolment, e.g., a detailed explanation of the reasons for waiving a prerequisite, or a description of how a timetable clash is to be resolved.</item>
 			
 			</itemised-list>
 				
@@ -601,13 +601,13 @@ CREATE TABLE Enrolment
 			
 			<itemised-list>
 			
-				<item>A new set of assessments is created for each year that a paper is offered. The year cannot be earlier than the year in which the Institute was founded (nor in the future—see the note above under the <hyperlink label="entity:teach"><tt>Teach</tt><space />entity</hyperlink>).</item>
+				<item>A new set of assessments is created for each year that a paper is offered. The year cannot be earlier than the year that the Institute was founded (nor in the future—see the note above under the <hyperlink label="entity:teach"><tt>Teach</tt><space />entity</hyperlink>).</item>
 				
-				<item>The assessment type must be one of the following: “A” (assignment), “P” (presentation), “T” (test) or “X” (exam).</item>
+				<item>The assessment type must be one of the following: “A”, “P”, “T” or “X” (representing assignment, presentation, test and exam, respectively).</item>
 				
-				<item>The <code>Maximum_Mark</code> attribute stores the maximum possible raw mark for the assessment (e.g., 30), while the <code>Weight</code> attribute stores the percentage weight of this assessment for the paper as a whole (e.g., 10<percent-sign />). If <code>Maximum_Mark</code> is not specified, then applications should use <code>Weight</code> for both.</item>
+				<item>The <code>Maximum_Mark</code> attribute stores the maximum possible raw mark for the assessment (e.g., 30), while the <code>Weight</code> attribute stores the percentage weight of this assessment for the paper as a whole (e.g., 10<percent-sign />). If <code>Maximum_Mark</code> is not specified, then front-end applications should use <code>Weight</code> for both.</item>
 				
-				<item>The <code>Release</code> attribute controls whether or not the marks for this assessment are publicly accessible.</item>
+				<item>The <code>Release</code> attribute controls whether or not the marks for this assessment are accessible by students.</item>
 				
 			</itemised-list>
 			
@@ -693,7 +693,7 @@ CREATE TABLE Assessment
 			
 			<itemised-list>
 			
-				<item>The <code>Raw_Mark</code> attribute stores the raw mark awarded for an assessment. Its value should be  between zero and the value of <code>Assessment.Maximum_Mark</code> (note that only the former is required for this assignment—bonus marks if you can also achieve the latter).</item>
+				<item>The <code>Raw_Mark</code> attribute stores the raw mark awarded for an assessment. Its value should be  between zero and the value of <code>Assessment.Maximum_Mark</code> (note that only the lower bound is required for this assignment—bonus marks if you can also implement the upper bound).</item>
 				
 				<item>The value of the <code>Weighted_Mark</code> attribute is calculated by the formula: <line-break />
 				<code>Raw_Mark</code> / <code>Assessment.Maximum_Mark</code><space /> <times /><space /> <code>Assessment.Weight</code>.</item>
@@ -701,7 +701,7 @@ CREATE TABLE Assessment
 				<item>The value of the <code>Percentage_Mark</code> attribute is calculated by the formula: <line-break />
 				<code>Raw_Mark</code> / <code>Assessment.Maximum_Mark</code><space /> <times /> 100.</item>
 				
-				<item>Note that the two calculations above are <emph>not</emph> constraints and should not be implemented as such. You may attempt to implement these calculations if you feel confident in your ability to do so, but please ensure that you complete the rest of the assignment <em>first</em>.</item>
+				<item>Note that the calculations for <code>Weighted_Mark</code> and <code>Percentage_Mark</code> are <emph>not</emph> constraints and should not be implemented as such! You may attempt to implement these calculations if you feel confident in your ability to do so, but please ensure that you complete the rest of the assignment <em>first</em>.</item>
 				
 			</itemised-list>
 			
