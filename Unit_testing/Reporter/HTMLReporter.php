@@ -3,7 +3,8 @@ require_once( 'Reporter.php' );
 
 class HTMLReporter extends Reporter
 {
-	public function report ( $status, $reportText, $printfArguments )
+	// $nl is irrelevant for HTML. I suppose you could turn it into a <br />?
+	public function report ( $status, $reportText, $printfArguments, $nl = false )
 	{
 		if ( $this->getVerbosity() )
 		{

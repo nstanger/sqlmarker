@@ -14,6 +14,7 @@ abstract class Reporter
 	const STATUS_ERROR		= 'ERROR';
 	const STATUS_WARNING	= 'WARNING';
 	const STATUS_NOTE		= 'NOTE';
+	const STATUS_MISC		= 'MISC';
 	
 	function __construct( $verbosity )
 	{
@@ -36,13 +37,13 @@ abstract class Reporter
 	}
 	
 	/**
-	 *	$status is one of: PASSED, FAILED, ERROR, INCOMPLETE, SKIPPED, WARNING, NOTE, ...?
-	 *	$text is a printf-style string (although we actually use vprintf because of the array)
-	 *	$arguments is an array of arguments to $text
+	 *	$reportText is one of: PASSED, FAILED, ERROR, INCOMPLETE, SKIPPED, WARNING, NOTE, MISC, ...?
+	 *	$reportText is a printf-style string (although we actually use vprintf because of the array)
+	 *	$printfArguments is an array of arguments to $reportText
 	 */
-	public function report( $statusText, $reportText, $printfArguments )
+	public function report( $statusText, $reportText, $printfArguments, $nl = true )
 	{
-		if ( $this->verbosity ) vprintf( $statusText . $reportText, $printfArguments );
+		if ( $this->verbosity ) vprintf( $statusText . $reportText . ( $nl ? "\n" : "" ), $printfArguments );
 	}
 }
 

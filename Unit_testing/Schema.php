@@ -1,5 +1,6 @@
 <?php
 require_once "ArrayDataSet.php";
+require_once "Reporter.php";
 
 abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_Extensions_Database_TestCase
 {
@@ -20,13 +21,21 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	
 	
 	/**
-	 *	Connection details: Oracle service name, username, password. We only need to instantiate these once for the entire test suite.
+	 *	Connection login details: Oracle service name, username, password. We only need to instantiate these once for the entire test suite.
 	 *
 	 *	@access private
 	 */
 	static private $serviceID = null;
 	static private $username = null;
 	static private $password = null;
+	
+	
+	/**
+	 *	Reporter object. Only need one for the entire test run.
+	 *
+	 *	@access private
+	 */
+	static private $reporter = null;
 	
 	
 	/**
@@ -308,6 +317,30 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	public function setPassword( $newPassword )
 	{
 		self::$password = $newPassword;
+	}
+	
+	
+	/**
+	 *	Return the reporter object.
+	 *
+	 *	@access protected
+	 *	@return Reporter
+	 */
+	protected function getReporter()
+	{
+		return self::$reporter;
+	}
+	
+	
+	/**
+	 *	Set the reporter object.
+	 *
+	 *	@access protected
+	 *	@return void
+	 */
+	public function setReporter( $newReporter )
+	{
+		self::$reporter = $newReporter;
 	}
 	
 	
@@ -699,7 +732,8 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	protected function assertTableExists()
 	{
 // 		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . " table exists ]]\n";
-		echo "[[ " . ucfirst( strtolower( $this->getTableName() ) ) . " ]] ";
+		self::$reporter->report( Reporter::STATUS_MISC, "[[ %s ]] ", array( ucfirst( strtolower( $this->getTableName() ) ) ), false );
+// 		echo "[[ " . ucfirst( strtolower( $this->getTableName() ) ) . " ]] ";
 		
 		$queryString = sprintf(
 			"SELECT Table_Name

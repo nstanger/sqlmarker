@@ -27,10 +27,12 @@ switch ( $mode )
 /*
 	Hack! There's no easy way to inject the connection details into the test classes, as thery're being implicitly created by the test suite below. However, since the connection details are stored as static members in PHPUnit_Extensions_Database_TestCase_CreateTable, all we need to do is create an instance of that and set the static members and then they'll remain set for the remainder of the test run. Yay!
 */
-$initConnectionDetails = new BDL_Test_Staff_structure;
-$initConnectionDetails->setServiceID( "isorcl-400" );
-$initConnectionDetails->setUsername( "stani07p" );
-$initConnectionDetails->setPassword( "b1ggles" );
+$initStaticMembers = new BDL_Test_Staff_structure;
+$initStaticMembers->setServiceID( "isorcl-400" );
+$initStaticMembers->setUsername( "stani07p" );
+$initStaticMembers->setPassword( "b1ggles" );
+
+$initStaticMembers->setReporter( $reporter );
 
 $suite = new PHPUnit_Framework_TestSuite( 'BDL_Test_Staff_structure' );
 

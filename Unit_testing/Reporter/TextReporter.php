@@ -3,7 +3,7 @@ require_once( 'Reporter.php' );
 
 class TextReporter extends Reporter
 {
-	public function report ( $status, $reportText, $printfArguments )
+	public function report ( $status, $reportText, $printfArguments, $nl = true )
 	{
 		if ( $this->getVerbosity() )
 		{
@@ -31,13 +31,16 @@ class TextReporter extends Reporter
 				case Reporter::STATUS_NOTE:
 					$statusText .= '!!! ';
 					break;
+				case Reporter::STATUS_MISC:
+					$statusText .= '    ';
+					break;
 				default:
 					$statusText .= '??? ';
 					break;
 			}
 			if ( $this->getVerbosity() > 1 ) $statusText .= $status . ': ';
 			
-			parent::report( $statusText, $reportText . "\n", $printfArguments );
+			parent::report( $statusText, $reportText, $printfArguments, $nl );
 		}
 	}
 }
