@@ -10,9 +10,9 @@
 
 
 		<figure label="fig:erd" latex-placement="!hb">
-			<caption>Design-level ERD of the proposed database</caption>
-			<image basename="STINK_postgrad" location="images">
-				<description>Design-level ERD of the proposed database</description>
+			<caption>Design-level ERD of the proposed database (Barker notation)</caption>
+			<image basename="STINK_postgrad_barker" location="images">
+				<description>Design-level ERD of the proposed database (Barker notation)</description>
 			</image>
 		</figure>
 
@@ -491,7 +491,7 @@ CREATE TABLE Staff
 				
 				<p>We also need to add a relation between <code>Staff</code> and <code>Component</code> to resolve the many-to-many relationship:</p>
 				
-				<p><strong>Staff<underscore />Component</strong>(<underline>Staff<underscore />ID, Component<underscore />Code</underline>, Type)</code>; <code>Staff<underscore />ID</code> FK to <code><strong>Staff</strong></code>, <code>Component<underscore />Code</code> FK to <code><strong>Component</strong></p>
+				<p><code><strong>Staff<underscore />Component</strong>(<underline>Staff<underscore />ID, Component<underscore />Code</underline>, Type)</code>; <code>Staff<underscore />ID</code> FK to <code><strong>Staff</strong></code>, <code>Component<underscore />Code</code> FK to <code><strong>Component</strong></code></p>
 				
 				<code-block>
 CREATE TABLE Staff_Component

@@ -8,12 +8,12 @@
 
 		<p>Better Digital, Ltd. (BDL) is a large U.S. company that produces a wide range of consumer electronics devices such as radios, stereo components, digital clocks, universal remotes, etc., which they sell in bulk to various retailers. The company has branches in several major U.S. cities, and employs about <number>9000</number> staff across six departments: Central Management, Sales <ampersand/> Marketing, Personnel, Manufacturing, Inventory and Accounts.</p>
 		
-		<p>BDL are currently designing and implementing a new corporate database that will be located at the company headquarters in Los Angeles. The requirements analysis phase of the project is almost complete, and you have been brought in as a lead database developer. It will be your task to implement an initial prototype of the specification resulting from the requirements analysis phase. An ERD of the proposed database is shown in <hyperlink label="fig-erd"><reference label="fig-erd"/></hyperlink>, and more detailed specifications of the database requirements may be found in the following sections.</p>
+		<p>BDL are currently designing and implementing a new corporate database that will be located at the company headquarters in Los Angeles. The requirements analysis phase of the project is complete, and you have been brought in as a lead database developer. It will be your task to implement an initial prototype of the specification resulting from the requirements analysis phase. An ERD of the proposed database is shown in <hyperlink label="fig-erd"><reference label="fig-erd"/></hyperlink>, and more detailed specifications of the database requirements may be found in the following sections.</p>
 		
 
 		<figure label="fig-erd" latex-placement="!hb">
 			<caption>ERD of Better Digital’s database (Barker notation)</caption>
-			<image basename="BDL_barker" location="images">
+			<image basename="BDL_barker" location="images" latex-options="width=0.9\columnwidth,keepaspectratio">
 				<description>ERD of Better Digital’s database (Barker notation)</description>
 			</image>
 		</figure>
