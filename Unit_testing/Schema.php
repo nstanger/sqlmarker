@@ -239,9 +239,9 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		{
 			if ( self::$pdo == null )
 			{
-				self::$pdo = new PDO( "oci:dbname=" . self::$serviceID, self::$username, self::$password );
+				self::$pdo = new PDO( "oci:dbname=" . self::getServiceID(), self::getUsername(), self::getPassword() );
 			}
-			$this->conn = $this->createDefaultDBConnection( self::$pdo, self::$username );
+			$this->conn = $this->createDefaultDBConnection( self::$pdo, self::getUsername() );
 		}
 
 		return $this->conn;
@@ -254,7 +254,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	 *	@access protected
 	 *	@return string
 	 */
-	protected function getServiceID()
+	static protected function getServiceID()
 	{
 		return self::$serviceID;
 	}
@@ -266,7 +266,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	 *	@access protected
 	 *	@return string
 	 */
-	protected function getUsername()
+	static protected function getUsername()
 	{
 		return self::$username;
 	}
@@ -275,10 +275,10 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	/**
 	 *	Return the user's password.
 	 *
-	 *	@access protected
+	 *	@access public
 	 *	@return string
 	 */
-	protected function getPassword()
+	static public function getPassword()
 	{
 		return self::$password;
 	}
@@ -287,10 +287,10 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	/**
 	 *	Set the Oracle service ID.
 	 *
-	 *	@access protected
+	 *	@access public
 	 *	@return void
 	 */
-	public function setServiceID( $newServiceID )
+	static public function setServiceID( $newServiceID )
 	{
 		self::$serviceID = $newServiceID;
 	}
@@ -299,10 +299,10 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	/**
 	 *	Set the Oracle username.
 	 *
-	 *	@access protected
+	 *	@access public
 	 *	@return void
 	 */
-	public function setUsername( $newUsername )
+	static public function setUsername( $newUsername )
 	{
 		self::$username = $newUsername;
 	}
@@ -311,10 +311,10 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	/**
 	 *	Set the user's password.
 	 *
-	 *	@access protected
+	 *	@access public
 	 *	@return void
 	 */
-	public function setPassword( $newPassword )
+	static public function setPassword( $newPassword )
 	{
 		self::$password = $newPassword;
 	}
@@ -323,10 +323,10 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	/**
 	 *	Return the reporter object.
 	 *
-	 *	@access protected
+	 *	@access public
 	 *	@return Reporter
 	 */
-	protected function getReporter()
+	static public function getReporter()
 	{
 		return self::$reporter;
 	}
@@ -335,10 +335,10 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	/**
 	 *	Set the reporter object.
 	 *
-	 *	@access protected
+	 *	@access public
 	 *	@return void
 	 */
-	public function setReporter( $newReporter )
+	static public function setReporter( $newReporter )
 	{
 		self::$reporter = $newReporter;
 	}
@@ -732,8 +732,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	protected function assertTableExists()
 	{
 // 		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . " table exists ]]\n";
-		self::$reporter->report( Reporter::STATUS_MISC, "[[ %s ]] ", array( ucfirst( strtolower( $this->getTableName() ) ) ), false );
-// 		echo "[[ " . ucfirst( strtolower( $this->getTableName() ) ) . " ]] ";
+		self::$reporter->report( Reporter::STATUS_TEST, "[[ %s ]] ", array( ucfirst( strtolower( $this->getTableName() ) ) ) );
 		
 		$queryString = sprintf(
 			"SELECT Table_Name
@@ -767,7 +766,8 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	protected function assertColumnExists( $columnName )
 	{
 // 		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " exists ]]\n";
-		echo "[[ " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " ]] ";
+		self::$reporter->report( Reporter::STATUS_TEST, "[[ %s.%s ]] ",
+			array( ucfirst( strtolower( $this->getTableName() ) ), ucfirst( strtolower( $columnName ) ) ) );
 		
 		$queryString = sprintf(
 			"SELECT Column_Name
@@ -803,7 +803,8 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	protected function assertColumnDataType( $columnName, $columnTypeList )
 	{
 // 		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " data type is " . implode( ' | ', $columnTypeList ) . " ]]\n";
-		echo "[[ " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . ": " . implode( ' | ', $columnTypeList ) . " ]] ";
+		self::$reporter->report( Reporter::STATUS_TEST, "[[ %s.%s: %s ]] ",
+			array( ucfirst( strtolower( $this->getTableName() ) ), ucfirst( strtolower( $columnName ) ), implode( ' | ', $columnTypeList ) ) );
 		
 		$queryString = sprintf(
 			"SELECT Data_Type
@@ -872,33 +873,34 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 // 		}
 // 		
 // 		echo " ]]\n";
-		echo "[[ " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " length ";
+		$lengthSpec = '';
 		if ( $maxLength == 0 )
 		{
-			echo "≥ " . $minLength;
+			$lengthSpec .= "≥ " . $minLength;
 		}
 		elseif ( $minLength == 0 )
 		{
-			echo "≤ " . $maxLength;
+			$lengthSpec .= "≤ " . $maxLength;
 		}
 		elseif ( $minLength != $maxLength )
 		{
-			echo $minLength . "–" . $maxLength;
+			$lengthSpec .= $minLength . "–" . $maxLength;
 		}
 		else
 		{
-			echo $maxLength;
+			$lengthSpec .= $maxLength;
 		}
 		
 		if ( $columnType === 'NUMBER' )
 		{
 			if ( $numDecimals > 0 ) // technically if could also be < 0, but this is uncommon
 			{
-				echo " (including " . $numDecimals . " d.p.)";
+				$lengthSpec .= " (including " . $numDecimals . " d.p.)";
 			}
 		}
 		
-		echo " ]] ";
+		self::$reporter->report( Reporter::STATUS_TEST, "[[ %s.%s length %s ]] ",
+			array( ucfirst( strtolower( $this->getTableName() ) ), ucfirst( strtolower( $columnName ) ), $lengthSpec ) );
 		
 		if ( $columnType === 'NUMBER' )
 		{
@@ -988,7 +990,8 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	protected function assertColumnNullability( $columnName, $columnNullability )
 	{
 // 		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " nullability is " . $columnNullability . " ]]\n";
-		echo "[[ " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " nulls: " . $columnNullability . " ]] ";
+		self::$reporter->report( Reporter::STATUS_TEST, "[[ %s.%s nulls: %s ]] ",
+			array( ucfirst( strtolower( $this->getTableName() ) ), ucfirst( strtolower( $columnName ) ), $columnNullability ) );
 		
 		$queryString = sprintf(
 			"SELECT Nullable
@@ -1029,7 +1032,8 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		}
 	
 // 		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " accepts legal value [" . $legalValue . "] ]]\n";
-		echo "[[ " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " accepts “" . $legalValue . "” ]] ";
+		self::$reporter->report( Reporter::STATUS_TEST, "[[ %s.%s accepts “%s” ]] ",
+			array( ucfirst( strtolower( $this->getTableName() ) ), ucfirst( strtolower( $columnName ) ), $legalValue ) );
 		
 		$substitutions[$columnName] = $legalValue;
 		$insertString = $this->constructInsert( $substitutions );
@@ -1068,7 +1072,8 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		}
 	
 // 		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " rejects illegal value [" . $illegalValue . "] using the column length (implicit) ]]\n";
-		echo "[[ " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " rejects “" . $illegalValue . "” using column length (implicit) ]] ";
+		self::$reporter->report( Reporter::STATUS_TEST, "[[ %s.%s rejects “%s” using column length (implicit) ]] ",
+			array( ucfirst( strtolower( $this->getTableName() ) ), ucfirst( strtolower( $columnName ) ), $illegalValue ) );
 		
 		$substitutions[$columnName] = $illegalValue;
 		$insertString = $this->constructInsert( $substitutions );
@@ -1124,7 +1129,8 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		}
 	
 // 		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " rejects illegal value [" . $illegalValue . "] using a CHECK constraint ]]\n";
-		echo "[[ " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " rejects “" . $illegalValue . "” using CHECK ]] ";
+		self::$reporter->report( Reporter::STATUS_TEST, "[[ %s.%s rejects “%s” using CHECK ]] ",
+			array( ucfirst( strtolower( $this->getTableName() ) ), ucfirst( strtolower( $columnName ) ), $illegalValue ) );
 		
 		$substitutions[$columnName] = $illegalValue;
 		$insertString = $this->constructInsert( $substitutions );
@@ -1164,7 +1170,8 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			$this->markTestSkipped( 'no columns with underflow values' );
 		}
 	
-		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " rejects illegal values <= [" . $underflowValue . "] using a CHECK constraint ]]\n";
+		self::$reporter->report( Reporter::STATUS_TEST, "[[ %s.%s rejects values ≤ %s using CHECK ]] ",
+			array( ucfirst( strtolower( $this->getTableName() ) ), ucfirst( strtolower( $columnName ) ), $underflowValue ) );
 		
 		$substitutions[$columnName] = $underflowValue;
 		$insertString = $this->constructInsert( $substitutions );
@@ -1202,7 +1209,8 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			$this->markTestSkipped( 'no columns with overflow values' );
 		}
 	
-		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " rejects illegal values >= [" . $overflowValue . "] using the column length (implicit) ]]\n";
+		self::$reporter->report( Reporter::STATUS_TEST, "[[ %s.%s rejects values ≥ %s using column length (implicit) ]] ",
+			array( ucfirst( strtolower( $this->getTableName() ) ), ucfirst( strtolower( $columnName ) ), $overflowValue ) );
 		
 		$substitutions[$columnName] = $overflowValue;
 		$insertString = $this->constructInsert( $substitutions );
@@ -1257,7 +1265,8 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			$this->markTestSkipped( 'no columns with overflow values' );
 		}
 	
-		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " rejects illegal values >= [" . $overflowValue . "] using a CHECK constraint (explicit) ]]\n";
+		self::$reporter->report( Reporter::STATUS_TEST, "[[ %s.%s rejects values ≥ %s using CHECK ]] ",
+			array( ucfirst( strtolower( $this->getTableName() ) ), ucfirst( strtolower( $columnName ) ), $overflowValue ) );
 		
 		$substitutions[$columnName] = $overflowValue;
 		$insertString = $this->constructInsert( $substitutions );
@@ -1287,7 +1296,8 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	public function assertPKExists()
 	{
 // 		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . " table primary key constraint exists ]]\n";
-		echo "[[ " . ucfirst( strtolower( $this->getTableName() ) ) . " PK ]] ";
+		self::$reporter->report( Reporter::STATUS_TEST, "[[ %s PK ]] ",
+			array( ucfirst( strtolower( $this->getTableName() ) ) ) );
 		
 		$queryString = sprintf(
 			"SELECT Constraint_Name
@@ -1330,8 +1340,8 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 // 			echo "s";
 // 		}
 // 		echo " " . ucwords( strtolower( implode( ', ', $this->getPKColumnList() ) ) ) . " ]]\n";
-		echo "[[ " . ucfirst( strtolower( $this->getTableName() ) ) .
-			" PK: " . ucwords( strtolower( implode( ', ', $this->getPKColumnList() ) ) ) . " ]] ";
+		self::$reporter->report( Reporter::STATUS_TEST, "[[ %s PK: %s ]] ",
+			array( ucfirst( strtolower( $this->getTableName() ) ), ucwords( strtolower( implode( ', ', $this->getPKColumnList() ) ) ) ) );
 
 		$queryString = sprintf(
 			"SELECT Column_Name
@@ -1363,7 +1373,8 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	 */
 	public function assertFKsExist( $referencedTableName )
 	{
-		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . " table foreign key constraint referencing " . ucfirst( strtolower( $referencedTableName ) ) . " exists ]]\n";
+		self::$reporter->report( Reporter::STATUS_TEST, "[[ %s FK → %s ]] ",
+			array( ucfirst( strtolower( $this->getTableName() ) ), ucfirst( strtolower( $referencedTableName ) ) ) );
 		
 		$queryString = sprintf(
 			"SELECT Child.Constraint_Name
@@ -1402,8 +1413,10 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		$tableName = $referencedTableName . '_FK_cols';
 		$expected = $this->getFKColumnListForTableAsDataSet( $referencedTableName, $tableName );
 		
-		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) .
-			" table foreign key constraint referencing " . ucfirst( strtolower( $referencedTableName ) ) . " contains (only) the column";
+		self::$reporter->report( Reporter::STATUS_TEST, "[[ %s FK → %s: %s ]] ",
+			array(	ucfirst( strtolower( $this->getTableName() ) ),
+					ucfirst( strtolower( $referencedTableName ) ),
+	 				ucwords( strtolower( implode( ', ', $this->getFKColumnlist() ) ) ) ) );
 		if ( count( $this->getFKColumnlist() ) > 1 )
 		{
 			echo "s";
@@ -1484,8 +1497,8 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	
 // 		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) .
 // 			" table " . $longType . " constraint " . $constraintName . " is explicitly named ]]\n";
-		echo "[[ " . ucfirst( strtolower( $this->getTableName() ) ) .
-			" " . $longType . " constraint " . $constraintName . " ]] ";
+		self::$reporter->report( Reporter::STATUS_TEST, "[[ %s %s constraint %s ]] ",
+			array( ucfirst( strtolower( $this->getTableName() ) ), $longType, $constraintName ) );
 
 		$errorString = sprintf(
 			"the %s constraint %s for %s hasn't been explicitly named [%+1.1f]",

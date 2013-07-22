@@ -1,38 +1,41 @@
 <?php
 
 require_once "PHPUnit/Autoload.php";
-require_once 'SimpleTestListener.php';
+require_once 'TestListener/HTMLTestListener.php';
+require_once 'TestListener/TextTestListener.php';
 require_once 'Reporter/TextReporter.php';
 require_once 'Reporter/HTMLReporter.php';
 require_once "Staff/BDL_Test_Staff_structure.php";
 require_once "Staff/BDL_Test_Staff_data.php";
 
-$result = new PHPUnit_Framework_TestResult;
-$listener = new SimpleTestListener;
-$result->addListener( $listener );
-
-$mode = 'TEXT';
+$outputMode = 'TEXT';
 $verbosity = 2;
 
-switch ( $mode )
+PHPUnit_Framework_Error_Warning::$enabled = FALSE;
+PHPUnit_Framework_Error_Notice::$enabled = FALSE;
+
+switch ( $outputMode )
 {
 	case 'HTML':
 		$reporter = new HTMLReporter( $verbosity );
+		$listener = new HTMLTestListener;
 		break;
 	case 'TEXT':
 		$reporter = new TextReporter( $verbosity );
+		$listener = new TextTestListener;
 		break;
 }
 
-/*
-	Hack! There's no easy way to inject the connection details into the test classes, as thery're being implicitly created by the test suite below. However, since the connection details are stored as static members in PHPUnit_Extensions_Database_TestCase_CreateTable, all we need to do is create an instance of that and set the static members and then they'll remain set for the remainder of the test run. Yay!
-*/
-$initStaticMembers = new BDL_Test_Staff_structure;
-$initStaticMembers->setServiceID( "isorcl-400" );
-$initStaticMembers->setUsername( "stani07p" );
-$initStaticMembers->setPassword( "b1ggles" );
+$result = new PHPUnit_Framework_TestResult;
+$result->addListener( $listener );
 
-$initStaticMembers->setReporter( $reporter );
+/*
+	Hack! There's no easy way to inject the connection details into the test classes, as they're being implicitly created by the test suite below. To work around this, the connection details are stored as private static members in PHPUnit_Extensions_Database_TestCase_CreateTable, with corresponding public get/set static methods. Set them once at the start, and they'll stay set for the entire test run. Yay!
+*/
+PHPUnit_Extensions_Database_TestCase_CreateTable::setServiceID( "isorcl-400" );
+PHPUnit_Extensions_Database_TestCase_CreateTable::setUsername( "stani07p" );
+PHPUnit_Extensions_Database_TestCase_CreateTable::setPassword( "b1ggles" );
+PHPUnit_Extensions_Database_TestCase_CreateTable::setReporter( $reporter );
 
 $suite = new PHPUnit_Framework_TestSuite( 'BDL_Test_Staff_structure' );
 

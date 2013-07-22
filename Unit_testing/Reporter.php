@@ -14,7 +14,7 @@ abstract class Reporter
 	const STATUS_ERROR		= 'ERROR';
 	const STATUS_WARNING	= 'WARNING';
 	const STATUS_NOTE		= 'NOTE';
-	const STATUS_MISC		= 'MISC';
+	const STATUS_TEST		= 'TEST';
 	
 	function __construct( $verbosity )
 	{
@@ -41,9 +41,9 @@ abstract class Reporter
 	 *	$reportText is a printf-style string (although we actually use vprintf because of the array)
 	 *	$printfArguments is an array of arguments to $reportText
 	 */
-	public function report( $statusText, $reportText, $printfArguments, $nl = true )
+	public function report( $statusText, $reportText, $printfArguments )
 	{
-		if ( $this->verbosity ) vprintf( $statusText . $reportText . ( $nl ? "\n" : "" ), $printfArguments );
+		if ( $this->verbosity ) vprintf( $statusText . $reportText, $printfArguments );
 	}
 }
 

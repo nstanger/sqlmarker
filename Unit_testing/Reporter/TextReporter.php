@@ -1,9 +1,9 @@
 <?php
-require_once( 'Reporter.php' );
+require_once 'Reporter.php';
 
 class TextReporter extends Reporter
 {
-	public function report ( $status, $reportText, $printfArguments, $nl = true )
+	public function report ( $status, $reportText, $printfArguments )
 	{
 		if ( $this->getVerbosity() )
 		{
@@ -11,28 +11,27 @@ class TextReporter extends Reporter
 			switch ( $status )
 			{
 				case Reporter::STATUS_PASS:
-					$statusText .= '+++ ';
+					$statusText .= '    +++ ';
 					break;
 				case Reporter::STATUS_SKIPPED:
-					$statusText .= '### ';
+					$statusText .= '    ### ';
 					break;
 				case Reporter::STATUS_INCOMPLETE:
-					$statusText .= '%%% ';
+					$statusText .= '    %%% ';
 					break;
 				case Reporter::STATUS_FAILURE:
-					$statusText .= '--- ';
+					$statusText .= '    --- ';
 					break;
 				case Reporter::STATUS_ERROR:
-					$statusText .= 'EEE ';
+					$statusText .= '    XXX ';
 					break;
 				case Reporter::STATUS_WARNING:
-					$statusText .= '!!! ';
+					$statusText .= '    !!! ';
 					break;
 				case Reporter::STATUS_NOTE:
-					$statusText .= '!!! ';
+					$statusText .= '    !!! ';
 					break;
-				case Reporter::STATUS_MISC:
-					$statusText .= '    ';
+				case Reporter::STATUS_TEST:
 					break;
 				default:
 					$statusText .= '??? ';
@@ -40,7 +39,7 @@ class TextReporter extends Reporter
 			}
 			if ( $this->getVerbosity() > 1 ) $statusText .= $status . ': ';
 			
-			parent::report( $statusText, $reportText, $printfArguments, $nl );
+			parent::report( $statusText, $reportText . "\n", $printfArguments );
 		}
 	}
 }

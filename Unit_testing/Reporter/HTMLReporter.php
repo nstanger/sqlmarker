@@ -1,10 +1,9 @@
 <?php
-require_once( 'Reporter.php' );
+require_once 'Reporter.php';
 
 class HTMLReporter extends Reporter
 {
-	// $nl is irrelevant for HTML. I suppose you could turn it into a <br />?
-	public function report ( $status, $reportText, $printfArguments, $nl = false )
+	public function report( $status, $reportText, $printfArguments )
 	{
 		if ( $this->getVerbosity() )
 		{
@@ -12,31 +11,35 @@ class HTMLReporter extends Reporter
 			switch ( $status )
 			{
 				case Reporter::STATUS_PASS:
-					$statusText .= ' style="color: green;">✔✔✔ ';
+					$statusText .= ' style="color: green; padding-left: 2em;">✔ ';
 					break;
 				case Reporter::STATUS_SKIPPED:
-					$statusText .= '>### ';
+					$statusText .= ' style="padding-left: 2em;"># ';
 					break;
 				case Reporter::STATUS_INCOMPLETE:
-					$statusText .= ' style="background-color: yellow;">%%% ';
+					$statusText .= ' style="background-color: yellow; padding-left: 2em;">% ';
 					break;
 				case Reporter::STATUS_FAILURE:
-					$statusText .= ' style="color: red;">✘✘✘ ';
+					$statusText .= ' style="color: red; padding-left: 2em;">✘ ';
 					break;
 				case Reporter::STATUS_ERROR:
-					$statusText .= ' style="color: red;">☠☠☠ ';
+					$statusText .= ' style="color: red; padding-left: 2em;">☠ ';
 					break;
 				case Reporter::STATUS_WARNING:
-					$statusText .= ' style="color: orange;">!!! ';
+					$statusText .= ' style="color: orange; padding-left: 2em;">⚠ ';
 					break;
 				case Reporter::STATUS_NOTE:
-					$statusText .= ' style="background-color: yellow;">!!! ';
+					$statusText .= ' style="background-color: yellow; padding-left: 2em;">⚠ ';
 					break;
 				default:
-					$statusText .= ' style="background-color: yellow;">??? ';
+				case Reporter::STATUS_TEST:
+					$statusText .= ' style="font-weight: bold; font-size: large;">';
+					break;
+				default:
+					$statusText .= ' style="background-color: yellow; padding-left: 2em;">? ';
 					break;
 			}
-			if ( $this->getVerbosity() > 1 ) $statusText .= $status . ': ';
+			if ( $this->getVerbosity() > 1 ) $statusText .= "<strong>" . ucfirst( strtolower( $status ) ) . ':</strong> ';
 			
 			parent::report( $statusText, $reportText . "</span></p>\n", $printfArguments );
 		}
