@@ -20,6 +20,16 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	
 	
 	/**
+	 *	Connection details: Oracle service name, username, password. We only need to instantiate these once for the entire test suite.
+	 *
+	 *	@access private
+	 */
+	static private $serviceID = null;
+	static private $username = null;
+	static private $password = null;
+	
+	
+	/**
 	 *	List of possible mark adjustments for errors (negative) or bonuses (positive).
 	 *
 	 *	@access protected
@@ -220,12 +230,84 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		{
 			if ( self::$pdo == null )
 			{
-				self::$pdo = new PDO( "oci:dbname=isorcl-400", "stani797", "b1ggles" );
+				self::$pdo = new PDO( "oci:dbname=" . self::$serviceID, self::$username, self::$password );
 			}
-			$this->conn = $this->createDefaultDBConnection( self::$pdo, "stani797" );
+			$this->conn = $this->createDefaultDBConnection( self::$pdo, self::$username );
 		}
 
 		return $this->conn;
+	}
+	
+	
+	/**
+	 *	Return the Oracle service ID.
+	 *
+	 *	@access protected
+	 *	@return string
+	 */
+	protected function getServiceID()
+	{
+		return self::$serviceID;
+	}
+	
+	
+	/**
+	 *	Return the Oracle username.
+	 *
+	 *	@access protected
+	 *	@return string
+	 */
+	protected function getUsername()
+	{
+		return self::$username;
+	}
+	
+	
+	/**
+	 *	Return the user's password.
+	 *
+	 *	@access protected
+	 *	@return string
+	 */
+	protected function getPassword()
+	{
+		return self::$password;
+	}
+	
+	
+	/**
+	 *	Set the Oracle service ID.
+	 *
+	 *	@access protected
+	 *	@return void
+	 */
+	public function setServiceID( $newServiceID )
+	{
+		self::$serviceID = $newServiceID;
+	}
+	
+	
+	/**
+	 *	Set the Oracle username.
+	 *
+	 *	@access protected
+	 *	@return void
+	 */
+	public function setUsername( $newUsername )
+	{
+		self::$username = $newUsername;
+	}
+	
+	
+	/**
+	 *	Set the user's password.
+	 *
+	 *	@access protected
+	 *	@return void
+	 */
+	public function setPassword( $newPassword )
+	{
+		self::$password = $newPassword;
 	}
 	
 	
