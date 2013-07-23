@@ -3,7 +3,7 @@
 abstract class SimpleTestListener implements PHPUnit_Framework_TestListener
 {
 	/**
-	 *	When you're running test suites, the various count methods in TestResult return only the total number of tests, fails, etc., for the entire Test, even if you filter the tests to be run within a given suite. We therefore need to keep track of these within the test listener for each suite and test. The results are indexed by suite/test name, which will be something like "BDL_Test_Staff_structure::testFoo"/"testFoo".
+	 *	When you're running test suites, the various count methods in TestResult return only the total number of tests, fails, etc., for the entire Test, even if you filter the tests to be run within a given suite. We therefore need to keep track of these within the test listener for each suite and test. The results are indexed by suite/test name, which will be something like "BDL_Test_Staff_structure::testFoo" or just "testFoo".
 	 */
 	private $passes = array();
 	private $fails = array();
@@ -21,6 +21,22 @@ abstract class SimpleTestListener implements PHPUnit_Framework_TestListener
 	private $incompleteCount = 0;
 	private $suiteSkipCount = 0;
 	private $suiteTestCount = 0;
+	
+	public function reset()
+	{
+		$this->passes = array();
+		$this->fails = array();
+		$this->errors = array();
+		$this->incompletes = array();
+		$this->skips = array();
+		$this->tests = array();
+		$this->suitePassCount = 0;
+		$this->suiteFailCount = 0;
+		$this->suiteErrorCount = 0;
+		$this->incompleteCount = 0;
+		$this->suiteSkipCount = 0;
+		$this->suiteTestCount = 0;
+	}
 	
 	public function countPasses( $name )
 	{
@@ -99,14 +115,14 @@ abstract class SimpleTestListener implements PHPUnit_Framework_TestListener
  
 	public function startTest(PHPUnit_Framework_Test $test)
 	{
-// 		printf("@@@ Test '%s' started.\n", $test->getName());
+// 		printf( "@@@ Test '%s' started.\n", $test->getName() );
 		$this->suiteTestCount++;
 		$this->tests[ $test->getName() ] = 1;
 	}
  
 	public function endTest(PHPUnit_Framework_Test $test, $time)
 	{
-// 		printf("@@@ Test '%s' ended.\n", $test->getName());
+// 		printf( "@@@ Test '%s' ended with status %d.\n", $test->getName(), $test->getStatus() );
 		if ( $test->getStatus() === PHPUnit_Runner_BaseTestRunner::STATUS_PASSED )
 		{
 			$this->printPass();
@@ -117,14 +133,14 @@ abstract class SimpleTestListener implements PHPUnit_Framework_TestListener
  
 	public function startTestSuite(PHPUnit_Framework_TestSuite $suite)
 	{
-// 		printf("@@@ TestSuite '%s' started.\n", $suite->getName());
+// 		printf( "@@@ TestSuite '%s' started.\n", $suite->getName() );
 		$this->suitePassCount = $this->suiteFailCount = $this->suiteErrorCount =
 		$this->incompleteCount = $this->suiteSkipCount = $this->suiteTestCount = 0;
 	}
  
 	public function endTestSuite(PHPUnit_Framework_TestSuite $suite)
 	{
-// 		printf("@@@ TestSuite '%s' ended.\n", $suite->getName());
+// 		printf( "@@@ TestSuite '%s' ended with a count of %d.\n", $suite->getName(), $this->suiteTestCount );
 		/*
 			The suite registers as having been started even if its tests have been filtered out. If so, the number of tests will be zero, and the results shouldn't be recorded, otherwise this could wipe out the results of earlier actual runs.
 		*/
