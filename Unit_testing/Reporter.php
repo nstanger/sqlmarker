@@ -45,6 +45,8 @@ abstract class Reporter
 	{
 		if ( $this->verbosity ) vprintf( $statusText . $reportText, $printfArguments );
 	}
+	
+	abstract public function hr();
 }
 
 ?>

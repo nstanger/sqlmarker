@@ -11,25 +11,25 @@ class TextReporter extends Reporter
 			switch ( $status )
 			{
 				case Reporter::STATUS_PASS:
-					$statusText .= '    +++ ';
+					$statusText .= '+++ ';
 					break;
 				case Reporter::STATUS_SKIPPED:
-					$statusText .= '    ### ';
+					$statusText .= '### ';
 					break;
 				case Reporter::STATUS_INCOMPLETE:
-					$statusText .= '    %%% ';
+					$statusText .= '%%% ';
 					break;
 				case Reporter::STATUS_FAILURE:
-					$statusText .= '    --- ';
+					$statusText .= '--- ';
 					break;
 				case Reporter::STATUS_ERROR:
-					$statusText .= '    XXX ';
+					$statusText .= 'XXX ';
 					break;
 				case Reporter::STATUS_WARNING:
-					$statusText .= '    !!! ';
+					$statusText .= '!!! ';
 					break;
 				case Reporter::STATUS_NOTE:
-					$statusText .= '    !!! ';
+					$statusText .= '!!! ';
 					break;
 				case Reporter::STATUS_TEST:
 					break;
@@ -41,6 +41,11 @@ class TextReporter extends Reporter
 			
 			parent::report( $statusText, $reportText . "\n", $printfArguments );
 		}
+	}
+	
+	public function hr()
+	{
+		echo "------------------------------------------------------------\n";
 	}
 }
 
