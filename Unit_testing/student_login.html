@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title>INFO 214 Assignment 1 Minimum Requirement Tester</title>
+	<meta name="generator" content="BBEdit 9.6" />
+	<link rel="Stylesheet" href="https://blackboard.otago.ac.nz/bbcswebdav/courses/INFO321_S2DNS_2013/db_styles.css" type="text/css" />
+</head>
+<body>
+
+<h1>INFO 214 Assignment 1 Minimum Requirement Tester</h1>
+
+<p>Enter your Oracle login details into the form below to test your Assignment 1 schema.</p>
+
+<div class="uniredbg" style="color: white; padding: 1em 4em 1em 4em; text-align: center; width: 50%;">
+
+<h3>IMPORTANT!</h3>
+
+<p>This application does not implement any security around the login screen and therefore <strong><em>will not</em></strong> protect your Oracle password! You really should not be using your Oracle password for any other online service anyway, but if you are, we <strong><em>strongly recommend</em></strong> that you change your Oracle password to something else before using this application. (For that matter, you should not be using the same password for different services in the first place! We highly recommend that you use a password manager and ensure that every service you use has a different strong password.)</p>
+
+</div>
+
+<p>Please ensure that your schema has been created in Oracle and that it currently contains no data.</p>
+
+
+<div style="text-align: center; width: 40%;">
+	<form action="check_minimum_requirement.php" method="post" style="border: 2px solid grey;">
+		<table style="margin-left: auto; margin-right: auto;">
+			<tr>
+				<td style="text-align: right;">Oracle service ID:</td>
+				<td style="text-align: left;"><input name="SID" id="SID" type="text" disabled="" value="isorcl-214" /></td>
+				<td />
+			</tr>
+			<tr>
+				<td style="text-align: right;">Oracle username:</td>
+				<td style="text-align: left;"><input name="username" id="username" type="text" /></td>
+				<td />
+			</tr>
+			<tr>
+				<td style="text-align: right;">Oracle password:</td>
+				<td style="text-align: left;"><input name="password" id="password" type="password" /></td>
+				<td style="text-align: left;"><button type="submit" id="login" value="Login">Login</button></td>
+			</tr>
+		</table>
+	</form>
+</div>
+
+</body>
+</html>
