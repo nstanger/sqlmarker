@@ -803,8 +803,10 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	protected function assertColumnDataType( $columnName, $columnTypeList )
 	{
 // 		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " data type is " . implode( ' | ', $columnTypeList ) . " ]]\n";
-		self::$reporter->report( Reporter::STATUS_TEST, "[[ %s.%s: %s ]] ",
-			array( ucfirst( strtolower( $this->getTableName() ) ), ucfirst( strtolower( $columnName ) ), implode( ' | ', $columnTypeList ) ) );
+// 		self::$reporter->report( Reporter::STATUS_TEST, "[[ %s.%s: %s ]] ",
+// 			array( ucfirst( strtolower( $this->getTableName() ) ), ucfirst( strtolower( $columnName ) ), implode( ' | ', $columnTypeList ) ) );
+		self::$reporter->report( Reporter::STATUS_TEST, "[[ %s.%s data type ]] ",
+			array( ucfirst( strtolower( $this->getTableName() ) ), ucfirst( strtolower( $columnName ) ) ) );
 		
 		$queryString = sprintf(
 			"SELECT Data_Type
@@ -817,8 +819,15 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		
 		$actual = $this->getConnection()->createQueryTable( $this->getTableName() . '_' . $columnName, $queryString );
 		
+// 		$errorString = sprintf(
+// 			'column %s.%s has unexpected data type %s [%+1.1f]',
+// 			ucfirst( strtolower( $this->getTableName() ) ),
+// 			ucfirst( strtolower( $columnName ) ),
+// 			$actual->getValue( 0, 'DATA_TYPE' ),
+// 			$this->markAdjustments['incorrectDataType']
+// 		);
 		$errorString = sprintf(
-			'column %s.%s has unexpected data type %s [%+1.1f]',
+			'column %s.%s has unexpected data type %s; check the specification again or consult with the teaching staff',
 			ucfirst( strtolower( $this->getTableName() ) ),
 			ucfirst( strtolower( $columnName ) ),
 			$actual->getValue( 0, 'DATA_TYPE' ),
@@ -847,57 +856,31 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		}
 	
 // 		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " length is ";
+		$lengthSpec = '';
 // 		if ( $maxLength == 0 )
 // 		{
-// 			echo "at least " . $minLength;
+// 			$lengthSpec .= "≥ " . $minLength;
 // 		}
 // 		elseif ( $minLength == 0 )
 // 		{
-// 			echo "at most " . $maxLength;
+// 			$lengthSpec .= "≤ " . $maxLength;
 // 		}
 // 		elseif ( $minLength != $maxLength )
 // 		{
-// 			echo "between " . $minLength . " and " . $maxLength;
+// 			$lengthSpec .= $minLength . "–" . $maxLength;
 // 		}
 // 		else
 // 		{
-// 			echo $maxLength;
+// 			$lengthSpec .= $maxLength;
 // 		}
 // 		
 // 		if ( $columnType === 'NUMBER' )
 // 		{
 // 			if ( $numDecimals > 0 ) // technically if could also be < 0, but this is uncommon
 // 			{
-// 				echo " (including " . $numDecimals . " decimal places)";
+// 				$lengthSpec .= " (including " . $numDecimals . " decimal places)";
 // 			}
 // 		}
-// 		
-// 		echo " ]]\n";
-		$lengthSpec = '';
-		if ( $maxLength == 0 )
-		{
-			$lengthSpec .= "≥ " . $minLength;
-		}
-		elseif ( $minLength == 0 )
-		{
-			$lengthSpec .= "≤ " . $maxLength;
-		}
-		elseif ( $minLength != $maxLength )
-		{
-			$lengthSpec .= $minLength . "–" . $maxLength;
-		}
-		else
-		{
-			$lengthSpec .= $maxLength;
-		}
-		
-		if ( $columnType === 'NUMBER' )
-		{
-			if ( $numDecimals > 0 ) // technically if could also be < 0, but this is uncommon
-			{
-				$lengthSpec .= " (including " . $numDecimals . " d.p.)";
-			}
-		}
 		
 		self::$reporter->report( Reporter::STATUS_TEST, "[[ %s.%s length %s ]] ",
 			array( ucfirst( strtolower( $this->getTableName() ) ), ucfirst( strtolower( $columnName ) ), $lengthSpec ) );
@@ -928,8 +911,16 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		
 		if ( $columnType === 'NUMBER' )
 		{
+// 			$errorString = sprintf(
+// 				'column %s.%s has incorrect length %d, %d [%+1.1f]',
+// 				ucfirst( strtolower( $this->getTableName() ) ),
+// 				ucfirst( strtolower( $columnName ) ),
+// 				$actual->getValue( 0, 'DATA_PRECISION' ),
+// 				$actual->getValue( 0, 'DATA_SCALE' ),
+// 				$this->markAdjustments['incorrectLength']
+// 			);
 			$errorString = sprintf(
-				'column %s.%s has incorrect length %d, %d [%+1.1f]',
+				'column %s.%s has unexpected length; check the specification again or consult with the teaching staff',
 				ucfirst( strtolower( $this->getTableName() ) ),
 				ucfirst( strtolower( $columnName ) ),
 				$actual->getValue( 0, 'DATA_PRECISION' ),
