@@ -5,27 +5,27 @@ class TextTestListener extends SimpleTestListener
 {
 	public function printPass()
 	{
-		echo "    +++ OK\n";
+		echo "    + OK\n";
 	}
 	
 	public function printFailure( PHPUnit_Framework_AssertionFailedError $e )
 	{
-	 	echo "    --- FAILED! " . $e->getMessage() . "\n";
+	 	echo "    - FAILED! " . $e->getMessage() . "\n";
 	}
 	
 	public function printError( PHPUnit_Framework_AssertionFailedError $e )
 	{
-		echo "    XXX ERROR! " . $e->getMessage() . "\n";
+		echo "    X ERROR! " . $e->getMessage() . "\n";
 	}
 	
 	public function printIncomplete( PHPUnit_Framework_AssertionFailedError $e )
 	{
-		echo "    %%% INCOMPLETE: " .$e->getMessage() . "\n";
+		echo "    % INCOMPLETE: " .$e->getMessage() . "\n";
 	}
 	
 	public function printSkip( PHPUnit_Framework_AssertionFailedError $e )
 	{
-		echo "    ### SKIPPED: " . $e->getMessage() . "\n";
+		echo "    # SKIPPED: " . $e->getMessage() . "\n";
 	}
 }
 
