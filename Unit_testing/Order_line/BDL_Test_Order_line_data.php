@@ -1,6 +1,10 @@
 <?php
 require_once "BDL_Test_Order_line.php";
 
+/**
+ *	@backupGlobals disabled
+ *	@backupStaticAttributes disabled
+ */
 class BDL_Test_Order_line_data extends BDL_Test_Order_line
 {
 	/**

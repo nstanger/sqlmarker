@@ -1,6 +1,10 @@
 <?php
-require_once "BDL_Test_Customer.php";
+require_once "Customer/BDL_Test_Customer.php";
 
+/**
+ *	@backupGlobals disabled
+ *	@backupStaticAttributes disabled
+ */
 class BDL_Test_Customer_data extends BDL_Test_Customer
 {
 	/**

@@ -1,6 +1,10 @@
 <?php
 require_once "BDL_Test_Sale_line.php";
 
+/**
+ *	@backupGlobals disabled
+ *	@backupStaticAttributes disabled
+ */
 class BDL_Test_Sale_line_structure extends BDL_Test_Sale_line
 {
 	/**

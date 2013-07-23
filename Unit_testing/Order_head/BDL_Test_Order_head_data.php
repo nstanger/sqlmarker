@@ -1,6 +1,10 @@
 <?php
 require_once "BDL_Test_Order_head.php";
 
+/**
+ *	@backupGlobals disabled
+ *	@backupStaticAttributes disabled
+ */
 class BDL_Test_Order_head_data extends BDL_Test_Order_head
 {
 	/**

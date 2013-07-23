@@ -1,6 +1,10 @@
 <?php
 require_once "BDL_Test_Assembly.php";
 
+/**
+ *	@backupGlobals disabled
+ *	@backupStaticAttributes disabled
+ */
 class BDL_Test_Assembly_structure extends BDL_Test_Assembly
 {
 	/**

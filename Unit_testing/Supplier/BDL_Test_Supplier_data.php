@@ -1,6 +1,10 @@
 <?php
 require_once "BDL_Test_Supplier.php";
 
+/**
+ *	@backupGlobals disabled
+ *	@backupStaticAttributes disabled
+ */
 class BDL_Test_Supplier_data extends BDL_Test_Supplier
 {
 	/**
