@@ -31,11 +31,11 @@ if ( empty( $_POST['password'] ) )
 
 if ( $continue )
 {
-	$serviceID = "isorcl-400";
-	$username = $_POST['username'];
-	$password = $_POST['password'];
+	// Define things that need to be globally accessible as constants.
+	define( 'ORACLE_USERNAME', $_POST['username'] );
+	define( 'ORACLE_PASSWORD', $_POST['password'] );
 	
-	$outputMode = 'HTML';
+	define( 'OUTPUT_MODE', 'HTML' );
 	$verbosity = 2;
 	$runMode = 'student';
 	

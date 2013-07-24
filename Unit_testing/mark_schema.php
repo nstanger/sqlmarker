@@ -1,11 +1,12 @@
 <?php
 
-$username = "stani07p";
-$password = "b1ggles";
+// Define things that need to be globally accessible as constants.
+define( 'ORACLE_USERNAME', 'stani07p' );
+define( 'ORACLE_PASSWORD', 'b1ggles' );
 
 $outputMode = 'TEXT';
 $verbosity = 2;
-$runMode = 'student';
+$runMode = 'staff';
 
 require_once 'test.php';
 

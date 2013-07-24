@@ -21,16 +21,6 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	
 	
 	/**
-	 *	Connection login details: Oracle service name, username, password. We only need to instantiate these once for the entire test suite.
-	 *
-	 *	@access private
-	 */
-	static private $serviceID = null;
-	static private $username = null;
-	static private $password = null;
-	
-	
-	/**
 	 *	Reporter object. Only need one for the entire test run.
 	 *
 	 *	@access private
@@ -239,84 +229,12 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		{
 			if ( self::$pdo == null )
 			{
-				self::$pdo = new PDO( "oci:dbname=" . self::getServiceID(), self::getUsername(), self::getPassword() );
+				self::$pdo = new PDO( "oci:dbname=" . ORACLE_SERVICE_ID, ORACLE_USERNAME, ORACLE_PASSWORD );
 			}
-			$this->conn = $this->createDefaultDBConnection( self::$pdo, self::getUsername() );
+			$this->conn = $this->createDefaultDBConnection( self::$pdo, ORACLE_USERNAME );
 		}
 
 		return $this->conn;
-	}
-	
-	
-	/**
-	 *	Return the Oracle service ID.
-	 *
-	 *	@access protected
-	 *	@return string
-	 */
-	static protected function getServiceID()
-	{
-		return self::$serviceID;
-	}
-	
-	
-	/**
-	 *	Return the Oracle username.
-	 *
-	 *	@access protected
-	 *	@return string
-	 */
-	static protected function getUsername()
-	{
-		return self::$username;
-	}
-	
-	
-	/**
-	 *	Return the user's password.
-	 *
-	 *	@access public
-	 *	@return string
-	 */
-	static public function getPassword()
-	{
-		return self::$password;
-	}
-	
-	
-	/**
-	 *	Set the Oracle service ID.
-	 *
-	 *	@access public
-	 *	@return void
-	 */
-	static public function setServiceID( $newServiceID )
-	{
-		self::$serviceID = $newServiceID;
-	}
-	
-	
-	/**
-	 *	Set the Oracle username.
-	 *
-	 *	@access public
-	 *	@return void
-	 */
-	static public function setUsername( $newUsername )
-	{
-		self::$username = $newUsername;
-	}
-	
-	
-	/**
-	 *	Set the user's password.
-	 *
-	 *	@access public
-	 *	@return void
-	 */
-	static public function setPassword( $newPassword )
-	{
-		self::$password = $newPassword;
 	}
 	
 	

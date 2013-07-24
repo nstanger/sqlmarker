@@ -29,28 +29,21 @@ $result = new PHPUnit_Framework_TestResult;
 $result->addListener( $listener );
 
 // List of tables to be tested. This is used to build the corresponding test class names.
-$testTables = array(
-	'Staff',
-	'Customer',
-	'Supplier',
-	'Product',
-);
+require_once "${scenario}_table_list.php";
+
 
 /*
-	Hack! There's no easy way to inject the connection details into the test classes, as they're being implicitly instatiated by the test suite below. To work around this, the connection details are stored as private static members in PHPUnit_Extensions_Database_TestCase_CreateTable, with corresponding public get/set static methods. Set them once at the start, and they'll stay set for the entire test run. Yay!
+	Hack! There's no easy way to create a global object constant, so the global report object is stored as a private static member in PHPUnit_Extensions_Database_TestCase_CreateTable, with corresponding public get/set static methods. Set it once at the start, and it'll stay set for the entire test run. Yay!
 */
-PHPUnit_Extensions_Database_TestCase_CreateTable::setServiceID( $serviceID );
-PHPUnit_Extensions_Database_TestCase_CreateTable::setUsername( $username );
-PHPUnit_Extensions_Database_TestCase_CreateTable::setPassword( $password );
 PHPUnit_Extensions_Database_TestCase_CreateTable::setReporter( $reporter );
 
 foreach ( $testTables as $table )
 {
-	$structureTest = "${scenario}_Test_${table}_structure";
-	$dataTest = "${scenario}_Test_${table}_data";
+	$structureTest	= "${scenario}_Test_${table}_structure";
+	$dataTest		= "${scenario}_Test_${table}_data";
 	
-	require_once "${scenarioDir}/${table}/${structureTest}.php";
-	require_once "${scenarioDir}/${table}/${dataTest}.php";
+	require_once "${table}/${structureTest}.php";
+	require_once "${table}/${dataTest}.php";
 	
 	$listener->reset();
 	$reporter->hr();

@@ -1,8 +1,13 @@
 <?php
+// Define things that need to be globally accessible as constants.
 
 $scenario = 'BDL';
-$scenarioDir = '.'; // Normally the same as $scenario, but you can be weird if you want...
 
-$serviceID = "isorcl-400";
+// Used to load XML fixture files, as createXMLDataSet requires an absolute path.
+define( 'TEST_CLASS_PATH', realpath( "../${scenario}/Test_classes" ) );
+
+set_include_path( get_include_path() . PATH_SEPARATOR . TEST_CLASS_PATH );
+
+define( 'ORACLE_SERVICE_ID', 'isorcl-400' );
 
 ?>
