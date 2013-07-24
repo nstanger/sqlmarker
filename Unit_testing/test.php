@@ -1,5 +1,7 @@
 <?php
 
+require_once 'test_config.php';
+
 require_once "PHPUnit/Autoload.php";
 require_once 'TestListener/HTMLTestListener.php';
 require_once 'TestListener/TextTestListener.php';
@@ -7,6 +9,7 @@ require_once 'Reporter/TextReporter.php';
 require_once 'Reporter/HTMLReporter.php';
 require_once "Schema.php";
 
+// I don't know that these two settings make any difference, but I'll leave them in for now.
 PHPUnit_Framework_Error_Warning::$enabled = FALSE;
 PHPUnit_Framework_Error_Notice::$enabled = FALSE;
 
@@ -25,6 +28,7 @@ switch ( $outputMode )
 $result = new PHPUnit_Framework_TestResult;
 $result->addListener( $listener );
 
+// List of tables to be tested. This is used to build the corresponding test class names.
 $testTables = array(
 	'Staff',
 	'Customer',
@@ -33,7 +37,7 @@ $testTables = array(
 );
 
 /*
-	Hack! There's no easy way to inject the connection details into the test classes, as they're being implicitly created by the test suite below. To work around this, the connection details are stored as private static members in PHPUnit_Extensions_Database_TestCase_CreateTable, with corresponding public get/set static methods. Set them once at the start, and they'll stay set for the entire test run. Yay!
+	Hack! There's no easy way to inject the connection details into the test classes, as they're being implicitly instatiated by the test suite below. To work around this, the connection details are stored as private static members in PHPUnit_Extensions_Database_TestCase_CreateTable, with corresponding public get/set static methods. Set them once at the start, and they'll stay set for the entire test run. Yay!
 */
 PHPUnit_Extensions_Database_TestCase_CreateTable::setServiceID( $serviceID );
 PHPUnit_Extensions_Database_TestCase_CreateTable::setUsername( $username );
@@ -42,11 +46,11 @@ PHPUnit_Extensions_Database_TestCase_CreateTable::setReporter( $reporter );
 
 foreach ( $testTables as $table )
 {
-	$structureTest = "BDL_Test_${table}_structure";
-	$dataTest = "BDL_Test_${table}_data";
+	$structureTest = "${scenario}_Test_${table}_structure";
+	$dataTest = "${scenario}_Test_${table}_data";
 	
-	require_once "${table}/${structureTest}.php";
-	require_once "${table}/${dataTest}.php";
+	require_once "${scenarioDir}/${table}/${structureTest}.php";
+	require_once "${scenarioDir}/${table}/${dataTest}.php";
 	
 	$listener->reset();
 	$reporter->hr();
