@@ -35,9 +35,9 @@ if ( $continue )
 	define( 'ORACLE_USERNAME', $_POST['username'] );
 	define( 'ORACLE_PASSWORD', $_POST['password'] );
 	
-	define( 'OUTPUT_MODE', 'HTML' );
-	$verbosity = 2;
-	$runMode = 'student';
+	$outputMode	= 'HTML';
+	$verbosity	= 2;
+	$runMode	= 'student';
 	
 	require_once 'test.php';
 }
