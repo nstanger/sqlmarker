@@ -156,6 +156,8 @@ CREATE TABLE Paper
   CONSTRAINT Paper_PK PRIMARY KEY ( Paper_Code )
 );
 				</code-block>
+				
+				<p indent="no">As with <code>Qualification.Type</code>, we could create a separate lookup table for <code>Period</code>. This table could even store additional information about the period, such as its full name, start and end dates, etc.</p>
 			
 			</answer>
 			
@@ -333,6 +335,7 @@ CREATE TABLE Person
   Other_Names       VARCHAR2(50)    NOT NULL,
   Contact_Phone     VARCHAR2(11),   -- at least 11, maybe more 
   Contact_Address   VARCHAR2(200)   NOT NULL,
+  Email             VARCHAR2(50)    NOT NULL,
   Username          VARCHAR2(50)    NOT NULL
     CONSTRAINT Person_Username_Unique UNIQUE, -- bonus marks!
   --
@@ -343,7 +346,7 @@ CREATE TABLE Staff
 ( Staff_ID          NUMBER(7),
   Rank              VARCHAR2(2)     NOT NULL
     CONSTRAINT Staff Rank_Valid
-      CHECK ( Rank IN ( 'AL', 'L', 'SL', 'AP', 'P' ) ),
+      CHECK ( Rank IN ( 'T', 'AL', 'L', 'SL', 'AP', 'P' ) ),
   Salary            NUMBER(8,2)     NOT NULL
     CONSTRAINT Staff_Salary_Range CHECK ( Salary >= 40450 ),
   --
@@ -369,9 +372,11 @@ CREATE TABLE Student
 );
 				</code-block>
 			
-				<p>It’s important when implementing “boolean” style columns such as <code>International</code> in <code>Student</code> and <code>Release</code> in <code>Assessment</code> that you are consistent in the values that you use across all such columns (more precisely, all such columns should have the same domain). Quite a few people did something like implement one column as <code>'T', 'F'</code> and the other as <code>'True', 'False'</code>, or even more subtle, <code>'t', 'f'</code> (remembering that SQL is case sensitive). Using inconsistent domains for columns that should have the same domain could lead to subtle bugs later on.</p>
+				<p>It’s important when implementing “Boolean” style columns such as <code>International</code> in <code>Student</code> and <code>Release</code> in <code>Assessment</code> that you are consistent in the values that you use across all such columns (more precisely, all such columns should have the same domain). Quite a few people did something like implement one column as <code>'T', 'F'</code> and the other as <code>'True', 'False'</code>, or even more subtle, <code>'t', 'f'</code> (remembering that SQL is case sensitive). Using inconsistent domains for columns that should have the same domain could lead to subtle bugs later on.</p>
 				
-				<p>This of course is really a consequence of not having a proper <code>BOOLEAN</code> data type in SQL. However, one person did discover—possibly inadvertently, given that it isn’t mentioned anywhere in the documentation—that <OracleServer /> now supports the use of the <code>BOOLEAN</code> data type in <code>CREATE TABLE</code>! This certainly wasn’t possible in older versions, where <code>BOOLEAN</code> was available in PL/SQL only.</p>
+				<p>This of course is really a consequence of not having a proper <code>BOOLEAN</code> data type in SQL. However, one person did discover—possibly inadvertently, given that it isn’t mentioned anywhere in the documentation—that <OracleServer /> now supports the use of the <code>BOOLEAN</code> data type in <code>CREATE TABLE</code>! This certainly wasn’t possible in older versions, where <code>BOOLEAN</code> was available in PL/SQL only. The inconsistency of implementation of a Boolean data type across various DBMSs means that it’s generally safer to use the approach above if portability is important.</p>
+				
+				<p>Once again, we could use a lookup table for <code>Staff.Rank</code>.</p>
 
 			</answer>
 			
@@ -447,6 +452,8 @@ CREATE TABLE Teach
   CONSTRAINT Teach_FK_to_Paper FOREIGN KEY ( Paper_Code ) REFERENCES Paper
 );
 				</code-block>
+				
+				<p indent="no"><code>Role</code> could be constrained using a lookup table.</p>
 
 			</answer>
 			
@@ -636,6 +643,8 @@ CREATE TABLE Assessment
     FOREIGN KEY ( Paper_Code ) REFERENCES Paper
 );
 				</code-block>
+				
+				<p indent="no"><code>Type</code> could be constrained by a lookup table.</p>
 				
 			</answer>
 			
