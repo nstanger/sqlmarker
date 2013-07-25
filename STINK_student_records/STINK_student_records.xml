@@ -345,7 +345,7 @@ CREATE TABLE Person
 CREATE TABLE Staff
 ( Staff_ID          NUMBER(7),
   Rank              VARCHAR2(2)     NOT NULL
-    CONSTRAINT Staff Rank_Valid
+    CONSTRAINT Staff_Rank_Valid
       CHECK ( Rank IN ( 'T', 'AL', 'L', 'SL', 'AP', 'P' ) ),
   Salary            NUMBER(8,2)     NOT NULL
     CONSTRAINT Staff_Salary_Range CHECK ( Salary >= 40450 ),
