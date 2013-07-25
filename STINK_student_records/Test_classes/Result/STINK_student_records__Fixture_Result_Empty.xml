@@ -1,0 +1,11 @@
+<dataset>
+  <table name="supplier">
+    <column>supplier_id</column>
+    <column>name</column>
+    <column>contact_person</column>
+    <column>phone</column>
+    <column>address</column>
+    <column>email</column>
+    <column>comments</column>
+  </table>
+</dataset>

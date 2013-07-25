@@ -1,0 +1,9 @@
+<dataset>
+  <table name="component">
+    <column>component_code</column>
+    <column>suppliers_code</column>
+    <column>description</column>
+    <column>stock_count</column>
+    <column>supplier_id</column>
+  </table>
+</dataset>
