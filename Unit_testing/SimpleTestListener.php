@@ -156,10 +156,10 @@ abstract class SimpleTestListener implements PHPUnit_Framework_TestListener
 	}
 	
 	abstract public function printPass();
-	abstract public function printFailure( PHPUnit_Framework_AssertionFailedError $e );
-	abstract public function printError( PHPUnit_Framework_AssertionFailedError $e );
-	abstract public function printIncomplete( PHPUnit_Framework_AssertionFailedError $e );
-	abstract public function printSkip( PHPUnit_Framework_AssertionFailedError $e );
+	abstract public function printFailure( Exception $e );
+	abstract public function printError( Exception $e );
+	abstract public function printIncomplete( Exception $e );
+	abstract public function printSkip( Exception $e );
 }
 
 ?>

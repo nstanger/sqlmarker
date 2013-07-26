@@ -8,22 +8,22 @@ class TextTestListener extends SimpleTestListener
 		echo "    + OK\n";
 	}
 	
-	public function printFailure( PHPUnit_Framework_AssertionFailedError $e )
+	public function printFailure( Exception $e )
 	{
 	 	echo "    - FAILED! " . $e->getMessage() . "\n";
 	}
 	
-	public function printError( PHPUnit_Framework_AssertionFailedError $e )
+	public function printError( Exception $e )
 	{
 		echo "    X ERROR! " . $e->getMessage() . "\n";
 	}
 	
-	public function printIncomplete( PHPUnit_Framework_AssertionFailedError $e )
+	public function printIncomplete( Exception $e )
 	{
 		echo "    % INCOMPLETE: " .$e->getMessage() . "\n";
 	}
 	
-	public function printSkip( PHPUnit_Framework_AssertionFailedError $e )
+	public function printSkip( Exception $e )
 	{
 		echo "    # SKIPPED: " . $e->getMessage() . "\n";
 	}
