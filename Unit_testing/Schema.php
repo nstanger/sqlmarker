@@ -1321,11 +1321,12 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	{
 		$tableName = $referencedTableName . '_FK_cols';
 		$expected = $this->getFKColumnListForTableAsDataSet( $referencedTableName, $tableName );
+		$fkColumns = $this->getFKColumnlist();
 		
 		self::$reporter->report( Reporter::STATUS_TEST, "[[ %s FK → %s: %s ]] ",
 			array(	ucfirst( strtolower( $this->getTableName() ) ),
 					ucfirst( strtolower( $referencedTableName ) ),
-	 				ucwords( strtolower( implode( ', ', $this->getFKColumnlist() ) ) ) ) );
+	 				ucwords( strtolower( implode( ', ', $fkColumns[$referencedTableName] ) ) ) ) );
 		if ( count( $this->getFKColumnlist() ) > 1 )
 		{
 			echo "s";
