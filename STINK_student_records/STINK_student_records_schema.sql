@@ -121,7 +121,7 @@ CREATE TABLE Staff
   --
   CONSTRAINT Staff_PK PRIMARY KEY ( Staff_ID ),
   CONSTRAINT Staff_FK_to_Person
-    FOREIGN KEY ( Staff_ID ) REFERENCES Person ( Person_ID )
+    FOREIGN KEY ( Staff_ID ) REFERENCES Person
 );
 
 
@@ -138,11 +138,11 @@ CREATE TABLE Student
       CHECK ( International IN ( 'T', 'F' ) ),
   Supervisor_ID     NUMBER(7),      -- optional
   --
-  CONSTRAINT Student_PK PRIMARY KEY (Student_ID),
+  CONSTRAINT Student_PK PRIMARY KEY ( Student_ID ),
   CONSTRAINT Student_FK_to_Person
-    FOREIGN KEY (Student_ID) REFERENCES Person (Person_ID),
+    FOREIGN KEY ( Student_ID ) REFERENCES Person,
   CONSTRAINT Student_FK_to_Staff
-    FOREIGN KEY (Supervisor_ID) REFERENCES Staff (Staff_ID)
+    FOREIGN KEY ( Supervisor_ID ) REFERENCES Staff
 );
 
 
