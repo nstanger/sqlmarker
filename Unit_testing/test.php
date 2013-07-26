@@ -186,20 +186,20 @@ foreach ( $testTables as $table )
 			else
 			{
 				$checkFails = $listener->countFails( "${dataTest}::testColumnIllegalValueExplicit" );
-				$reporter->report( Reporter::STATUS_ALERT, '%d of %d illegal values tested %s not rejected by a CHECK constraint.',
+				$reporter->report( Reporter::STATUS_WARNING, '%d of %d illegal values tested %s not rejected by a CHECK constraint.',
 					array(
 						$checkFails,
 						$listener->countTests( "${dataTest}::testColumnIllegalValueExplicit" ),
 						Reporter::pluralise( $checkFails, 'was', 'were' )
 					) ) ;
-				$reporter->report( Reporter::STATUS_ALERT, 'Checking values against column length...', null );
+				$reporter->report( Reporter::STATUS_WARNING, 'Checking values against column length...', null );
 				
 				/*
 					Unfortunately, we can't test just the columns that failed the CHECK test. The failed TestCases are in $testResult->failures(), but we need the column name, which is hidden away in the private $data member of TestCase. We therefore have to test all the illegal values again to see if they're larger than the column. We then make the big assumption that if all the values that failed the CHECK test did so because they exceeded the column length. If this is correct, then the number of CHECK fails will equal the number of column length passes. If not, then something more serious has probably gone wrong!
 				*/
 				$testResult = $suite->run( $result, '/testColumnIllegalValueImplicit/' );
 				$implicitPasses = $listener->countPasses( "${dataTest}::testColumnIllegalValueImplicit" );
-				$reporter->report( Reporter::STATUS_PASSED, '%d of %d illegal values tested %s rejected by exceeding the column length.',
+				$reporter->report( Reporter::STATUS_PASS, '%d of %d illegal values tested %s rejected by exceeding the column length.',
 					array(
 						$implicitPasses,
 						$listener->countTests( "${dataTest}::testColumnIllegalValueImplicit" ),
