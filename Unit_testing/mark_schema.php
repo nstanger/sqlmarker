@@ -1,7 +1,7 @@
 <?php
 
 // Define things that need to be globally accessible as constants.
-define( 'ORACLE_USERNAME', 'stani07p' );
+define( 'ORACLE_USERNAME', 'stani797' );
 define( 'ORACLE_PASSWORD', 'b1ggles' );
 
 $outputMode = 'TEXT';

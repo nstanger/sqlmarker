@@ -1,7 +1,7 @@
 <?php
 // Define things that need to be globally accessible as constants.
 
-$scenario = 'BDL';
+$scenario = 'STINK_student_records';
 
 // Used to load XML fixture files, as createXMLDataSet requires an absolute path.
 define( 'TEST_CLASS_PATH', realpath( "../${scenario}/Test_classes" ) );
