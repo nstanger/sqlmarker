@@ -29,7 +29,6 @@ class TextReporter extends Reporter
 					$statusText .= '!!! ';
 					break;
 				case Reporter::STATUS_NOTE:
-					$statusText .= '!!! ';
 					break;
 				case Reporter::STATUS_TEST:
 					break;

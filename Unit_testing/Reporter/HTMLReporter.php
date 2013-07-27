@@ -29,7 +29,7 @@ class HTMLReporter extends Reporter
 					$statusText .= ' style="color: orange;">⚠ ';
 					break;
 				case Reporter::STATUS_NOTE:
-					$statusText .= ' style="background-color: yellow;">⚠ ';
+					$statusText .= ' style="background-color: lightgrey;">';
 					break;
 				default:
 				case Reporter::STATUS_TEST:
