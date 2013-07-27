@@ -1327,11 +1327,6 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			array(	ucfirst( strtolower( $this->getTableName() ) ),
 					ucfirst( strtolower( $referencedTableName ) ),
 	 				ucwords( strtolower( implode( ', ', $fkColumns[$referencedTableName] ) ) ) ) );
-		if ( count( $this->getFKColumnlist() ) > 1 )
-		{
-			echo "s";
-		}
-		echo " " . ucwords( strtolower( implode( ', ', $this->getFKColumnListForTable( $referencedTableName ) ) ) ) . " ]]\n";
 
 		$queryString = sprintf(
 			"SELECT User_Cons_Columns.Column_Name
