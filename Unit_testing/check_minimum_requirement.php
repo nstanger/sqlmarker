@@ -18,7 +18,7 @@
 
 <table>
 	<tr>
-		<td class="blackboard grey-light result"><strong>Note:</strong> These messagesa are just for information.</td>
+		<td class="blackboard grey-light result"><strong>Note:</strong> These messages are just for information.</td>
 		<td class="blackboard yellow-ou result"><strong style="font-size: large">%</strong> <strong>Incomplete:</strong> A test was not completed. It may or may not be a problem.</td>
 	</tr>
 	<tr>
