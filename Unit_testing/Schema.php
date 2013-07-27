@@ -937,7 +937,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	{
 		if ( $columnName == '___NO_DATA___' )
 		{
-			$this->markTestSkipped( 'no columns with enmuerated legal values' );
+			$this->markTestSkipped( 'no columns with enumerated legal values' );
 		}
 	
 // 		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " accepts legal value [" . $legalValue . "] ]]\n";
@@ -977,7 +977,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	{
 		if ( $columnName == '___NO_DATA___' )
 		{
-			$this->markTestSkipped( 'no columns with enmuerated illegal values' );
+			$this->markTestSkipped( 'no columns with enumerated illegal values' );
 		}
 	
 // 		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " rejects illegal value [" . $illegalValue . "] using the column length (implicit) ]]\n";
@@ -1034,7 +1034,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	{
 		if ( $columnName == '___NO_DATA___' )
 		{
-			$this->markTestSkipped( 'no columns with enmuerated illegal values' );
+			$this->markTestSkipped( 'no columns with enumerated illegal values' );
 		}
 	
 // 		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " rejects illegal value [" . $illegalValue . "] using a CHECK constraint ]]\n";
