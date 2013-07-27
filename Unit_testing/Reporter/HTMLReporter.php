@@ -17,16 +17,16 @@ class HTMLReporter extends Reporter
 					$statusText .= '" style="padding-left: 2em;"><strong style="font-size: large">#</strong> ';
 					break;
 				case Reporter::STATUS_INCOMPLETE:
-					$statusText .= ' uniyellbg result"><strong style="font-size: large">%</strong> ';
+					$statusText .= ' yellow-ou result"><strong style="font-size: large">%</strong> ';
 					break;
 				case Reporter::STATUS_FAILURE:
-					$statusText .= ' uniredbg result""><span style="font-size: large">✘</span> ';
+					$statusText .= ' red-ou result""><span style="font-size: large">✘</span> ';
 					break;
 				case Reporter::STATUS_ERROR:
-					$statusText .= ' uniredbg result"><span style="font-size: large">☠</span> ';
+					$statusText .= ' red-ou result"><span style="font-size: large">☠</span> ';
 					break;
 				case Reporter::STATUS_WARNING:
-					$statusText .= ' uniyellbg result"><span style="font-size: large">⚠</span> ';
+					$statusText .= ' yellow-ou result"><span style="font-size: large">⚠</span> ';
 					break;
 				case Reporter::STATUS_NOTE:
 					$statusText .= ' grey-light result">';
@@ -36,7 +36,7 @@ class HTMLReporter extends Reporter
 					$statusText .= ' style="font-weight: bold;">';
 					break;
 				default:
-					$statusText .= ' uniyellbg result"><strong style="font-size: large">?</strong> ';
+					$statusText .= ' yellow-ou result"><strong style="font-size: large">?</strong> ';
 					break;
 			}
 			if ( $this->getVerbosity() > 1 ) $statusText .= "<strong>" . ucfirst( strtolower( $status ) ) . ':</strong> ';
