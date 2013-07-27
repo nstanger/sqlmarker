@@ -37,7 +37,7 @@
 
 <hr />
 
-<p class="blackboard grey-light result">Your results may take a few seconds to appear…</p>
+<p class="blackboard grey-light result">Your results may take a few seconds to appear below. If your schema passes all the tests then you have met the minimum requirement for Assignment 1 and are guaranteed to score at least 50%. If you are unsure about anything in the report, please contact one of the teaching staff.</p>
 
 <div style="border: 2px solid grey; width: 50%; padding: 1em 4em 1em 4em;">
 
