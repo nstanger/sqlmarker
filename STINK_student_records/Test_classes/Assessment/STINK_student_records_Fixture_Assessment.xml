@@ -1,0 +1,88 @@
+<dataset>
+  <table name="paper">
+    <column>paper_code</column>
+    <column>title</column>
+    <column>description</column>
+    <column>points</column>
+    <column>period</column>
+    <row>
+      <value>ACCT112</value>
+      <value>Introduction to Accounting</value>
+      <value>A whole lotta text going on.</value>
+      <value>18</value>
+      <value>S1</value>
+    </row>
+    <row>
+      <value>BSNS106</value>
+      <value>Information and Communication in Organisations</value>
+      <value>A whole lotta text going on.</value>
+      <value>18</value>
+      <value>S1</value>
+    </row>
+    <row>
+      <value>COMP160</value>
+      <value>General Programming</value>
+      <value>A whole lotta text going on.</value>
+      <value>18</value>
+      <value>SS</value>
+    </row>
+    <row>
+      <value>INFO214</value>
+      <value>Business ICT Infrstructure</value>
+      <value>A whole lotta text going on.</value>
+      <value>18</value>
+      <value>S2</value>
+    </row>
+    <row>
+      <value>INFO321</value>
+      <value>Enterprise Data Management</value>
+      <value>A whole lotta text going on.</value>
+      <value>18</value>
+      <value>S2</value>
+    </row>
+  </table>
+  <table name="assessment">
+    <column>assessment_id</column>
+    <column>assessment_year</column>
+    <column>name</column>
+    <column>description</column>
+    <column>type</column>
+    <column>release</column>
+    <column>weight</column>
+    <column>maximum_mark</column>
+    <column>paper_code</column>
+    <row>
+      <value>1234567890</value>
+      <value>2013</value>
+      <value>Assignment 1</value>
+      <value>Database Implementation</value>
+      <value>A</value>
+      <value>F</value>
+      <value>10</value>
+      <value>100</value>
+      <value>INFO214</value>
+    </row>
+    <row>
+      <value>1234567891</value>
+      <value>2013</value>
+      <value>Practical Test</value>
+      <value>A nasty, nasty test.</value>
+      <value>T</value>
+      <value>F</value>
+      <value>10</value>
+      <value>100</value>
+      <value>INFO214</value>
+    </row>
+    <row>
+      <value>1234567892</value>
+      <value>2012</value>
+      <value>Final Examination</value>
+      <value>Ooh, scary...</value>
+      <value>X</value>
+      <value>T</value>
+      <value>50</value>
+      <value>100</value>
+      <value>INFO321</value>
+    </row>
+  </table>
+</dataset>

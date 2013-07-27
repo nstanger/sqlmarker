@@ -1,0 +1,7 @@
+<dataset>
+  <table name="staff">
+    <column>staff_id</column>
+    <column>rank</column>
+    <column>salary</column>
+  </table>
+</dataset>

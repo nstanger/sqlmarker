@@ -1,7 +1,0 @@
-<dataset>
-  <table name="assembly">
-    <column>product_code</column>
-    <column>component_code</column>
-    <column>quantity</column>
-  </table>
-</dataset>

@@ -1,0 +1,13 @@
+<dataset>
+  <table name="assessment">
+    <column>assessment_id</column>
+    <column>assessment_year</column>
+    <column>name</column>
+    <column>description</column>
+    <column>type</column>
+    <column>release</column>
+    <column>weight</column>
+    <column>maximum_mark</column>
+    <column>paper_code</column>
+  </table>
+</dataset>

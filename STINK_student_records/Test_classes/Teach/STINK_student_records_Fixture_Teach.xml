@@ -1,0 +1,137 @@
+<dataset>
+  <table name="person">
+    <column>person_id</column>
+    <column>surname</column>
+    <column>other_names</column>
+    <column>contact_phone</column>
+    <column>contact_address</column>
+    <column>email</column>
+    <column>username</column>
+    <row>
+      <value>1234567</value>
+      <value>Dyson</value>
+      <value>Sang Russell</value>
+      <value>02139414116</value>
+      <value>74 Patmos Avenue</value>
+      <value>sang.dyson@stink.ac.nz</value>
+      <value>dyssa123</value>
+    </row>
+    <row>
+      <value>1234569</value>
+      <value>Kwak</value>
+      <value>Patricia Helen</value>
+      <value>02137254888</value>
+      <value>28 Cherry Drive</value>
+      <value>pat.kwak@stink.ac.nz</value>
+      <value>kwapa999</value>
+    </row>
+    <row>
+      <value>1234568</value>
+      <value>Soto</value>
+      <value>Teresa Stephanie</value>
+      <value>02737076169</value>
+      <value>21 Elwyn Crescent</value>
+      <value>sotte123@stink.ac.nz</value>
+      <value>sotte123</value>
+    </row>
+    <row>
+      <value>1234570</value>
+      <value>Reed</value>
+      <value>John Clifford</value>
+      <value>02136507402</value>
+      <value>45 Pine Hill Road</value>
+      <value>reejo282@stink.ac.nz</value>
+      <value>reejo282</value>
+    </row>
+    <row>
+      <value>1234571</value>
+      <value>Barajas</value>
+      <value>Charles William</value>
+      <value>02232104933</value>
+      <value>34 Scobie Road</value>
+      <value>barch087@stink.ac.nz</value>
+      <value>barch087</value>
+    </row>
+  </table>
+  <table name="staff">
+    <column>staff_id</column>
+    <column>rank</column>
+    <column>salary</column>
+    <row>
+      <value>1234567</value>
+      <value>L</value>
+      <value>55000.00</value>
+    </row>
+    <row>
+      <value>1234569</value>
+      <value>AP</value>
+      <value>120000.00</value>
+    </row>
+  </table>
+  <table name="Paper">
+    <column>paper_code</column>
+    <column>title</column>
+    <column>description</column>
+    <column>points</column>
+    <column>period</column>
+    <row>
+      <value>ACCT112</value>
+      <value>Introduction to Accounting</value>
+      <value>A whole lotta text going on.</value>
+      <value>18</value>
+      <value>S1</value>
+    </row>
+    <row>
+      <value>BSNS106</value>
+      <value>Information and Communication in Organisations</value>
+      <value>A whole lotta text going on.</value>
+      <value>18</value>
+      <value>S1</value>
+    </row>
+    <row>
+      <value>COMP160</value>
+      <value>General Programming</value>
+      <value>A whole lotta text going on.</value>
+      <value>18</value>
+      <value>SS</value>
+    </row>
+    <row>
+      <value>INFO214</value>
+      <value>Business ICT Infrstructure</value>
+      <value>A whole lotta text going on.</value>
+      <value>18</value>
+      <value>S2</value>
+    </row>
+    <row>
+      <value>INFO321</value>
+      <value>Enterprise Data Management</value>
+      <value>A whole lotta text going on.</value>
+      <value>18</value>
+      <value>S2</value>
+    </row>
+  </table>
+  <table name="teach">
+    <column>staff_id</column>
+    <column>paper_code</column>
+    <column>year_taught</column>
+    <column>role</column>
+    <row>
+    	<value>1234567</value>
+    	<value>INFO214</value>
+    	<value>2013</value>
+    	<value>Coordinator</value>
+    </row>
+    <row>
+    	<value>1234569</value>
+    	<value>INFO214</value>
+    	<value>2013</value>
+    	<value>Tutor</value>
+    </row>
+    <row>
+    	<value>1234567</value>
+    	<value>INFO321</value>
+    	<value>2012</value>
+    	<value>Coordinator</value>
+    </row>
+  </table>
+</dataset>

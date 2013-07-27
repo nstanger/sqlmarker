@@ -1,0 +1,9 @@
+<dataset>
+  <table name="result">
+    <column>assessment_id</column>
+    <column>enrolment_id</column>
+    <column>raw_mark</column>
+    <column>weighted_mark</column>
+    <column>percentage_mark</column>
+  </table>
+</dataset>

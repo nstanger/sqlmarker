@@ -1,0 +1,16 @@
+<dataset>
+  <table name="Paper">
+    <column>paper_code</column>
+    <column>title</column>
+    <column>description</column>
+    <column>points</column>
+    <column>period</column>
+    <row>
+      <value>INFO321</value>
+      <value>Enterprise Data Management</value>
+      <value>A whole lotta text going on.</value>
+      <value>18</value>
+      <value>S2</value>
+    </row>
+  </table>
+</dataset>

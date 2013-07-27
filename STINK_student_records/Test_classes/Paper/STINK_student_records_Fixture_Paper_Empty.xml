@@ -1,0 +1,9 @@
+<dataset>
+  <table name="paper">
+    <column>paper_code</column>
+    <column>title</column>
+    <column>description</column>
+    <column>points</column>
+    <column>period</column>
+  </table>
+</dataset>

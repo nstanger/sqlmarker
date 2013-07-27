@@ -1,9 +1,0 @@
-<dataset>
-  <table name="order_line">
-    <column>order_num</column>
-    <column>component_code</column>
-    <column>qty_ordered</column>
-    <column>price</column>
-    <column>qty_received</column>
-  </table>
-</dataset>

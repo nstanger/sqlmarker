@@ -1,8 +1,0 @@
-<dataset>
-  <table name="sale_line">
-    <column>sale_num</column>
-    <column>product_code</column>
-    <column>quantity</column>
-    <column>actual_price</column>
-  </table>
-</dataset>
