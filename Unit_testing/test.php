@@ -17,11 +17,11 @@ PHPUnit_Framework_Error_Notice::$enabled = FALSE;
 switch ( $outputMode )
 {
 	case 'HTML':
-		$reporter = new HTMLReporter( $verbosity );
+		$reporter = new HTMLReporter( OUTPUT_VERBOSITY );
 		$listener = new HTMLTestListener;
 		break;
 	case 'TEXT':
-		$reporter = new TextReporter( $verbosity );
+		$reporter = new TextReporter( OUTPUT_VERBOSITY );
 		$listener = new TextTestListener;
 		break;
 }
@@ -49,6 +49,8 @@ foreach ( $testTables as $table )
 	$listener->reset();
 	$reporter->hr();
 	
+	$reporter->report( Reporter::STATUS_NOTE, 'Testing structure of table %s.', array( $table ) );
+	
 	$suite = new Searchable_TestSuite( $structureTest );
 	
 	// Critical to data testing.
@@ -59,7 +61,7 @@ foreach ( $testTables as $table )
 		$structurePassed = $listener->wasSuccessful( 'testTableExists' );
 		if ( $structurePassed )
 		{
-			$reporter->report( Reporter::STATUS_PASS, 'Table exists.', null );
+			$reporter->report( Reporter::STATUS_PASS, 'Table %s exists.', array( $table ) );
 			
 			// Critical to data testing.
 			if ( $suite->testExists( "${structureTest}::testColumnExists" ) )
@@ -68,7 +70,7 @@ foreach ( $testTables as $table )
 				$structurePassed = $listener->wasSuccessful( "${structureTest}::testColumnExists" );
 				if ( $structurePassed )
 				{
-					$reporter->report( Reporter::STATUS_PASS, 'Table contains all the expected columns.', null );
+					$reporter->report( Reporter::STATUS_PASS, 'Table %s contains all the expected columns.', array( $table ) );
 				
 					if ( $suite->testExists( "${structureTest}::testColumnDataType" ) )
 					{
@@ -76,7 +78,9 @@ foreach ( $testTables as $table )
 						$structurePassed = $listener->wasSuccessful( "${structureTest}::testColumnDataType" );
 						if ( $structurePassed )
 						{
-							$reporter->report( Reporter::STATUS_PASS, 'All columns have compatible data types.', null );
+							$reporter->report(	Reporter::STATUS_PASS,
+												'All columns of table %s have data types compatible with the specification.',
+												array( $table )	);
 						
 							if ( $suite->testExists( "${structureTest}::testColumnLength" ) )
 							{
@@ -84,46 +88,50 @@ foreach ( $testTables as $table )
 								$structurePassed = $listener->wasSuccessful( "${structureTest}::testColumnLength" );
 								if ( $structurePassed )
 								{
-									$reporter->report( Reporter::STATUS_PASS, 'All columns have compatible lengths.', null );
+									$reporter->report(	Reporter::STATUS_PASS,
+														'All columns of table %s have lengths compatible with the specification.',
+														array( $table )	);
 								}
 								else
 								{
-									$reporter->report( Reporter::STATUS_FAILURE, '%d of the %d columns %s an unexpected column length.',
-										array(
-											$listener->countNonPasses( "${structureTest}::testColumnLength" ),
-											$listener->countPasses( "${structureTest}::testColumnLength" ),
-											Reporter::pluralise( "${structureTest}::testColumnLength" )
-										) ) ;
+									$reporter->report(	Reporter::STATUS_FAILURE,
+														'%d of the %d columns of table %s %s an unexpected column length.',
+														array(	$listener->countNonPasses( "${structureTest}::testColumnLength" ),
+																$listener->countPasses( "${structureTest}::testColumnLength" ),
+																$table,
+																Reporter::pluralise( "${structureTest}::testColumnLength", 'has', 'have' ) ) ) ;
 								}
 							}
 						}
 						else
 						{
-							$reporter->report( Reporter::STATUS_FAILURE, '%d of the %d columns %s unexpected data types.',
+							$reporter->report( Reporter::STATUS_FAILURE, '%d of the %d columns of table %s %s an unexpected data type.',
 								array(
 									$listener->countNonPasses( "${structureTest}::testColumnDataType" ),
 									$listener->countPasses( "${structureTest}::testColumnDataType" ),
+									$table,
 									Reporter::pluralise( $listener->countNonPasses( "${structureTest}::testColumnDataType" ), "has", "have" )
 								) ) ;
 							$reporter->report( Reporter::STATUS_SKIPPED, 'column length tests, as the data types do not match what was expected.', null );
 						}
 					}
 					
-					if ( $runMode !== 'student' )
+					if ( RUN_MODE !== 'student' )
 					{
 						if ( $suite->testExists( "${structureTest}::testColumnNullability" ) )
 						{
 							$testResult = $suite->run( $result, '/testColumnNullability/' );
 							if ( $listener->wasSuccessful( "${structureTest}::testColumnNullability" ) )
 							{
-								$reporter->report( Reporter::STATUS_PASS, 'All columns have the expected nullability.', null );
+								$reporter->report( Reporter::STATUS_PASS, 'All columns of table %s have the expected nullability.', array( $table ) );
 							}
 							else
 							{
-								$reporter->report( Reporter::STATUS_FAILURE, '%d of the %d columns %s unexpected nullability.',
+								$reporter->report( Reporter::STATUS_FAILURE, '%d of the %d columns of table %s %s an unexpected nullability.',
 									array(
 										$listener->countNonPasses( "${structureTest}::testColumnNullability" ),
 										$listener->countPasses( "${structureTest}::testColumnNullability" ),
+										$table,
 										Reporter::pluralise( $listener->countNonPasses( "${structureTest}::testColumnNullability" ), "has", "have" )
 									) ) ;
 							}
@@ -132,17 +140,18 @@ foreach ( $testTables as $table )
 				}
 				else
 				{
-					$reporter->report( Reporter::STATUS_FAILURE, '%d of the %d expected columns %s either missing or misnamed.',
+					$reporter->report( Reporter::STATUS_FAILURE, '%d of the %d expected columns of table %s %s either missing or misnamed.',
 						array(
 							$listener->countNonPasses( "${structureTest}::testColumnExists" ),
 							$listener->countPasses( "${structureTest}::testColumnExists" ),
+							$table,
 							Reporter::pluralise( $listener->countNonPasses( "${structureTest}::testColumnExists" ), 'is', 'are' )
 						) ) ;
 					$reporter->report( Reporter::STATUS_SKIPPED, 'data type, length and nullability tests as they will include spurious errors.', null );
 				}
 			}
 			
-			if ( $runMode !== 'student' )
+			if ( RUN_MODE !== 'student' )
 			{
 				// Not critical to data testing. Need to run both PK tests in one pass as the columns test depends on the existence test.
 				if ( $suite->testExists( 'testPKExists' ) )
@@ -150,22 +159,22 @@ foreach ( $testTables as $table )
 					$testResult = $suite->run( $result, '/testPK.*/' );
 					if ( $listener->wasSuccessful( 'testPKExists' ) )
 					{
-						$reporter->report( Reporter::STATUS_PASS, 'Primary key exists.', null );
+						$reporter->report( Reporter::STATUS_PASS, 'Primary key of table %s exists.', array( $table ) );
 					}
 					else
 					{
-						$reporter->report( Reporter::STATUS_FAILURE, 'Primary key missing.', null );
+						$reporter->report( Reporter::STATUS_FAILURE, 'Primary key of table %s missing.', array( $table ) );
 					}
 				}
 				if ( $suite->testExists( 'testPKColumns' ) )
 				{
 					if ( $listener->wasSuccessful( 'testPKColumns' ) )
 					{
-						$reporter->report( Reporter::STATUS_PASS, 'Primary key includes (only) the expected columns.', null );
+						$reporter->report( Reporter::STATUS_PASS, 'Primary key of table %s includes (only) the expected columns.', array( $table ) );
 					}
 					else
 					{
-						$reporter->report( Reporter::STATUS_FAILURE, 'Primary key does not include (only) the expected columns.', null );
+						$reporter->report( Reporter::STATUS_FAILURE, 'Primary key of table %s does not include (only) the expected columns.', array( $table ) );
 					}
 				}
 				
@@ -175,21 +184,22 @@ foreach ( $testTables as $table )
 					$testResult = $suite->run( $result, '/testFKsExist/' );
 					if ( $listener->wasSuccessful( "${structureTest}::testFKsExist" ) )
 					{
-						$reporter->report( Reporter::STATUS_PASS, 'All expected foreign keys exist.', null );
+						$reporter->report( Reporter::STATUS_PASS, 'All expected foreign keys for table %s exist.', array( $table ) );
 						
 						if ( $suite->testExists( "${structureTest}::testFKColumns" ) )
 						{
 							$testResult = $suite->run( $result, '/testFKColumns/' );
 							if ( $listener->wasSuccessful( "${structureTest}::testFKColumns" ) )
 							{
-								$reporter->report( Reporter::STATUS_PASS, 'All foreign keys include (only) the expected columns.', null );
+								$reporter->report( Reporter::STATUS_PASS, 'All foreign keys for table %s include (only) the expected columns.', array( $table ) );
 							}
 							else
 							{
-								$reporter->report( Reporter::STATUS_FAILURE, '%d of the %d foreign keys %s not include (only) the expected columns.', 
+								$reporter->report( Reporter::STATUS_FAILURE, '%d of the %d foreign keys for table %s %s not include (only) the expected columns.', 
 									array(
 										$listener->countNonPasses( "${structureTest}::testFKColumns" ),
 										$listener->countPasses( "${structureTest}::testFKColumns" ),
+										$table,
 										Reporter::pluralise( $listener->countNonPasses( "${structureTest}::testFKColumns" ), 'does', 'do' )
 									) );
 							}
@@ -197,10 +207,11 @@ foreach ( $testTables as $table )
 					}
 					else
 					{
-						$reporter->report( Reporter::STATUS_FAILURE, '%d of the %d expected foreign keys %s missing.', 
+						$reporter->report( Reporter::STATUS_FAILURE, '%d of the %d expected foreign keys for table %s %s missing.', 
 							array(
 								$listener->countNonPasses( "${structureTest}::testFKsExist" ),
 								$listener->countPasses( "${structureTest}::testFKsExist" ),
+								$table,
 								Reporter::pluralise( $listener->countNonPasses( "${structureTest}::testFKsExist" ), 'is', 'are' )
 							) );
 						
@@ -214,19 +225,21 @@ foreach ( $testTables as $table )
 					$testResult = $suite->run( $result, '/testConstraintsNamed/' );
 					if ( $listener->wasSuccessful( "${structureTest}::testConstraintsNamed" ) )
 					{
-						$reporter->report( Reporter::STATUS_PASS, 'All constraints that should be are explicitly named.', null );
+						$reporter->report( Reporter::STATUS_PASS, 'All constraints of table %s that should be are explicitly named.', array( $table ) );
 					}
 					else
 					{
-						$reporter->report( Reporter::STATUS_FAILURE, 'Some constraints are not explicitly named that should be.', null );
+						$reporter->report( Reporter::STATUS_FAILURE, 'Some constraints of table %s are not explicitly named that should be.', array( $table ) );
 					}
 				}
 			}
 		}
 	}
 	
-	if ( $runMode !== 'student' )
+	if ( RUN_MODE !== 'student' )
 	{
+		$reporter->report( Reporter::STATUS_NOTE, 'Testing constraints of table %s.', array( $table ) );
+		
 		/*
 			If the table or required columns are missing or misnamed, we need to skip the data testing entirely, as the INSERTs will just error out. We can't incorporate this into the if above, because we're using a completely different test suite.
 		*/

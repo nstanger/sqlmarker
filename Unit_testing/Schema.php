@@ -619,14 +619,14 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	}
 	
 	
-// 	/**
-// 	 *	Data provider to return a list of referenced table and columns for each foreign key.
-// 	 *
-// 	 *	If your test needs to iterate through all of the referenced tables and columns of the table's foreign keys, then use this method as the data provider. Each referenced table name plus a list of the referencing columns is presented to the consumer in turn.
-// 	 *
-// 	 *	@access public
-// 	 *	@return array( array( string, array( string+ ) )* )
-// 	 */
+	/**
+	 *	Data provider to return a list of referenced table and columns for each foreign key.
+	 *
+	 *	If your test needs to iterate through all of the referenced tables and columns of the table's foreign keys, then use this method as the data provider. Each referenced table name plus a list of the referencing columns is presented to the consumer in turn.
+	 *
+	 *	@access public
+	 *	@return array( array( string, array( string+ ) )* )
+	 */
 // 	public function provideFKDetails()
 // 	{
 // 		$theList = array();
@@ -649,7 +649,6 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	 */
 	protected function assertTableExists()
 	{
-// 		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . " table exists ]]\n";
 		self::$reporter->report( Reporter::STATUS_TEST, "[[ %s ]] ", array( ucfirst( strtolower( $this->getTableName() ) ) ) );
 		
 		$queryString = sprintf(
@@ -658,15 +657,21 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			 WHERE ( Table_Name = '%s' )",
 			strtoupper( $this->getTableName() )
 		);
-//	 	echo "$queryString\n";
 		
-		$errorString = sprintf(
-			"couldn't find the %s table [%+1.1f] --- check for misspelled [%+1.1f] or delimited [%+1.1f] identifiers",
-			ucfirst( strtolower( $this->getTableName() ) ),
-			$this->markAdjustments['missingTable'],
-			$this->markAdjustments['misspelledIdentifier'],
-			$this->markAdjustments['delimitedIdentifier']
-		);
+		if ( RUN_MODE === 'staff' )
+		{
+			$errorString = sprintf(
+				"couldn't find the %s table [%+1.1f] --- check for misspelled [%+1.1f] or delimited [%+1.1f] identifiers",
+				ucfirst( strtolower( $this->getTableName() ) ),
+				$this->markAdjustments['missingTable'],
+				$this->markAdjustments['misspelledIdentifier'],
+				$this->markAdjustments['delimitedIdentifier']
+			);
+		}
+		else if ( RUN_MODE === 'student' )
+		{
+			$errorString = sprintf( "couldn't find the %s table", ucfirst( strtolower( $this->getTableName() ) ) );
+		}
 		
 		$actual = $this->getConnection()->createQueryTable( "user_tables", $queryString );
 		$this->assertEquals( 1, $actual->getRowCount(), $errorString );
@@ -683,7 +688,6 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	 */
 	protected function assertColumnExists( $columnName )
 	{
-// 		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " exists ]]\n";
 		self::$reporter->report( Reporter::STATUS_TEST, "[[ %s.%s ]] ",
 			array( ucfirst( strtolower( $this->getTableName() ) ), ucfirst( strtolower( $columnName ) ) ) );
 		
@@ -694,17 +698,27 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			strtoupper( $this->getTableName() ),
 			strtoupper( $columnName )
 		);
-//	 	echo "$queryString\n";
 		
 		$actual = $this->getConnection()->createQueryTable( $this->getTableName() . '_' . $columnName, $queryString );
 		
-		$errorString = sprintf(
-			"couldn't find the %s.%s column --- check for misspelled [%+1.1f] or delimited [%+1.1f] identifiers",
-			ucfirst( strtolower( $this->getTableName() ) ),
-			ucfirst( strtolower( $columnName ) ),
-			$this->markAdjustments['misspelledIdentifier'],
-			$this->markAdjustments['delimitedIdentifier']
-		);
+		if ( RUN_MODE === 'staff' )
+		{
+			$errorString = sprintf(
+				"couldn't find the %s.%s column --- check for misspelled [%+1.1f] or delimited [%+1.1f] identifiers",
+				ucfirst( strtolower( $this->getTableName() ) ),
+				ucfirst( strtolower( $columnName ) ),
+				$this->markAdjustments['misspelledIdentifier'],
+				$this->markAdjustments['delimitedIdentifier']
+			);
+		}
+		else if ( RUN_MODE === 'student' )
+		{
+			$errorString = sprintf(	"couldn't find the %s.%s column",
+									ucfirst( strtolower( $this->getTableName() ) ),
+									ucfirst( strtolower( $columnName ) )	);
+		}
+		
+		// check for alternative column names here?
 						
 		$this->assertEquals( 1, $actual->getRowCount(), $errorString );
 	}
@@ -720,11 +734,18 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	 */
 	protected function assertColumnDataType( $columnName, $columnTypeList )
 	{
-// 		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " data type is " . implode( ' | ', $columnTypeList ) . " ]]\n";
-// 		self::$reporter->report( Reporter::STATUS_TEST, "[[ %s.%s: %s ]] ",
-// 			array( ucfirst( strtolower( $this->getTableName() ) ), ucfirst( strtolower( $columnName ) ), implode( ' | ', $columnTypeList ) ) );
-		self::$reporter->report( Reporter::STATUS_TEST, "[[ %s.%s data type ]] ",
-			array( ucfirst( strtolower( $this->getTableName() ) ), ucfirst( strtolower( $columnName ) ) ) );
+		if ( RUN_MODE === 'staff' )
+		{
+			self::$reporter->report(	Reporter::STATUS_TEST, "[[ %s.%s: data type is %s ]] ",
+										array(	ucfirst( strtolower( $this->getTableName() ) ),
+												ucfirst( strtolower( $columnName ) ),
+												implode( ' | ', $columnTypeList ) ) );
+		}
+		else if ( RUN_MODE === 'student' )
+		{
+			self::$reporter->report(	Reporter::STATUS_TEST, "[[ %s.%s data type ]] ",
+										array( ucfirst( strtolower( $this->getTableName() ) ), ucfirst( strtolower( $columnName ) ) ) );
+		}
 		
 		$queryString = sprintf(
 			"SELECT Data_Type
@@ -733,24 +754,26 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			strtoupper( $this->getTableName() ),
 			strtoupper( $columnName )
 		);
-//	 	echo "$queryString\n";
 		
 		$actual = $this->getConnection()->createQueryTable( $this->getTableName() . '_' . $columnName, $queryString );
 		
-// 		$errorString = sprintf(
-// 			'column %s.%s has unexpected data type %s [%+1.1f]',
-// 			ucfirst( strtolower( $this->getTableName() ) ),
-// 			ucfirst( strtolower( $columnName ) ),
-// 			$actual->getValue( 0, 'DATA_TYPE' ),
-// 			$this->markAdjustments['incorrectDataType']
-// 		);
-		$errorString = sprintf(
-			'column %s.%s has unexpected data type %s; check the specification again or consult with the teaching staff',
-			ucfirst( strtolower( $this->getTableName() ) ),
-			ucfirst( strtolower( $columnName ) ),
-			$actual->getValue( 0, 'DATA_TYPE' ),
-			$this->markAdjustments['incorrectDataType']
-		);
+		if ( RUN_MODE === 'staff' )
+		{
+			$errorString = sprintf(	'column %s.%s has unexpected data type %s [%+1.1f]',
+									ucfirst( strtolower( $this->getTableName() ) ),
+									ucfirst( strtolower( $columnName ) ),
+									$actual->getValue( 0, 'DATA_TYPE' ),
+									$this->markAdjustments['incorrectDataType']	);
+		}
+		else if ( RUN_MODE === 'student' )
+		{
+			$errorString = sprintf(
+				'column %s.%s has unexpected data type %s; check the specification again or consult with the teaching staff',
+				ucfirst( strtolower( $this->getTableName() ) ),
+				ucfirst( strtolower( $columnName ) ),
+				$actual->getValue( 0, 'DATA_TYPE' ),
+				$this->markAdjustments['incorrectDataType']	);
+		}
 						
 		$this->assertContains( $actual->getValue( 0, 'DATA_TYPE' ), $columnTypeList, $errorString );
 	}
@@ -770,35 +793,37 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		// This is pretty unlikely in practice, but you never know...
 		if ( $columnName == '___NO_DATA___' )
 		{
-			$this->markTestSkipped( 'no columns with enumerated legal values' );
+			$this->markTestSkipped( 'all of the columns are of types that have no length' );
 		}
 	
-// 		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " length is ";
 		$lengthSpec = '';
-// 		if ( $maxLength == 0 )
-// 		{
-// 			$lengthSpec .= "≥ " . $minLength;
-// 		}
-// 		elseif ( $minLength == 0 )
-// 		{
-// 			$lengthSpec .= "≤ " . $maxLength;
-// 		}
-// 		elseif ( $minLength != $maxLength )
-// 		{
-// 			$lengthSpec .= $minLength . "–" . $maxLength;
-// 		}
-// 		else
-// 		{
-// 			$lengthSpec .= $maxLength;
-// 		}
-// 		
-// 		if ( $columnType === 'NUMBER' )
-// 		{
-// 			if ( $numDecimals > 0 ) // technically if could also be < 0, but this is uncommon
-// 			{
-// 				$lengthSpec .= " (including " . $numDecimals . " decimal places)";
-// 			}
-// 		}
+		if ( RUN_MODE === 'staff' )
+		{
+			if ( $maxLength == 0 )
+			{
+				$lengthSpec .= "≥ ${minLength}";
+			}
+			elseif ( $minLength == 0 )
+			{
+				$lengthSpec .= "≤ ${maxLength}";
+			}
+			elseif ( $minLength != $maxLength )
+			{
+				$lengthSpec .= "${minLength}–${maxLength}";
+			}
+			else
+			{
+				$lengthSpec .= "= ${maxLength}";
+			}
+			
+			if ( $columnType === 'NUMBER' )
+			{
+				if ( $numDecimals > 0 ) // technically it could also be < 0, but this is uncommon
+				{
+					$lengthSpec .= " (including " . $numDecimals . " decimal places)";
+				}
+			}
+		}
 		
 		self::$reporter->report( Reporter::STATUS_TEST, "[[ %s.%s length %s ]] ",
 			array( ucfirst( strtolower( $this->getTableName() ) ), ucfirst( strtolower( $columnName ) ), $lengthSpec ) );
@@ -829,22 +854,22 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		
 		if ( $columnType === 'NUMBER' )
 		{
-// 			$errorString = sprintf(
-// 				'column %s.%s has incorrect length %d, %d [%+1.1f]',
-// 				ucfirst( strtolower( $this->getTableName() ) ),
-// 				ucfirst( strtolower( $columnName ) ),
-// 				$actual->getValue( 0, 'DATA_PRECISION' ),
-// 				$actual->getValue( 0, 'DATA_SCALE' ),
-// 				$this->markAdjustments['incorrectLength']
-// 			);
-			$errorString = sprintf(
-				'column %s.%s has unexpected length; check the specification again or consult with the teaching staff',
-				ucfirst( strtolower( $this->getTableName() ) ),
-				ucfirst( strtolower( $columnName ) ),
-				$actual->getValue( 0, 'DATA_PRECISION' ),
-				$actual->getValue( 0, 'DATA_SCALE' ),
-				$this->markAdjustments['incorrectLength']
-			);
+			if ( RUN_MODE === 'staff' )
+			{
+				$errorString = sprintf(	'column %s.%s has unexpected length %d, %d [%+1.1f]',
+										ucfirst( strtolower( $this->getTableName() ) ),
+										ucfirst( strtolower( $columnName ) ),
+										$actual->getValue( 0, 'DATA_PRECISION' ),
+										$actual->getValue( 0, 'DATA_SCALE' ),
+										$this->markAdjustments['incorrectLength']	);
+			}
+			else if ( RUN_MODE === 'student' )
+			{
+				$errorString = sprintf(
+					'column %s.%s has unexpected length; check the specification again or consult with the teaching staff',
+					ucfirst( strtolower( $this->getTableName() ) ),
+					ucfirst( strtolower( $columnName ) )	);
+			}
 							
 			if ( $minLength > 0 )
 			{
@@ -866,13 +891,21 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			// as they should have no length specified.
 			if ( $actual->getValue( 0, 'DATA_TYPE' ) != 'CLOB' )
 			{
-				$errorString = sprintf(
-					'column %s.%s has incorrect length %d [%+1.1f]',
-					ucfirst( strtolower( $this->getTableName() ) ),
-					ucfirst( strtolower( $columnName ) ),
-					$actual->getValue( 0, 'CHAR_LENGTH' ),
-					$this->markAdjustments['incorrectLength']
-				);
+				if ( RUN_MODE === 'staff' )
+				{
+					$errorString = sprintf(	'column %s.%s has unexpected length %d [%+1.1f]',
+											ucfirst( strtolower( $this->getTableName() ) ),
+											ucfirst( strtolower( $columnName ) ),
+											$actual->getValue( 0, 'CHAR_LENGTH' ),
+											$this->markAdjustments['incorrectLength']	);
+				}
+				else if ( RUN_MODE === 'student' )
+				{
+					$errorString = sprintf(
+						'column %s.%s has unexpected length; check the specification again or consult with the teaching staff',
+						ucfirst( strtolower( $this->getTableName() ) ),
+						ucfirst( strtolower( $columnName ) )	);
+				}
 								
 				if ( $maxLength > 0 )
 				{
@@ -888,6 +921,11 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	}
 	
 	
+	/****************************************************************************************************
+	 *  THE REMAINING ASSERT() METHODS ARE NOT INTENDED TO BE CALLED IN "STUDENT" RUN MODE.
+	 ****************************************************************************************************/
+	
+	
 	/**
 	 *	Assert that a column allows or disallows nulls.
 	 *
@@ -898,8 +936,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	 */
 	protected function assertColumnNullability( $columnName, $columnNullability )
 	{
-// 		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " nullability is " . $columnNullability . " ]]\n";
-		self::$reporter->report( Reporter::STATUS_TEST, "[[ %s.%s nulls: %s ]] ",
+		self::$reporter->report( Reporter::STATUS_TEST, "[[ %s.%s nullability should be %s ]] ",
 			array( ucfirst( strtolower( $this->getTableName() ) ), ucfirst( strtolower( $columnName ) ), $columnNullability ) );
 		
 		$queryString = sprintf(
@@ -909,17 +946,14 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			strtoupper( $this->getTableName() ),
 			strtoupper( $columnName )
 		);
-//	 	echo "$queryString\n";
 		
 		$actual = $this->getConnection()->createQueryTable( $this->getTableName() . '_' . $columnName, $queryString );
 		
-		$errorString = sprintf(
-			'column %s.%s has incorrect nullability "%s" [%+1.1f]',
-			ucfirst( strtolower( $this->getTableName() ) ),
-			ucfirst( strtolower( $columnName ) ),
-			$actual->getValue( 0, 'NULLABLE' ),
-			$this->markAdjustments['incorrectNullability']
-		);
+		$errorString = sprintf(	'column %s.%s has incorrect nullability "%s" [%+1.1f]',
+								ucfirst( strtolower( $this->getTableName() ) ),
+								ucfirst( strtolower( $columnName ) ),
+								$actual->getValue( 0, 'NULLABLE' ),
+								$this->markAdjustments['incorrectNullability']	);
 		
 		$this->assertEquals( $actual->getValue( 0, 'NULLABLE' ), $columnNullability, $errorString );
 	}
@@ -939,8 +973,8 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		{
 			$this->markTestSkipped( 'no columns with enumerated legal values' );
 		}
-	
-// 		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " accepts legal value [" . $legalValue . "] ]]\n";
+		
+		// Should never be called in student run mode.
 		self::$reporter->report( Reporter::STATUS_TEST, "[[ %s.%s accepts “%s” ]] ",
 			array( ucfirst( strtolower( $this->getTableName() ) ), ucfirst( strtolower( $columnName ) ), $legalValue ) );
 		
@@ -980,7 +1014,6 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			$this->markTestSkipped( 'no columns with enumerated illegal values' );
 		}
 	
-// 		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " rejects illegal value [" . $illegalValue . "] using the column length (implicit) ]]\n";
 		self::$reporter->report( Reporter::STATUS_TEST, "[[ %s.%s rejects “%s” using column length (implicit) ]] ",
 			array( ucfirst( strtolower( $this->getTableName() ) ), ucfirst( strtolower( $columnName ) ), $illegalValue ) );
 		
@@ -1037,7 +1070,6 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			$this->markTestSkipped( 'no columns with enumerated illegal values' );
 		}
 	
-// 		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . '.' . ucfirst( strtolower( $columnName ) ) . " rejects illegal value [" . $illegalValue . "] using a CHECK constraint ]]\n";
 		self::$reporter->report( Reporter::STATUS_TEST, "[[ %s.%s rejects “%s” using CHECK ]] ",
 			array( ucfirst( strtolower( $this->getTableName() ) ), ucfirst( strtolower( $columnName ) ), $illegalValue ) );
 		
@@ -1204,7 +1236,6 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	 */
 	public function assertPKExists()
 	{
-// 		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . " table primary key constraint exists ]]\n";
 		self::$reporter->report( Reporter::STATUS_TEST, "[[ %s PK ]] ",
 			array( ucfirst( strtolower( $this->getTableName() ) ) ) );
 		
@@ -1242,13 +1273,6 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		$tableName = $this->getTableName() . '_PK_cols';
 		$expected = $this->getPKColumnListAsDataSet( $tableName );
 		
-// 		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) .
-// 			" table primary key constraint contains (only) the column";
-// 		if ( count( $this->getPKColumnlist() ) > 1 )
-// 		{
-// 			echo "s";
-// 		}
-// 		echo " " . ucwords( strtolower( implode( ', ', $this->getPKColumnList() ) ) ) . " ]]\n";
 		self::$reporter->report( Reporter::STATUS_TEST, "[[ %s PK: %s ]] ",
 			array( ucfirst( strtolower( $this->getTableName() ) ), ucwords( strtolower( implode( ', ', $this->getPKColumnList() ) ) ) ) );
 
@@ -1400,8 +1424,6 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 				break;
 		}
 	
-// 		echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) .
-// 			" table " . $longType . " constraint " . $constraintName . " is explicitly named ]]\n";
 		self::$reporter->report( Reporter::STATUS_TEST, "[[ %s %s constraint %s ]] ",
 			array( ucfirst( strtolower( $this->getTableName() ) ), $longType, $constraintName ) );
 
