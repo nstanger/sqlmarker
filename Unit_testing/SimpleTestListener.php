@@ -108,7 +108,7 @@ abstract class SimpleTestListener implements PHPUnit_Framework_TestListener
  
 	public function addSkippedTest(PHPUnit_Framework_Test $test, Exception $e, $time)
 	{
-		$this->printSkipped( $e );
+		$this->printSkip( $e );
 		$this->suiteSkipCount++;
 		$this->skips[ $test->getName() ] = 1;
 	}
