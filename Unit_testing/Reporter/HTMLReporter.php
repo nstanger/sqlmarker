@@ -7,36 +7,36 @@ class HTMLReporter extends Reporter
 	{
 		if ( $this->getVerbosity() )
 		{
-			$statusText = '<p class="blackboard"><span';
+			$statusText = '<p class="blackboard';
 			switch ( $status )
 			{
 				case Reporter::STATUS_PASS:
-					$statusText .= ' style="color: green;">✔ ';
+					$statusText .= ' greenbg result"><span style="font-size: large">✔</span> ';
 					break;
 				case Reporter::STATUS_SKIPPED:
-					$statusText .= ' style="padding-left: 2em;"># ';
+					$statusText .= '" style="padding-left: 2em;"><strong style="font-size: large">#</strong> ';
 					break;
 				case Reporter::STATUS_INCOMPLETE:
-					$statusText .= ' style="background-color: yellow;">% ';
+					$statusText .= ' uniyellbg result"><strong style="font-size: large">%</strong> ';
 					break;
 				case Reporter::STATUS_FAILURE:
-					$statusText .= ' style="color: red;">✘ ';
+					$statusText .= ' uniredbg result""><span style="font-size: large">✘</span> ';
 					break;
 				case Reporter::STATUS_ERROR:
-					$statusText .= ' style="color: red;">☠ ';
+					$statusText .= ' uniredbg result"><span style="font-size: large">☠</span> ';
 					break;
 				case Reporter::STATUS_WARNING:
-					$statusText .= ' style="color: orange;">⚠ ';
+					$statusText .= ' uniyellbg result"><span style="font-size: large">⚠</span> ';
 					break;
 				case Reporter::STATUS_NOTE:
-					$statusText .= ' style="background-color: lightgrey;">';
+					$statusText .= ' grey-light result">';
 					break;
 				default:
 				case Reporter::STATUS_TEST:
 					$statusText .= ' style="font-weight: bold;">';
 					break;
 				default:
-					$statusText .= ' style="background-color: yellow;">? ';
+					$statusText .= ' uniyellbg result"><strong style="font-size: large">?</strong> ';
 					break;
 			}
 			if ( $this->getVerbosity() > 1 ) $statusText .= "<strong>" . ucfirst( strtolower( $status ) ) . ':</strong> ';
