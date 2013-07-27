@@ -535,6 +535,9 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		// A proper temporary table would be nice, but Oracle's temporary tables at
 		// best only truncate themselves at the end of a transaction, rather than go
 		// away completely like PostgreSQL temporary tables can. :(
+		//
+		// I thought it might be possible to use a WITH to solve the problem, but it
+		// turns out it doesn't work :(.
 		$createString = sprintf(
 			"CREATE TABLE Temp_Constraints AS
 			   SELECT Constraint_Name, Constraint_Type,
