@@ -175,6 +175,23 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	
 	
 	/**
+	 *	Return a list of aliases for a given column name (if any).
+	 *
+	 *	@return array
+	 */
+	protected function getColumnAliases( $columnName )
+	{
+		$theColumns = $this->getColumnList();
+		
+		if ( isset( $theColumns[$columnName]['aliases'] ) )
+		{
+			return $theColumns[$columnName]['aliases'];
+		}
+		return array();
+	}
+	
+	
+	/**
 	 *	Return a test INSERT statement, using standard test values except for those specified in the substitutions list. If you want to test NULL or DEFAULT, just substitute the standard test value with the 'NULL' and 'DEFAULT' keywords, respectively.
 	 *
 	 *	@return string
@@ -721,9 +738,35 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 									ucfirst( strtolower( $columnName ) )	);
 		}
 		
-		// check for alternative column names here?
-						
-		$this->assertEquals( 1, $actual->getRowCount(), $errorString );
+		$theCount = $actual->getRowCount();
+		if ( $theCount === 0 )
+		{
+			// Column doesn't exist with the expected name; check for aliases.
+			$aliases = $this->getColumnAliases( $columnName );
+			if ( count( $aliases ) > 0 )
+			{
+				foreach ( $aliases as $alias )
+				{
+					$queryString = sprintf(
+						"SELECT Column_Name
+						 FROM User_Tab_Cols
+						 WHERE ( Table_Name = '%s' ) AND ( Column_Name = '%s' )",
+						strtoupper( $this->getTableName() ),
+						strtoupper( $alias )
+					);
+					$actual = $this->getConnection()->createQueryTable( $this->getTableName() . '_' . $columnName, $queryString );
+					if ( $actual->getRowCount() === 1 )
+					{
+						self::$reporter->report(	Reporter::STATUS_WARNING,
+													'Found alternative name “%s” for %s.%s; please rename it to “%s”.',
+													array( $alias, $this->getTableName(), $columnName, $columnName )	);
+						break;
+					}
+				}
+			}
+		}
+		
+		$this->assertEquals( 1, $theCount, $errorString );
 	}
 	
 	
