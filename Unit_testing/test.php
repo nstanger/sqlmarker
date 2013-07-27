@@ -49,7 +49,7 @@ foreach ( $testTables as $table )
 	$listener->reset();
 	$reporter->hr();
 	
-	$reporter->report( Reporter::STATUS_NOTE, 'Testing structure of table %s.', array( $table ) );
+	$reporter->report( Reporter::STATUS_NOTE, 'Checking structure of table %s.', array( $table ) );
 	
 	$suite = new Searchable_TestSuite( $structureTest );
 	
@@ -321,7 +321,6 @@ foreach ( $testTables as $table )
 			$reporter->report( Reporter::STATUS_SKIPPED, 'data tests, as failures in the structure testing mean that they may not work.', null );
 		}
 	}
-	$reporter->report( Reporter::STATUS_NOTE, 'Completed all tests for table %s.', array( $table ) );
 }
 
 $reporter->hr();
