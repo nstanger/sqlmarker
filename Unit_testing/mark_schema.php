@@ -9,6 +9,7 @@ $outputMode = 'TEXT';
 define( 'OUTPUT_VERBOSITY', 2 );
 define( 'RUN_MODE', 'staff' );
 
+require_once 'test_config.php';
 require_once 'test.php';
 
 ?>

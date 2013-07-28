@@ -30,7 +30,7 @@
 		<td class="blackboard result"><strong style="font-size: large">#</strong> <strong>Skipped:</strong> A test was skipped. It may or may not be a problem.</td>
 	</tr>
 	<tr>
-		<td class="blackboard red-ou result"><strong style="font-size: large">☠</strong> <strong>Error:</strong> There was an error on the server—please <a href="mailto:nigel.stanger@otago.ac.nz">contact Nigel</a>.</td>
+		<td class="blackboard red-ou result"><span style="font-size: large">☠</span> <strong>Error:</strong> There was an error on the server—please <a href="mailto:nigel.stanger@otago.ac.nz">contact Nigel</a>.</td>
 		<td />
 	</tr>
 </table>
@@ -43,21 +43,11 @@
 
 <?php
 
-$continue = true;
-
-if ( empty( $_POST['username'] ) )
+try
 {
-	echo '<p class="unired">Missing username, please return to the login page and try again.</p>';
-	$continue = false;
-}
-if ( empty( $_POST['password'] ) )
-{
-	echo '<p class="unired">Missing password, please return to the login page and try again.</p>';
-	$continue = false;
-}
-
-if ( $continue )
-{
+	if ( empty( $_POST['username'] ) ) throw new Exception( 'No username entered. Please return to the login page and try again.' );
+	if ( empty( $_POST['password'] ) ) throw new Exception( 'No password entered. Please return to the login page and try again.' );
+	
 	// Define things that need to be globally accessible as constants.
 	define( 'ORACLE_USERNAME', $_POST['username'] );
 	define( 'ORACLE_PASSWORD', $_POST['password'] );
@@ -67,11 +57,40 @@ if ( $continue )
 	define( 'OUTPUT_VERBOSITY', 2 );
 	define( 'RUN_MODE', 'student' );
 	
+	require_once 'test_config.php';
+
+	// Test that the database connection works.
+	$testPDO = new PDO( "oci:dbname=" . ORACLE_SERVICE_ID, ORACLE_USERNAME, ORACLE_PASSWORD );
+	unset( $testPDO );
+
 	require_once 'test.php';
 }
-else
+catch ( PDOException $e )
 {
-	echo '<p>Redirecting you back to the login page…</p>';
+	echo '<p class="blackboard red-ou result"><span style="font-size: large">☠</span> <strong>Error:</strong> ';
+	switch ( $e->getCode() )
+	{
+		case 1017:
+			echo 'Oracle username and/or password are incorrect, cannot connect to schema. Please check your login details and try again.';
+			break;
+		default:
+			echo 'Failed to connect to Oracle, error was:<br /><span class="blackboard">';
+			echo $e->getMessage();
+			echo '</span>';
+			break;
+	}
+	echo "</p>\n";
+	redirect();
+}
+catch ( Exception $e )
+{
+	echo '<p class="blackboard red-ou result"><span style="font-size: large">☠</span> <strong>Error:</strong> ', $e->getMessage(), "</p>\n";
+	redirect();
+}
+
+function redirect()
+{
+	echo '<p class="blackboard grey-light result">Redirecting you back to the login page in a few seconds…</p>';
 	header( "refresh:7;url=student_login.html" );
 }
 ?>
