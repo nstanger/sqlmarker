@@ -4,7 +4,7 @@
 	<meta charset="utf-8" />
 	<title>INFO 214 Assignment 1 Minimum Requirement Tester: Results</title>
 	<meta name="generator" content="BBEdit 9.6" />
-	<link rel="Stylesheet" href="https://blackboard.otago.ac.nz/bbcswebdav/courses/INFO321_S2DNS_2013/db_styles.css" type="text/css" />
+	<link rel="Stylesheet" href="https://blackboard.otago.ac.nz/bbcswebdav/courses/INFO214_S2DNS_2013/db_styles.css" type="text/css" />
 	<style type="text/css" media="screen">
 		.greenbg	{ background-color: green; color: white; }
 		.result		{ padding: 8px; }
