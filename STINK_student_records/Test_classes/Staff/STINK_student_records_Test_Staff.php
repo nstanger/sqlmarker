@@ -23,7 +23,6 @@ abstract class STINK_student_records_Test_Staff extends PHPUnit_Extensions_Datab
 			'RANK'			=>	array(	'generic_type'	=>	'TEXT',
 										'sql_type'		=>	array( 'CHAR', 'VARCHAR2', 'VARCHAR' ),
 										'min_length'	=>	2,
-										'max_length'	=>	2,
 										'nullable'		=>	false,
 										'legal_values'	=>	array( 'T', 'AL', 'L', 'SL', 'AP', 'P', ),
 										'illegal_values'=>	array( 't', '12', ' ', ),

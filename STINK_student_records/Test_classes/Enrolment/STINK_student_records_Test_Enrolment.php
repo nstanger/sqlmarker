@@ -21,6 +21,8 @@ abstract class STINK_student_records_Test_Enrolment extends PHPUnit_Extensions_D
 										'test_value'	=>	"8765432109",	),
 			'DESCRIPTION'	=>	array(	'generic_type'	=>	'TEXT',
 										'sql_type'		=>	array( 'VARCHAR2', 'VARCHAR' ),
+										'min_length'	=>	100,
+										'max_length'	=>	100,
 										'nullable'		=>	false,
 										'test_value'	=>	"Blah blah blah",	),
 			'YEAR_ENROLLED'	=>	array(	'generic_type'	=>	'NUMBER',

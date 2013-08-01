@@ -100,7 +100,7 @@ CREATE TABLE Person
   Contact_Phone     VARCHAR2(11),   -- at least 11, maybe more 
   Contact_Address   VARCHAR2(200)   NOT NULL,
   Email             VARCHAR2(50)    NOT NULL,
-  Username          VARCHAR2(50)    NOT NULL
+  Username          VARCHAR2(10)    NOT NULL
     CONSTRAINT Person_Username_Unique UNIQUE, -- bonus marks!
   --
   CONSTRAINT Person_PK PRIMARY KEY ( Person_ID )
