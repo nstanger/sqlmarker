@@ -23,7 +23,7 @@ abstract class Reporter
 	
 	public static function pluralise( $count, $oneText, $manyText )
 	{
-		return ( $count > 1 ) ? $manyText : $oneText;
+		return ( abs( $count ) !== 1 ) ? $manyText : $oneText;
 	}
 	
 	public function setVerbosity( $newVerbosity )
@@ -43,7 +43,7 @@ abstract class Reporter
 	 */
 	public function report( $statusText, $reportText, $printfArguments )
 	{
-		if ( $this->verbosity ) vprintf( $statusText . $reportText, $printfArguments );
+		if ( $this->verbosity ) vprintf( $statusText . $reportText . "\n", $printfArguments );
 	}
 	
 	abstract public function hr();

@@ -5,7 +5,9 @@ require_once 'test_config.php';
 require_once "PHPUnit/Autoload.php";
 require_once 'TestListener/HTMLTestListener.php';
 require_once 'TestListener/TextTestListener.php';
+require_once 'TestListener/ANSITestListener.php';
 require_once 'Reporter/TextReporter.php';
+require_once 'Reporter/ANSIReporter.php';
 require_once 'Reporter/HTMLReporter.php';
 require_once 'Searchable_TestSuite.php';
 require_once "Schema.php";
@@ -23,6 +25,10 @@ switch ( $outputMode )
 	case 'TEXT':
 		$reporter = new TextReporter( OUTPUT_VERBOSITY );
 		$listener = new TextTestListener;
+		break;
+	case 'ANSI':
+		$reporter = new ANSIReporter( OUTPUT_VERBOSITY );
+		$listener = new ANSITestListener;
 		break;
 }
 
@@ -298,10 +304,10 @@ foreach ( $testTables as $table )
 								
 								For example, suppose that two values fail the CHECK test with "length exceeded", one fails with "foo exception" and the remaining two pass. The first two will pass the column length test, and the remaining three will fail.
 							*/
-							$reporter->report( Reporter::STATUS_FAILURE, '%d illegal values %s rejected in both tests—check for something unusual.',
+							$reporter->report( Reporter::STATUS_FAILURE, '%d illegal %s rejected in both tests—check for something unusual.',
 								array(
 									$checkFails - $implicitPasses,
-									Reporter::pluralise( $checkFails - $implicitPasses, 'was', 'were' )
+									Reporter::pluralise( $checkFails - $implicitPasses, 'value was', 'values were' )
 								) ) ;
 						}
 						else

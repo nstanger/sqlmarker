@@ -29,7 +29,6 @@ class TextReporter extends Reporter
 					$statusText .= '!!! ';
 					break;
 				case Reporter::STATUS_NOTE:
-					break;
 				case Reporter::STATUS_TEST:
 					break;
 				default:
@@ -38,7 +37,7 @@ class TextReporter extends Reporter
 			}
 			if ( $this->getVerbosity() > 1 ) $statusText .= $status . ': ';
 			
-			parent::report( $statusText, $reportText . "\n", $printfArguments );
+			parent::report( $statusText, $reportText, $printfArguments );
 		}
 	}
 	

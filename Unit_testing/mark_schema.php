@@ -4,7 +4,7 @@
 define( 'ORACLE_USERNAME', 'stani797' );
 define( 'ORACLE_PASSWORD', 'b1ggles' );
 
-$outputMode = 'TEXT';
+$outputMode = 'ANSI';
 	
 define( 'OUTPUT_VERBOSITY', 2 );
 define( 'RUN_MODE', 'staff' );
