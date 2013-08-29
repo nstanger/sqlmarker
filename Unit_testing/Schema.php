@@ -1037,7 +1037,23 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			$this->markAdjustments['incorrectCheck']
 		);
 						
-		$this->assertTrue( $stmt->execute(), $errorString );
+	 	/*	Note that if the constraint is incorrect (e.g., incorrect capitalisation of the legal values), then we'll get a check constraint violation. We therefore need to manually catch the exception and fail the test. Antyhing else gets thrown up the chain.
+		*/
+		try
+		{
+			$this->assertTrue( $stmt->execute(), $errorString );
+		}
+		catch ( PDOException $e )
+		{
+			if ( ( strpos( $e->getMessage(), "check constraint" ) !== TRUE ) )
+			{
+				$this->assertTrue( FALSE, $errorString );
+			}
+			else
+			{
+				throw $e;
+			}
+		}
 	}
 	
 	
