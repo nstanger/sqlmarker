@@ -8,6 +8,6 @@ define( 'TEST_CLASS_PATH', realpath( "../${scenario}/Test_classes" ) );
 
 set_include_path( get_include_path() . PATH_SEPARATOR . TEST_CLASS_PATH );
 
-define( 'ORACLE_SERVICE_ID', 'isorcl-400' );
+define( 'ORACLE_SERVICE_ID', 'isorcl-214' );
 
 ?>
