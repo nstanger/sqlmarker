@@ -12,7 +12,7 @@ class ANSIReporter extends TextReporter
         parent::__construct( $verbosity );
     }
     
-	public function report ( $status, $reportText, $printfArguments )
+	public function report ( $status, $reportText, $printfArguments = null )
 	{
 		if ( $this->getVerbosity() )
 		{

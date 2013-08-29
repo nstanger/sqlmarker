@@ -103,7 +103,7 @@ foreach ( $testTables as $table )
 									$reporter->report(	Reporter::STATUS_FAILURE,
 														'%d of the %d columns of table %s %s an unexpected column length.',
 														array(	$listener->countNonPasses( "${structureTest}::testColumnLength" ),
-																$listener->countPasses( "${structureTest}::testColumnLength" ),
+																$listener->countTests( "${structureTest}::testColumnLength" ),
 																$table,
 																Reporter::pluralise( "${structureTest}::testColumnLength", 'has', 'have' ) ) ) ;
 								}
@@ -114,7 +114,7 @@ foreach ( $testTables as $table )
 							$reporter->report( Reporter::STATUS_FAILURE, '%d of the %d columns of table %s %s an unexpected data type.',
 								array(
 									$listener->countNonPasses( "${structureTest}::testColumnDataType" ),
-									$listener->countPasses( "${structureTest}::testColumnDataType" ),
+									$listener->countTests( "${structureTest}::testColumnDataType" ),
 									$table,
 									Reporter::pluralise( $listener->countNonPasses( "${structureTest}::testColumnDataType" ), "has", "have" )
 								) ) ;
@@ -136,7 +136,7 @@ foreach ( $testTables as $table )
 								$reporter->report( Reporter::STATUS_FAILURE, '%d of the %d columns of table %s %s an unexpected nullability.',
 									array(
 										$listener->countNonPasses( "${structureTest}::testColumnNullability" ),
-										$listener->countPasses( "${structureTest}::testColumnNullability" ),
+										$listener->countTests( "${structureTest}::testColumnNullability" ),
 										$table,
 										Reporter::pluralise( $listener->countNonPasses( "${structureTest}::testColumnNullability" ), "has", "have" )
 									) ) ;
@@ -149,7 +149,7 @@ foreach ( $testTables as $table )
 					$reporter->report( Reporter::STATUS_FAILURE, '%d of the %d expected columns of table %s %s either missing or misnamed.',
 						array(
 							$listener->countNonPasses( "${structureTest}::testColumnExists" ),
-							$listener->countPasses( "${structureTest}::testColumnExists" ),
+							$listener->countTests( "${structureTest}::testColumnExists" ),
 							$table,
 							Reporter::pluralise( $listener->countNonPasses( "${structureTest}::testColumnExists" ), 'is', 'are' )
 						) ) ;
@@ -204,7 +204,7 @@ foreach ( $testTables as $table )
 								$reporter->report( Reporter::STATUS_FAILURE, '%d of the %d foreign keys for table %s %s not include (only) the expected columns.', 
 									array(
 										$listener->countNonPasses( "${structureTest}::testFKColumns" ),
-										$listener->countPasses( "${structureTest}::testFKColumns" ),
+										$listener->countTests( "${structureTest}::testFKColumns" ),
 										$table,
 										Reporter::pluralise( $listener->countNonPasses( "${structureTest}::testFKColumns" ), 'does', 'do' )
 									) );
@@ -216,12 +216,12 @@ foreach ( $testTables as $table )
 						$reporter->report( Reporter::STATUS_FAILURE, '%d of the %d expected foreign keys for table %s %s missing.', 
 							array(
 								$listener->countNonPasses( "${structureTest}::testFKsExist" ),
-								$listener->countPasses( "${structureTest}::testFKsExist" ),
+								$listener->countTests( "${structureTest}::testFKsExist" ),
 								$table,
 								Reporter::pluralise( $listener->countNonPasses( "${structureTest}::testFKsExist" ), 'is', 'are' )
 							) );
 						
-						$reporter->report( Reporter::STATUS_SKIPPED, 'testing expected columns of FKs to avoid spurious errors' );
+						$reporter->report( Reporter::STATUS_SKIPPED, 'testing expected columns of FKs to avoid spurious errors', null );
 					}
 				}
 				

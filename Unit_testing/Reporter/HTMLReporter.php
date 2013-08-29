@@ -3,7 +3,7 @@ require_once 'Reporter.php';
 
 class HTMLReporter extends Reporter
 {
-	public function report( $status, $reportText, $printfArguments )
+	public function report( $status, $reportText, $printfArguments = null )
 	{
 		if ( $this->getVerbosity() )
 		{
