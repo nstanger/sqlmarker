@@ -54,26 +54,14 @@ class STINK_student_records_Test_Staff_data extends STINK_student_records_Test_S
 	
 	
 	/**
-	 *	@dataProvider provideColumnOverflowValues
+	 *	@dataProvider provideColumnUnderflowValues
 	 *	@expectedException PDOException
 	 *	@expectedExceptionMessage check constraint
 	 *	@expectedExceptionCode HY000
 	 */
-	public function testColumnOverflowValueExplicit( $columnName, $overflowValue )
+	public function testColumnUnderflowValue( $columnName, $underflowValue )
 	{
-   		$this->assertColumnOverflowValueExplicit( $columnName, $overflowValue );
-	}
-	
-	
-	/**
-	 *	@dataProvider provideColumnOverflowValues
-	 *	@expectedException PDOException
-	 *	@expectedExceptionMessage length exceeded
-	 *	@expectedExceptionCode HY000
-	 */
-	public function testColumnOverflowValueImplicit( $columnName, $overflowValue )
-	{
-   		$this->assertColumnOverflowValueImplicit( $columnName, $overflowValue );
+   		$this->assertColumnUnderflowValue( $columnName, $underflowValue );
 	}
 }
 ?>
