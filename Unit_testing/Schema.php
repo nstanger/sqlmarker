@@ -1045,7 +1045,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		}
 		catch ( PDOException $e )
 		{
-			if ( ( strpos( $e->getMessage(), "check constraint" ) !== TRUE ) )
+			if ( ( strpos( $e->getMessage(), "check constraint" ) !== FALSE ) )
 			{
 				$this->assertTrue( FALSE, $errorString );
 			}
@@ -1188,7 +1188,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			$underflowValue,
 			$this->markAdjustments['incorrectCheck']
 		);
-						
+		
 		$this->assertTrue( $stmt->execute(), $errorString );
 	}
 	
