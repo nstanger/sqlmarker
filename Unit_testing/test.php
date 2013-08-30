@@ -261,8 +261,66 @@ foreach ( $testTables as $table )
 					$reporter->report( Reporter::STATUS_PASS, 'All %d legal values tested were accepted.', 
 						array( $listener->countTests( "${dataTest}::testColumnLegalValue" ) ) );
 				}
+				else
+				{
+					$reporter->report( Reporter::STATUS_FAILURE, '%d of %d legal values tested were rejected by a CHECK constraint.', 
+						array(
+							$listener->countFails( "${dataTest}::testColumnLegalValue" ),
+							$listener->countTests( "${dataTest}::testColumnLegalValue" ),
+							Reporter::pluralise( $checkFails, 'was', 'were' )
+						) ) ;
+				}
 			}
 		
+			if ( $suite->testExists( "${dataTest}::testColumnUnderflowValue" ) )
+			{
+				$testResult = $suite->run( $result, '/testColumnUnderflowValue/' );
+				if ( $listener->wasSuccessful( "${dataTest}::testColumnUnderflowValue" ) )
+				{
+					$reporter->report( Reporter::STATUS_PASS, 'Underflow value was rejected by a CHECK constraint.', null );
+				}
+				else
+				{
+					$reporter->report( Reporter::STATUS_FAILURE, 'Underflow value was accepted.', null );
+				}
+			}
+		
+			if ( $suite->testExists( "${dataTest}::testColumnOverflowValueExplicit" ) )
+			{
+				$testResult = $suite->run( $result, '/testColumnOverflowValueExplicit/' );
+				if ( $listener->wasSuccessful( "${dataTest}::testColumnOverflowValueExplicit" ) )
+				{
+					$reporter->report( Reporter::STATUS_PASS, 'Overflow value was rejected by a CHECK constraint.', null );
+				}
+				else
+				{
+					$reporter->report( Reporter::STATUS_WARNING, 'Overflow value was not rejected by a CHECK constraint.', null );
+					$reporter->report( Reporter::STATUS_WARNING, 'Checking values against column length...', null );
+					
+					if ( $suite->testExists( "${dataTest}::testColumnOverflowValueImplicit" ) )
+					{
+						/*
+							Unfortunately, we can't test just the columns that failed the CHECK test. The failed TestCases are in $testResult->failures(), but we need the column name, which is hidden away in the private $data member of TestCase. We therefore have to test all the illegal values again to see if they're larger than the column.
+						*/
+						$testResult = $suite->run( $result, '/testColumnOverflowValueImplicit/' );
+						if ( $listener->wasSuccessful( "${dataTest}::testColumnOverflowValueImplicit" ) )
+						{
+    						$reporter->report( Reporter::STATUS_PASS, 'Overflow value was rejected by exceeding the column length.', null );
+    					}
+    					else
+						{
+							$reporter->report( Reporter::STATUS_FAILURE,
+							                   'Overflow value was not rejected by exceeding the column length.', null );
+						}
+					}
+					else
+					{
+						$reporter->report( Reporter::STATUS_SKIPPED, 'testColumnOverflowValueImplicit() because it is missing.', null );
+					}
+				}
+			}
+		    
+		    // Now do much the same for the enumerated values. This needs to be refactored!
 			if ( $suite->testExists( "${dataTest}::testColumnIllegalValueExplicit" ) )
 			{
 				$testResult = $suite->run( $result, '/testColumnIllegalValueExplicit/' );
