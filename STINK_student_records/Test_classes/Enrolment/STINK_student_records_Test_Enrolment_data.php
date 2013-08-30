@@ -30,5 +30,14 @@ class STINK_student_records_Test_Enrolment_data extends STINK_student_records_Te
 	{
    		$this->assertColumnUnderflowValue( $columnName, $underflowValue );
 	}
+	
+	
+	/**
+	 *	@dataProvider provideColumnLegalValues
+	 */
+	public function testColumnLegalValue( $columnName, $legalValue )
+	{
+   		$this->assertColumnLegalValue( $columnName, $legalValue );
+	}
 }
 ?>
