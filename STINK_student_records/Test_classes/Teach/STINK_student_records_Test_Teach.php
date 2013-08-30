@@ -34,6 +34,7 @@ abstract class STINK_student_records_Test_Teach extends PHPUnit_Extensions_Datab
 											'decimals'		=>	0,
 											'underflow'		=>	1981,
 											'overflow'		=>	10000,
+											'legal_values'	=>	array( 1982 ),
 											'nullable'		=>	false,
 											'test_value'	=>	"2012",	),
 			'ROLE'				=>	array(	'generic_type'	=>	'TEXT',

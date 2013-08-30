@@ -31,6 +31,7 @@ abstract class STINK_student_records_Test_Enrolment extends PHPUnit_Extensions_D
 										'max_length'	=>	4,
 										'nullable'		=>	false,
 										'underflow'		=>	1981,
+										'legal_values'	=>	array( 1982 ),
 										'test_value'	=>	"2013",	),
 			'COMMENTS'		=>	array(	'generic_type'	=>	'TEXT',
 										'sql_type'		=>	array( 'VARCHAR2', 'CLOB' ),
