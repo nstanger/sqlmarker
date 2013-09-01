@@ -160,7 +160,7 @@ foreach ( $testTables as $table )
 			if ( RUN_MODE !== 'student' )
 			{
 				// Not critical to data testing. Need to run both PK tests in one pass as the columns test depends on the existence test.
-				if ( $suite->testExists( 'testPKExists' ) )
+				if ( $suite->testExists( 'testPKExists' ) && $suite->testExists( 'testPKColumns' ) )
 				{
 					$testResult = $suite->run( $result, '/testPK.*/' );
 					if ( $listener->wasSuccessful( 'testPKExists' ) )
@@ -171,17 +171,14 @@ foreach ( $testTables as $table )
 					{
 						$reporter->report( Reporter::STATUS_FAILURE, 'Primary key of table %s missing.', array( $table ) );
 					}
-				}
-				if ( $suite->testExists( 'testPKColumns' ) )
-				{
-					if ( $listener->wasSuccessful( 'testPKColumns' ) )
-					{
-						$reporter->report( Reporter::STATUS_PASS, 'Primary key of table %s includes (only) the expected columns.', array( $table ) );
-					}
-					else
-					{
-						$reporter->report( Reporter::STATUS_FAILURE, 'Primary key of table %s does not include (only) the expected columns.', array( $table ) );
-					}
+                    if ( $listener->wasSuccessful( 'testPKColumns' ) )
+                    {
+                        $reporter->report( Reporter::STATUS_PASS, 'Primary key of table %s includes (only) the expected columns.', array( $table ) );
+                    }
+                    else
+                    {
+                        $reporter->report( Reporter::STATUS_FAILURE, 'Primary key of table %s does not include (only) the expected columns.', array( $table ) );
+                    }
 				}
 				
 				// Not critical to data testing.
