@@ -1049,13 +1049,16 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		
 		$actual = $this->getConnection()->createQueryTable( $this->getTableName() . '_' . $columnName, $queryString );
 		
+		// Defaults for text and (literal) date columns come with single quotes around them. Also, for some reason trim() with ' added to the standard character list won't strip off the trailing quote if there's whitespace following it, so we have to trim twice: once for whitespace, once for the quotes. Grr.
+		$actualDefault = trim( trim( $actual->getValue( 0, 'DATA_DEFAULT' ) ), "'" );
+		
 		$errorString = sprintf(	'column %s.%s has incorrect default "%s" [%+1.1f]',
 								ucfirst( strtolower( $this->getTableName() ) ),
 								ucfirst( strtolower( $columnName ) ),
-								trim( $actual->getValue( 0, 'DATA_DEFAULT' ) ),
+								$actualDefault,
 								$this->markAdjustments['incorrectDefault']	);
 		
-		$this->assertEquals( trim( $actual->getValue( 0, 'DATA_DEFAULT' ) ), $columnDefault, $errorString );
+		$this->assertEquals( $actualDefault, $columnDefault, $errorString );
 	}
 	
 	
