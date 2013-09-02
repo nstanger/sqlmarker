@@ -61,7 +61,7 @@ abstract class STINK_student_records_Test_Person extends PHPUnit_Extensions_Data
 											'nullable'		=>	false,
 											'legal_values'	=>	array( 'username', 'a_username', 'username12', ),
 											'illegal_values'=>	array( 'user name', '!@^%*&^!', ' ' ),
-											'test_value'	=>	"username",	),	);
+											'test_value'	=>	"dyssa123",	),	);
 	}
 	
 	
