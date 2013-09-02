@@ -34,11 +34,13 @@ abstract class STINK_student_records_Test_Result extends PHPUnit_Extensions_Data
 											'max_length'	=>	4,
 											'decimals'		=>	1,
 											'underflow'		=>	-1,
+											'legal_values'  =>  array( 0 ),
 											'nullable'		=>	false,
 											'test_value'	=>	"15",	),
 			'WEIGHTED_MARK'		=>	array(	'generic_type'	=>	'NUMBER',
 											'sql_type'		=>	array( 'NUMBER', 'FLOAT' ),
 											'underflow'		=>	-1,
+											'legal_values'  =>  array( 0 ),
 											'nullable'		=>	false,
 											'test_value'	=>	"23.4625",	),
 			'PERCENTAGE_MARK'	=>	array(	'generic_type'	=>	'NUMBER',
@@ -48,6 +50,7 @@ abstract class STINK_student_records_Test_Result extends PHPUnit_Extensions_Data
 											'decimals'		=>	2,
 											'underflow'		=>	-1,
 											'overflow'		=>	101,
+											'legal_values'  =>  array( 0, 100 ),
 											'nullable'		=>	false,
 											'test_value'	=>	"63",	),	);
 	}

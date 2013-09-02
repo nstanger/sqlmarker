@@ -21,6 +21,15 @@ class STINK_student_records_Test_Result_data extends STINK_student_records_Test_
 	
 	
 	/**
+	 *	@dataProvider provideColumnLegalValues
+	 */
+	public function testColumnLegalValue( $columnName, $legalValue )
+	{
+   		$this->assertColumnLegalValue( $columnName, $legalValue );
+	}
+	
+	
+	/**
 	 *	@dataProvider provideColumnUnderflowValues
 	 *	@expectedException PDOException
 	 *	@expectedExceptionMessage check constraint
