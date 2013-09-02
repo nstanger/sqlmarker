@@ -410,6 +410,27 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	
 	
 	/**
+	 *	Data provider to return a list of all columns that should have defaults.
+	 *
+	 *	If your test needs to iterate through all column defaults of a table, then use this method as the data provider. Each column name is presented to the consumer in turn.
+	 *
+	 *	@access public
+	 *	@return array( array( string, string )* )
+	 */
+	public function provideColumnDefaults()
+	{
+		$theList = array();
+		foreach ( $this->getColumnList() as $columnName => $columnDetails )
+		{
+		    if ( isset( $columnDetails['default'] ) )
+    			array_push( $theList, array( $columnName, $columnDetails['default'] ) );
+		}
+		
+		return $theList;
+	}
+	
+	
+	/**
 	 *	Data provider to return a list of all columns and their legal (enumerated) values.
 	 *
 	 *	If your test needs to iterate through all legal values of the columns of a table, then use this method as the data provider. Each column name plus a valid legal value is presented to the consumer in turn. (Only for those columns that have them.)
@@ -1002,6 +1023,39 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 								$this->markAdjustments['incorrectNullability']	);
 		
 		$this->assertEquals( $actual->getValue( 0, 'NULLABLE' ), $columnNullability, $errorString );
+	}
+	
+	
+	/**
+	 *	Assert that a column has a default value.
+	 *
+	 *	This queries Oracle's User_Tab_Cols data dictionary view and checks whether the default values for the specified column of the current table is null. Tests that use this should use provideColumnDefaults as their data provider.
+	 *
+	 *	@access protected
+	 *	@return void
+	 */
+	protected function assertColumnDefault( $columnName, $columnDefault )
+	{
+		self::$reporter->report( Reporter::STATUS_TEST, "[[ %s.%s default should be %s ]] ",
+			array( ucfirst( strtolower( $this->getTableName() ) ), ucfirst( strtolower( $columnName ) ), $columnDefault ) );
+		
+		$queryString = sprintf(
+			"SELECT Data_Default
+			 FROM User_Tab_Cols
+			 WHERE ( Table_Name = '%s' ) AND ( Column_Name = '%s' )",
+			strtoupper( $this->getTableName() ),
+			strtoupper( $columnName )
+		);
+		
+		$actual = $this->getConnection()->createQueryTable( $this->getTableName() . '_' . $columnName, $queryString );
+		
+		$errorString = sprintf(	'column %s.%s has incorrect default "%s" [%+1.1f]',
+								ucfirst( strtolower( $this->getTableName() ) ),
+								ucfirst( strtolower( $columnName ) ),
+								trim( $actual->getValue( 0, 'DATA_DEFAULT' ) ),
+								$this->markAdjustments['incorrectDefault']	);
+		
+		$this->assertEquals( trim( $actual->getValue( 0, 'DATA_DEFAULT' ) ), $columnDefault, $errorString );
 	}
 	
 	

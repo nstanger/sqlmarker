@@ -62,6 +62,15 @@ class STINK_student_records_Test_Paper_structure extends STINK_student_records_T
 	}
 	
 	
+	/**
+	 *	@dataProvider provideColumnDefaults
+	 */
+	public function testColumnDefault( $columnName, $columnDefault )
+	{
+   		$this->assertColumnDefault( $columnName, $columnDefault );
+	}
+	
+	
 	public function testPKExists()
 	{
 		return $this->assertPKExists();

@@ -50,6 +50,7 @@ abstract class STINK_student_records_Test_Assessment extends PHPUnit_Extensions_
 											'sql_type'		=>	array( 'CHAR', 'VARCHAR2', 'VARCHAR' ),
 											'min_length'	=>	1,
 											'nullable'		=>	false,
+											'default'       =>  'F',
 											'legal_values'	=>	array( 'T', 'F' ),
 // 												'f', 'F', 'false', 'False', 'FALSE', 'n', 'N', 'no', 'No', 'NO', '0',
 // 												't', 'T', 'true', 'True', 'TRUE', 'y', 'Y', 'yes', 'Yes', 'YES', '1',	),

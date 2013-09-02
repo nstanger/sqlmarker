@@ -142,6 +142,24 @@ foreach ( $testTables as $table )
 									) ) ;
 							}
 						}
+						if ( $suite->testExists( "${structureTest}::testColumnDefault" ) )
+						{
+							$testResult = $suite->run( $result, '/testColumnDefault/' );
+							if ( $listener->wasSuccessful( "${structureTest}::testColumnDefault" ) )
+							{
+								$reporter->report( Reporter::STATUS_PASS, 'All expected columns of table %s have the correct default values.', array( $table ) );
+							}
+							else
+							{
+								$reporter->report( Reporter::STATUS_FAILURE, '%d of the %d expected columns of table %s %s an incorrect default value.',
+									array(
+										$listener->countNonPasses( "${structureTest}::testColumnDefault" ),
+										$listener->countTests( "${structureTest}::testColumnDefault" ),
+										$table,
+										Reporter::pluralise( $listener->countNonPasses( "${structureTest}::testColumnDefault" ), "has", "have" )
+									) ) ;
+							}
+						}
 					}
 				}
 				else
