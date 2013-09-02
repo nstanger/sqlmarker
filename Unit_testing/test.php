@@ -278,11 +278,11 @@ foreach ( $testTables as $table )
 				}
 				else
 				{
-					$reporter->report( Reporter::STATUS_FAILURE, '%d of %d legal values tested were rejected by a CHECK constraint.', 
+					$reporter->report( Reporter::STATUS_FAILURE, '%d of %d legal values tested %s rejected by a CHECK constraint.', 
 						array(
 							$listener->countFails( "${dataTest}::testColumnLegalValue" ),
 							$listener->countTests( "${dataTest}::testColumnLegalValue" ),
-							Reporter::pluralise( $checkFails, 'was', 'were' )
+							Reporter::pluralise( $listener->countFails( "${dataTest}::testColumnLegalValue" ), 'was', 'were' )
 						) ) ;
 				}
 			}
@@ -292,11 +292,17 @@ foreach ( $testTables as $table )
 				$testResult = $suite->run( $result, '/testColumnUnderflowValue/' );
 				if ( $listener->wasSuccessful( "${dataTest}::testColumnUnderflowValue" ) )
 				{
-					$reporter->report( Reporter::STATUS_PASS, 'Underflow value was rejected by a CHECK constraint.', null );
+					$reporter->report( Reporter::STATUS_PASS, 'All %d underflow values were rejected by a CHECK constraint.',
+					    array( $listener->countTests( "${dataTest}::testColumnUnderflowValue" ) ) );
 				}
 				else
 				{
-					$reporter->report( Reporter::STATUS_FAILURE, 'Underflow value was accepted.', null );
+					$reporter->report( Reporter::STATUS_FAILURE, '%d of %d underflow values %s not rejected by a CHECK constraint.',
+						array(
+							$listener->countFails( "${dataTest}::testColumnUnderflowValue" ),
+							$listener->countTests( "${dataTest}::testColumnUnderflowValue" ),
+							Reporter::pluralise( $listener->countFails( "${dataTest}::testColumnUnderflowValue" ), 'was', 'were' )
+						) ) ;
 				}
 			}
 		
@@ -305,11 +311,17 @@ foreach ( $testTables as $table )
 				$testResult = $suite->run( $result, '/testColumnOverflowValueExplicit/' );
 				if ( $listener->wasSuccessful( "${dataTest}::testColumnOverflowValueExplicit" ) )
 				{
-					$reporter->report( Reporter::STATUS_PASS, 'Overflow value was rejected by a CHECK constraint.', null );
+					$reporter->report( Reporter::STATUS_PASS, 'All %d overflow values were rejected by a CHECK constraint.',
+					    array( $listener->countTests( "${dataTest}::testColumnOverflowValueExplicit" ) ) );
 				}
 				else
 				{
-					$reporter->report( Reporter::STATUS_WARNING, 'Overflow value was not rejected by a CHECK constraint.', null );
+					$reporter->report( Reporter::STATUS_FAILURE, '%d of %d overflow values %s not rejected by a CHECK constraint.',
+						array(
+							$listener->countFails( "${dataTest}::testColumnOverflowValueExplicit" ),
+							$listener->countTests( "${dataTest}::testColumnOverflowValueExplicit" ),
+							Reporter::pluralise( $listener->countFails( "${dataTest}::testColumnOverflowValueExplicit" ), 'was', 'were' )
+						) ) ;
 					$reporter->report( Reporter::STATUS_WARNING, 'Checking values against column length...', null );
 					
 					if ( $suite->testExists( "${dataTest}::testColumnOverflowValueImplicit" ) )
@@ -320,13 +332,19 @@ foreach ( $testTables as $table )
 						$testResult = $suite->run( $result, '/testColumnOverflowValueImplicit/' );
 						if ( $listener->wasSuccessful( "${dataTest}::testColumnOverflowValueImplicit" ) )
 						{
-    						$reporter->report( Reporter::STATUS_PASS, 'Overflow value was rejected by exceeding the column length.', null );
+    						$reporter->report( Reporter::STATUS_PASS, 'All %d overflow values were rejected by exceeding the column length.',
+					            array( $listener->countTests( "${dataTest}::testColumnOverflowValueImplicit" ) ) );
     					}
     					else
 						{
-							$reporter->report( Reporter::STATUS_FAILURE,
-							                   'Overflow value was not rejected by exceeding the column length.', null );
-						}
+							$reporter->report( Reporter::STATUS_FAILURE, 
+							    '%d of %d overflow values %s not rejected by exceeding the column length.',
+                                array(
+                                    $listener->countFails( "${dataTest}::testColumnOverflowValueImplicit" ),
+                                    $listener->countTests( "${dataTest}::testColumnOverflowValueImplicit" ),
+                                    Reporter::pluralise( $listener->countFails( "${dataTest}::testColumnOverflowValueImplicit" ), 'was', 'were' )
+                                ) ) ;
+                        }
 					}
 					else
 					{
