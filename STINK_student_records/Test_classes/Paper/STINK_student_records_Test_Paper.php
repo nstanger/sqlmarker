@@ -38,6 +38,7 @@ abstract class STINK_student_records_Test_Paper extends PHPUnit_Extensions_Datab
 											'decimals'		=>	0,
 											'underflow'		=>	-1,
 											'overflow'		=>	37,
+											'legal_values'  =>  array( 0, 36 ),
 											'default'		=>	18,
 											'nullable'		=>	false,
 											'test_value'	=>	"18",	),
