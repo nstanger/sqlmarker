@@ -63,21 +63,21 @@
       <value>1234568</value>
       <value>+16461234567</value>
       <value>Los Angeles</value>
-      <value>T</value>
+      <value>##TRUE_VALUE##</value>
       <value />
     </row>
     <row>
       <value>1234570</value>
       <value>02136507402</value>
       <value>45 Pine Hill Road</value>
-      <value>F</value>
+      <value>##FALSE_VALUE##</value>
       <value />
     </row>
     <row>
       <value>1234571</value>
       <value>02232104933</value>
       <value>34 Scobie Road</value>
-      <value>F</value>
+      <value>##FALSE_VALUE##</value>
       <value />
     </row>
   </table>

@@ -10,4 +10,7 @@ set_include_path( get_include_path() . PATH_SEPARATOR . TEST_CLASS_PATH );
 
 define( 'ORACLE_SERVICE_ID', 'isorcl-214' );
 
+define( 'TRUE_VALUE', 'true' );
+define( 'FALSE_VALUE', 'false' );
+
 ?>
