@@ -4,3 +4,4 @@
 /usr/bin/sed -e "s/##TRUE_VALUE##/$1/g" -e "s/##FALSE_VALUE##/$2/g" ../STINK_student_records/Test_classes/Enrolment/STINK_student_records_Fixture_Enrolment.xml.in > ../STINK_student_records/Test_classes/Enrolment/STINK_student_records_Fixture_Enrolment.xml
 /usr/bin/sed -e "s/##TRUE_VALUE##/$1/g" -e "s/##FALSE_VALUE##/$2/g" ../STINK_student_records/Test_classes/Result/STINK_student_records_Fixture_Result.xml.in > ../STINK_student_records/Test_classes/Result/STINK_student_records_Fixture_Result.xml
 /usr/bin/sed -e "s/##TRUE_VALUE##/$1/g" -e "s/##FALSE_VALUE##/$2/g" ../STINK_student_records/Test_classes/Student/STINK_student_records_Fixture_Student.xml.in > ../STINK_student_records/Test_classes/Student/STINK_student_records_Fixture_Student.xml
+/usr/bin/sed -e "s/##TRUE_VALUE##/$1/g" -e "s/##FALSE_VALUE##/$2/g" test_config.php.in > test_config.php
