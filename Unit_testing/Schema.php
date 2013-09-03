@@ -372,7 +372,8 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			$numDecimals = ( array_key_exists( 'decimals', $columnDetails ) ) ? $columnDetails['decimals'] : 0;
 			
 			// If min_length and max_length are missing, then it has no length at all (e.g., DATE, BLOB, CLOB).
-			if ( ( $minLength > 0 ) || ( $maxLength > 0 ) )
+			// If min_length is null, then the length is effectively unlimited (implying that no length should be imposed.)
+			if ( is_null( $minLength ) || ( $minLength > 0 ) || ( $maxLength > 0 ) )
 			{
 				array_push( $theList, array( $columnName, $columnDetails['generic_type'], $minLength, $maxLength, $numDecimals ) );
 			}
@@ -866,7 +867,11 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		$lengthSpec = '';
 		if ( RUN_MODE === 'staff' )
 		{
-			if ( $maxLength == 0 )
+		    if ( is_null( $minLength ) )
+		    {
+				$lengthSpec .= "is not specified";
+		    }
+			elseif ( $maxLength == 0 )
 			{
 				$lengthSpec .= "≥ ${minLength}";
 			}
@@ -885,7 +890,11 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			
 			if ( $columnType === 'NUMBER' )
 			{
-				if ( $numDecimals > 0 ) // technically it could also be < 0, but this is uncommon
+			    if ( is_null( $numDecimals ) )
+			    {
+					$lengthSpec .= " (with no decimal places specified)";
+			    }
+				elseif ( $numDecimals > 0 ) // technically it could also be < 0, but this is uncommon
 				{
 					$lengthSpec .= " (including " . $numDecimals . " decimal places)";
 				}
