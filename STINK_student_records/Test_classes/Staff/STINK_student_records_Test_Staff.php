@@ -32,6 +32,7 @@ abstract class STINK_student_records_Test_Staff extends PHPUnit_Extensions_Datab
 										'min_length'	=>	8,
 										'decimals'		=>	2,
 										'underflow'		=>	40449.99,
+										'legal_values'  =>  array( 40450 ),
 										'nullable'		=>	false,
 										'test_value'	=>	"100000",	),	);
 	}
