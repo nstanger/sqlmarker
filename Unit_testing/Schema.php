@@ -1457,7 +1457,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			$this->markAdjustments['incorrectPK']
 		);
 						
-		$this->assertEquals( 1, $actual->getRowCount(), $errorString );
+		$this->assertGreaterThan( 0, $actual->getRowCount(), $errorString );
 	}
 	
 	
