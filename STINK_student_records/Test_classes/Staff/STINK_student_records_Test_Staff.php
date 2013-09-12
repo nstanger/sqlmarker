@@ -26,7 +26,7 @@ abstract class STINK_student_records_Test_Staff extends PHPUnit_Extensions_Datab
 										'nullable'		=>	false,
 										'legal_values'	=>	array( 'T', 'AL', 'L', 'SL', 'AP', 'P', ),
 										'illegal_values'=>	array( 't', '12', ' ', ),
-										'test_value'	=>	"SL",	),
+										'test_value'	=>	"L",	),
 			'SALARY'		=>	array(	'generic_type'	=>	'NUMBER',
 										'sql_type'		=>	array( 'NUMBER', 'DECIMAL' ),
 										'min_length'	=>	8,
@@ -34,7 +34,7 @@ abstract class STINK_student_records_Test_Staff extends PHPUnit_Extensions_Datab
 										'underflow'		=>	40449.99,
 										'legal_values'  =>  array( 40450 ),
 										'nullable'		=>	false,
-										'test_value'	=>	"100000",	),	);
+										'test_value'	=>	"85000",	),	);
 	}
 	
 	
