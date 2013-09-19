@@ -64,7 +64,7 @@
 			
 			<answer>
 			
-				<code-block>
+				<code-block><![CDATA[
 CREATE TABLE Qualification
 ( Abbreviation      VARCHAR2(10),
   Full_Name         VARCHAR2(100)   NOT NULL,
@@ -73,10 +73,12 @@ CREATE TABLE Qualification
       CHECK ( Type IN ( 'Degree', 'Diploma', 'Certificate' ) ),
   --
   CONSTRAINT Qualification_PK PRIMARY KEY ( Abbreviation )
-);
+);]]>
 				</code-block>
 				
-				<p indent="no">If we wanted to allow for additional qualification types in future, we could create a separate <code>Qualification_Type</code> lookup table, with a single column <code>Type</code>. We could then replace the <code>CHECK</code> constraint <code>Qualification_Type_Valid</code> with a foreign key to the lookup table. If we use the existing values, this can even be done without breaking the specification.</p>
+				<p indent="no">If we wanted to allow for additional qualification types in future, we could create a separate <code>Qualification_Type</code> lookup table, with a single column <code>Type</code>. We could then replace the <code>CHECK</code> constraint <code>Qualification_Type_Valid</code> with a foreign key to the lookup table. If we use the existing values, this can even be done without breaking the specification!</p>
+				
+				<p>Remember also that SQL string comparison is case sensitive, so it’s important to get the values in the <code>CHECK</code> constraint for <code>Type</code> correct and apply them consistently.</p>
 			
 			</answer>
 			
@@ -142,9 +144,11 @@ CREATE TABLE Qualification
 				
 			<answer>
 			
-				<code-block>
+				<code-block><![CDATA[
 CREATE TABLE Paper
-( Paper_Code        CHAR(7),
+( Paper_Code        CHAR(7)
+    CONSTRAINT Paper_Code_Valid
+      CHECK ( REGEXP_LIKE( Paper_Code, '[A-Z]{4}[0-9]{3}' ) ),
   Title             VARCHAR2(50)    NOT NULL,
   Description       VARCHAR2(500)   NOT NULL,
   Points            NUMBER(2)       DEFAULT 18 NOT NULL
@@ -154,10 +158,12 @@ CREATE TABLE Paper
       CHECK ( Period IN ( 'S1', 'S2', 'SS', 'FY' ) ),
   --
   CONSTRAINT Paper_PK PRIMARY KEY ( Paper_Code )
-);
+);]]>
 				</code-block>
 				
 				<p indent="no">As with <code>Qualification.Type</code>, we could create a separate lookup table for <code>Period</code>. This table could even store additional information about the period, such as its full name, start and end dates, etc.</p>
+				
+				<p>There are several ways that we could write the regular expression for the paper code. The expression above could be shortened even further by replacing the <code>[0-9]</code> with <code>\d</code>, which means “any digit 0–9”.</p>
 			
 			</answer>
 			
@@ -172,7 +178,7 @@ CREATE TABLE Paper
 			
 			<answer>
 			
-				<code-block>
+				<code-block><![CDATA[
 CREATE TABLE Schedule
 ( Abbreviation      VARCHAR2(10),
   Paper_Code        CHAR(7),
@@ -181,8 +187,10 @@ CREATE TABLE Schedule
   CONSTRAINT Schedule_FK_to_Qualification
     FOREIGN KEY ( Abbreviation ) REFERENCES Qualification,
   CONSTRAINT Schedule_FK_to_Paper FOREIGN KEY ( Paper_Code ) REFERENCES Paper
-);
+);]]>
 				</code-block>
+				
+				<p indent="no">The most common problems here were omitting either the primary key or the foreign keys. Note also that there’s no need to repeat constraints on, e.g., <code>Paper_Code</code>, because the foreign key already forces the value to be one that exists in <code>Paper</code> anyway.</p>
 			
 			</answer>
 			
@@ -328,7 +336,7 @@ CREATE TABLE Schedule
 
 			<answer>
 			
-				<code-block>
+				<code-block><![CDATA[
 CREATE TABLE Person
 ( Person_ID         NUMBER(7),
   Surname           VARCHAR2(50)    NOT NULL,
@@ -336,7 +344,7 @@ CREATE TABLE Person
   Contact_Phone     VARCHAR2(11),   -- at least 11, maybe more 
   Contact_Address   VARCHAR2(200)   NOT NULL,
   Email             VARCHAR2(50)    NOT NULL,
-  Username          VARCHAR2(50)    NOT NULL
+  Username          VARCHAR2(10)    NOT NULL
     CONSTRAINT Person_Username_Unique UNIQUE, -- bonus marks!
   --
   CONSTRAINT Person_PK PRIMARY KEY ( Person_ID )
@@ -369,12 +377,16 @@ CREATE TABLE Student
     FOREIGN KEY ( Student_ID ) REFERENCES Person,
   CONSTRAINT Student_FK_to_Staff
     FOREIGN KEY ( Supervisor_ID ) REFERENCES Staff
-);
+);]]>
 				</code-block>
 			
-				<p>It’s important when implementing “Boolean” style columns such as <code>International</code> in <code>Student</code> and <code>Release</code> in <code>Assessment</code> that you are consistent in the values that you use across all such columns (more precisely, all such columns should have the same domain). Quite a few people did something like implement one column as <code>'T', 'F'</code> and the other as <code>'True', 'False'</code>, or even more subtle, <code>'t', 'f'</code> (remembering that SQL is case sensitive). Using inconsistent domains for columns that should have the same domain could lead to subtle bugs later on.</p>
+				<p indent="no">The subtype hierarchy seemed to confuse a few people. The most common example of this was, e.g., including both <code>Person_ID</code> and <code>Staff_ID</code> in <code>Staff</code>. This is unnecessary because they should be the same value anyway, and a column can appear in both the primary key and a foreign key at the same time. Also make sure that the foreign keys are referring to the correct tables as specified in the ERD (e.g., <code>Supervisor_ID</code> should reference <code>Staff</code>, not <code>Person</code>).</p>
 				
-				<p>This of course is really a consequence of not having a proper <code>BOOLEAN</code> data type in SQL. However, one person did discover—possibly inadvertently, given that it isn’t mentioned anywhere in the documentation—that <OracleServer /> now supports the use of the <code>BOOLEAN</code> data type in <code>CREATE TABLE</code>! This certainly wasn’t possible in older versions, where <code>BOOLEAN</code> was available in PL/SQL only. The inconsistency of implementation of a Boolean data type across various DBMSs means that it’s generally safer to use the approach above if portability is important.</p>
+				<p>It’s important when implementing “Boolean” style columns such as <code>International</code> in <code>Student</code> and <code>Release</code> in <code>Assessment</code> that you’re consistent in the values that you use across all such columns (more precisely, all such columns should have the same domain). A few people did something like implement one column as <code>'T', 'F'</code> and the other as <code>'True', 'False'</code>, or even more subtle, <code>'t', 'f'</code> (remembering that SQL string comparsion is case sensitive). Using inconsistent domains for columns that should have the same domain could lead to subtle bugs later on.</p>
+				
+				<p>A few people implemented something like <code>'T', 'F', 't', 'f'</code> on the seemingly reasonable theory that it was more “flexible”. (One person even included <code>'Y', 'N', 'y', 'n', '0', 1'</code>!) This kind of “flexibility” usually causes more problems than it solves, unfortunately. The main problem is that it’s now harder to write queries to find all the (for example) “true” values: we either have to test for all the possible permutations of “true”, or we have convert everything to the same format before comparing. Either way it's a pain to implement, and easy to get wrong. Keep things as simple as possible! You’ll thank yourself later.</p>
+				
+				<p>This of course is really a consequence of not having a proper <code>BOOLEAN</code> data type in SQL. There was a period where <OracleServer /> release 1 could create columns of type <code>BOOLEAN</code>, but this must have been unintentional, as it was never documented, and it no longer works as of <OracleServer /> release 2. The only place you can use <code>BOOLEAN</code> in <OracleServer /> is in its built-in database programming language, PL/SQL. The inconsistency of implementation of a Boolean data type across various DBMSs means that it’s generally safer to use the approach above if portability is important.</p>
 				
 				<p>Once again, we could use a lookup table for <code>Staff.Rank</code>.</p>
 
@@ -437,7 +449,7 @@ CREATE TABLE Student
 
 			<answer>
 			
-				<code-block>
+				<code-block><![CDATA[
 CREATE TABLE Teach
 ( Staff_ID          NUMBER(7),
   Paper_Code        CHAR(7),
@@ -450,10 +462,10 @@ CREATE TABLE Teach
   CONSTRAINT Teach_PK PRIMARY KEY ( Staff_ID, Paper_Code, Year_Taught ),
   CONSTRAINT Teach_FK_to_Staff FOREIGN KEY ( Staff_ID ) REFERENCES Staff,
   CONSTRAINT Teach_FK_to_Paper FOREIGN KEY ( Paper_Code ) REFERENCES Paper
-);
+);]]>
 				</code-block>
 				
-				<p indent="no"><code>Role</code> could be constrained using a lookup table.</p>
+				<p indent="no">A surprising number of people appear to have missed the statement of the year that the Institute was founded in the first paragraph of the specification! Again, <code>Role</code> could be constrained using a lookup table.</p>
 
 			</answer>
 			
@@ -514,7 +526,7 @@ CREATE TABLE Teach
 				
 			<answer>
 			
-				<code-block>
+				<code-block><![CDATA[
 CREATE TABLE Enrolment
 ( Enrolment_ID      NUMBER(10),
   Description       VARCHAR2(100)   NOT NULL,
@@ -530,12 +542,10 @@ CREATE TABLE Enrolment
     FOREIGN KEY ( Student_ID ) REFERENCES Student,
   CONSTRAINT Enrolment_FK_to_Paper
     FOREIGN KEY ( Paper_Code ) REFERENCES Paper
-);
+);]]>
 				</code-block>
 				
-				<p indent="no">A surprising number of people appear to have missed the statement of when the Institute was founded in the first paragraph of the specification!</p>
-				
-				<p>Another very common error was to set the size of the <code>Comments</code> column to a relatively small number, like 200. Think about how much you can say in that many characters (one and a bit text messages), then consider what kinds of things you might want to enter into a general comments column. We deducted marks for anything smaller than 500 characters. When you have no idea of how much you’re going to get, it’s much better to go large than to go small!</p>
+				<p indent="no">A common error (especially amongst those who didn’t use the schema checker) was to set the size of the <code>Comments</code> column to a relatively small number, like 200. Think about how much you can say in that many characters (one and a bit text messages, maybe 30 words), then consider what kinds of things you might want to enter into a general comments column. We deducted marks for anything smaller than 500 characters. When you have no idea of how much you’re going to get, it’s much better to go large than to go small!</p>
 			
 			</answer>
 			
@@ -620,7 +630,7 @@ CREATE TABLE Enrolment
 			
 			<answer>
 			
-				<code-block>
+				<code-block><![CDATA[
 CREATE TABLE Assessment
 ( Assessment_ID     NUMBER(10),
   Assessment_Year   NUMBER(4)       NOT NULL
@@ -635,13 +645,15 @@ CREATE TABLE Assessment
     CONSTRAINT Assessment_Release_Valid CHECK ( Release IN ( 'T', 'F' ) ),
   Weight            NUMBER(3)       NOT NULL
     CONSTRAINT Assessment_Weight_Range CHECK ( Weight BETWEEN 0 AND 100 ),
-  Maximum_Mark      NUMBER(3),
+  Maximum_Mark      NUMBER(3)
+    CONSTRAINT Assessment_Maximum_Mark_Range
+      CHECK ( Maximum_Mark >= 0 ),  -- bonus marks!
   Paper_Code        CHAR(7)         NOT NULL,
   --
   CONSTRAINT Assessment_PK PRIMARY KEY ( Assessment_ID ),
   CONSTRAINT Assessment_FK_to_Paper
     FOREIGN KEY ( Paper_Code ) REFERENCES Paper
-);
+);]]>
 				</code-block>
 				
 				<p indent="no"><code>Type</code> could be constrained by a lookup table.</p>
@@ -716,14 +728,17 @@ CREATE TABLE Assessment
 			
 			<answer>
 			
-				<code-block>
+				<code-block><![CDATA[
 CREATE TABLE Result
 ( Assessment_ID     NUMBER(10),
   Enrolment_ID      NUMBER(10),
-  Raw_Mark          NUMBER(4,1)     NOT NULL,
-  Weighted_Mark     NUMBER          NOT NULL,
+  Raw_Mark          NUMBER(4,1)     NOT NULL
+    CONSTRAINT Result_Raw_Mark_Range CHECK ( Raw_Mark >= 0 ),
+  Weighted_Mark     NUMBER          NOT NULL
+    CONSTRAINT Result_Weighted_Mark_Range
+      CHECK ( Weighted_Mark >= 0 ), -- bonus marks!
   Percentage_Mark   NUMBER(5,2)     NOT NULL
-    CONSTRAINT Result_Percentage_Mark_Range
+    CONSTRAINT Result_Percentage_Mark_Range 
       CHECK (Percentage_Mark BETWEEN 0 AND 100),
   --
   CONSTRAINT Result_PK PRIMARY KEY ( Assessment_ID, Enrolment_ID ),
@@ -731,12 +746,30 @@ CREATE TABLE Result
     FOREIGN KEY ( Assessment_ID ) REFERENCES Assessment,
   CONSTRAINT Result_FK_to_Enrolment
     FOREIGN KEY ( Enrolment_ID ) REFERENCES Enrolment
-);
+);]]>
 				</code-block>
 				
-				<p indent="no">A lot of people got the sizes of the various <code>NUMBER</code> columns incorrect. Remember that the number of decimal places is <em>included</em> in the total number of digits, not <em>in addition to</em>.</p>
+				<p indent="no">Quite a few people got the sizes of the various <code>NUMBER</code> columns incorrect. Remember that the number of decimal places is <em>included</em> in the total number of digits, not <em>in addition to</em>. </p>
 				
-				<p>We also accepted <code>FLOAT</code> and <code>BINARY_FLOAT</code> for <code>Weighted_Mark</code>. Anything with a fixed number of decimal places was marked down, as this is a <em>fixed</em> point number, not a floating point number.</p>
+				<p>We also accepted <code>FLOAT</code>, <code>DOUBLE</code> (although it’s really overkill), <code>BINARY_FLOAT</code> and <code>BINARY_DOUBLE</code> for <code>Weighted_Mark</code>. Anything with a fixed length or number of decimal places was marked down, as this is a <em>fixed</em> point number, not a floating point number. The whole point (!) is that the precision and decimal places should adjust to what’s required at the time.</p>
+				
+				<p>As a couple of students discovered, <OracleServer /> now supports <em>virtual columns</em> that are computed by a formula, which opens the possibility of automatically computing the values of <code>Weighted_Mark</code> and <code>Percentage_Mark</code>. Unfortunately, virtual columns expressions can’t refer to columns in other tables, so the only way we can achieve this is to duplicate the <code>Maximum_Mark</code> and <code>Weight</code> columns from <code>Assessment</code> into <code>Result</code>. This could actually be useful in practice, however, as would enable us to vary the weight and maximum mark on a per-submission basis (perhaps to cater for students who were unable to complete the entire assignment due to unusual circumstances). We could use a trigger that runs before an <code>INSERT</code> on <code>Result</code> to copy across the “default” values from <code>Assessment</code>. <code>Result</code> could then look something like this:</p>
+				
+				<code-block><![CDATA[
+  ...
+  Weight            NUMBER(3)       NOT NULL
+    CONSTRAINT Result_Weight_Range CHECK ( Weight BETWEEN 0 AND 100 ),
+  Maximum_Mark      NUMBER(3)
+    CONSTRAINT Result_Maximum_Mark_Range CHECK ( Maximum_Mark >= 0 ),
+  Raw_Mark          NUMBER(4,1)     NOT NULL
+    CONSTRAINT Result_Raw_Mark_Range CHECK ( Raw_Mark >= 0 ),
+  Weighted_Mark     NUMBER 
+    GENERATED ALWAYS AS ( Raw_Mark / Maximum_Mark * Weight ),
+  Percentage_Mark   NUMBER(5,2)
+    GENERATED ALWAYS AS ( Raw_Mark / Maximum_Mark * 100 ),
+  ...
+]]>
+				</code-block>
 				
 			</answer>
 			
