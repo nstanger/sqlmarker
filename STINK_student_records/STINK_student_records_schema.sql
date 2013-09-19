@@ -61,7 +61,9 @@ CREATE TABLE Qualification
 -- Paper table
 --
 CREATE TABLE Paper
-( Paper_Code        CHAR(7),
+( Paper_Code        CHAR(7)
+    CONSTRAINT Paper_Code_Valid
+      CHECK ( REGEXP_LIKE( Paper_Code, '[A-Z]{4}[0-9]{3}' ) ),
   Title             VARCHAR2(50)    NOT NULL,
   Description       VARCHAR2(500)   NOT NULL,
   Points            NUMBER(2)       DEFAULT 18 NOT NULL
@@ -205,7 +207,9 @@ CREATE TABLE Assessment
     CONSTRAINT Assessment_Release_Valid CHECK ( Release IN ( 'T', 'F' ) ),
   Weight            NUMBER(3)       NOT NULL
     CONSTRAINT Assessment_Weight_Range CHECK ( Weight BETWEEN 0 AND 100 ),
-  Maximum_Mark      NUMBER(3),
+  Maximum_Mark      NUMBER(3)
+    CONSTRAINT Assessment_Maximum_Mark_Range
+      CHECK ( Maximum_Mark >= 0 ),  -- bonus marks!
   Paper_Code        CHAR(7)         NOT NULL,
   --
   CONSTRAINT Assessment_PK PRIMARY KEY ( Assessment_ID ),
@@ -221,8 +225,12 @@ CREATE TABLE Assessment
 CREATE TABLE Result
 ( Assessment_ID     NUMBER(10),
   Enrolment_ID      NUMBER(10),
-  Raw_Mark          NUMBER(4,1)     NOT NULL,
-  Weighted_Mark     NUMBER          NOT NULL,
+  Raw_Mark          NUMBER(4,1)     NOT NULL
+    CONSTRAINT Result_Raw_Mark_Range
+      CHECK ( Raw_Mark >= 0 ),
+  Weighted_Mark     NUMBER          NOT NULL
+    CONSTRAINT Result_Weighted_Mark_Range
+      CHECK ( Weighted_Mark >= 0 ), -- bonus marks!
   Percentage_Mark   NUMBER(5,2)     NOT NULL
     CONSTRAINT Result_Percentage_Mark_Range
       CHECK (Percentage_Mark BETWEEN 0 AND 100),
