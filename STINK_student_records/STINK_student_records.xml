@@ -330,7 +330,7 @@ CREATE TABLE Schedule
 				
 				<item>Contact phone numbers must cater for full New Zealand landline and mobile numbers. Students’ home phone numbers must cater for full international numbers, as many students are from overseas.</item>
 				
-				<item>A staff member’s rank must be one of the following: “T”, “AL”, “L”, “SL”, “AP” or “P” (representing Tutor, Assistant Lecturer, Lecturer, Senior Lecturer, Associate Professor and Professor, respectively). Salaries for senior positions exceed <dollar-sign /><number>100000</number>.</item>
+				<item>A staff member’s rank must be one of the following: “T”, “AL”, “L”, “SL”, “AP” or “P” (representing Tutor, Assistant Lecturer, Lecturer, Senior Lecturer, Associate Professor and Professor, respectively). Salaries for Associate Professors and Professors usually exceed <dollar-sign /><number>100000</number>.</item>
 				
 			</itemised-list>
 
