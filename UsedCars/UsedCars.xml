@@ -10,9 +10,9 @@
 		
 
 		<figure label="fig-erd" latex-placement="!hb">
-			<caption>Design-level ERD of Happy Joe’s database</caption>
-			<image basename="UsedCars_IE" location="images" latex-options="scale=0.85">
-				<description>Design-level ERD of Happy Joe’s database</description>
+			<caption>ERD of the proposed database (Barker notation)</caption>
+			<image basename="UsedCars_Barker" location="images" latex-options="scale=0.85">
+				<description>ERD of the proposed database (Barker notation)</description>
 			</image>
 		</figure>
 
