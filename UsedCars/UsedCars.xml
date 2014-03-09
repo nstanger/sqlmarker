@@ -78,6 +78,8 @@
 			</tabular>
 			
 			<p indent="no">As noted above, Happy Joe’s has about one hundred employees. The usual details such as name, address and phone number will be recorded. Employees must be at least 16 years old at the time they are first hired.</p>
+			
+			<p>Note that <code>Service</code>, <code>Sales</code> and <code>Other</code> are all subtypes of <code>Staff</code>, and therefore use the same primary key as <code>Staff</code>.</p>
 				
 			<answer>
 			
@@ -153,7 +155,7 @@ CREATE TABLE Staff
 				</tabular-body>
 			</tabular>
 			
-			<p indent="no"><code>Hourly_Rate</code> must meet minimum wage requirements: at least <dollar-sign />10.40 for those aged 16 or 17, and at least <dollar-sign />13.00 for those 18 or older. <code>Total_Hours</code> is measured to the nearest quarter hour and must be in the range 0–3500 (= 40 hours per week <times /> 52 weeks per year, plus a generous allowance for overtime).</p>
+			<p indent="no"><code>Hourly_Rate</code> must meet minimum wage requirements: at least <dollar-sign />11.00 for “starting out” workers, and at least <dollar-sign />13.50 for adults. <code>Total_Hours</code> is measured to the nearest quarter hour and must be in the range 0–3500 (= 40 hours per week <times /> 52 weeks per year, plus a generous allowance for overtime).</p>
 			
 			<answer>
 			
@@ -230,13 +232,13 @@ END;
 					<row>
 						<cell><tt>*</tt></cell>
 						<cell><code>Salary</code></cell>
-						<cell>Total annual salary (see below)</cell>
+						<cell>Gross annual salary (see below)</cell>
 					</row>
 					<row-rule />
 				</tabular-body>
 			</tabular>
 			
-			<p indent="no"><code>Salary</code> must meet minimum wage requirements: at least <dollar-sign />21<digitsep />632 (= <dollar-sign />10.40 <times /> 40 hours per week <times /> 52 weeks per year) for those aged 16 or 17, and at least <dollar-sign />27<digitsep />040 for those 18 or older.</p>
+			<p indent="no"><code>Salary</code> must meet minimum wage requirements: at least <dollar-sign /><number>22880</number> (= <dollar-sign />11.00 <times /> 40 hours per week <times /> 52 weeks per year) for “starting out” workers, and at least <dollar-sign /><number>27040</number> for those 18 or older.</p>
 			
 			<answer>
 			
@@ -310,20 +312,20 @@ END;
 					</row>
 					<row>
 						<cell><tt>*</tt></cell>
-						<cell><code>Total_Earnings</code></cell>
-						<cell>Total earnings to date this year, <ge /><space /><dollar-sign />0.00</cell>
+						<cell><code>Gross_Earnings</code></cell>
+						<cell>Gross earnings to date this year, <ge /><space /><dollar-sign />0.00</cell>
 					</row>
 					<row-rule />
 				</tabular-body>
 			</tabular>
 			
-			<p indent="no">Some sales staff are paid on commission (up to 30<percent-sign /> of the value of each sale), while others are paid a flat rate per sale that varies depending on the type of car sold (e.g., <dollar-sign />100 for a Toyota Corolla vs.<space /><dollar-sign />500 for a BMW M3; these rates are stored in <code>Car</code>—see <hyperlink label="sec-car"><reference label="sec-car"/></hyperlink>). If the salesrep is paid on commission then <code>On_Commission</code> is true and <code>Commission_Rate</code> must be greater than zero. If the salesrep is paid on flat rate then <code>On_Commission</code> is false and <code>Commission_Rate</code> must be zero.</p>
+			<p indent="no">Some sales staff are paid on commission (up to 30<percent-sign /> of the value of each sale), while others are paid a flat rate per sale that varies depending on the type of car sold (e.g., <dollar-sign />100 for a Toyota Corolla vs.<space /><dollar-sign />500 for a BMW M3; these rates are stored in <code>Car</code>—see <hyperlink label="sec-car"><reference label="sec-car"/></hyperlink>). If the salesrep is paid on commission then <code>On_Commission</code> is “true” and <code>Commission_Rate</code> must be greater than zero. If the salesrep is paid on flat rate then <code>On_Commission</code> is “false” and <code>Commission_Rate</code> must be zero.</p>
 			
-			<p><code>Total_Earnings</code> stores the total amount earned by a salesrep to date in the current financial year (1 April to 31 March). For salesreps who are on commission, this total is calculated from <code>Commission_Rate</code><space /><times /><space /><code>Sale.Amount</code>. For salesreps who are not on commission, the total is calculated from <code>Car.Flat_Rate</code> (via <code>Sale</code>—see <hyperlink label="sec-car"><reference label="sec-car"/></hyperlink> and <hyperlink label="sec-sale"><reference label="sec-sale"/></hyperlink>).</p>
+			<p><code>Gross_Earnings</code> stores the gross amount (i.e., before tax) earned by a salesrep to date in the current financial year (1 April to 31 March). For salesreps who are on commission, this is the sum to date of <code>Commission_Rate</code><space /><times /><space /><code>Sale.Amount</code>. For salesreps who are not on commission, this is sum to date of <code>Car.Flat_Rate</code> (via <code>Sale</code>—see <hyperlink label="sec-car"><reference label="sec-car"/></hyperlink> and <hyperlink label="sec-sale"><reference label="sec-sale"/></hyperlink>).</p>
 		
 			<answer>
 			
-				<p indent="no"><strong>Sales</strong><left-brace /><underline>Staff<underscore />ID</underline>, On<underscore />Commission, Commission<underscore />Rate, Total<underscore />Earnings<right-brace /> (foreign keys: Staff<underscore />ID <rightarrow /><space /><strong>Staff</strong>)</p>
+				<p indent="no"><strong>Sales</strong><left-brace /><underline>Staff<underscore />ID</underline>, On<underscore />Commission, Commission<underscore />Rate, Gross<underscore />Earnings<right-brace /> (foreign keys: Staff<underscore />ID <rightarrow /><space /><strong>Staff</strong>)</p>
 				
 				<code-block>
 CREATE TABLE Sales
@@ -334,9 +336,9 @@ CREATE TABLE Sales
   Commission_Rate   NUMBER(3,2) NOT NULL
       CONSTRAINT Sales_Valid_Commission_Rate
           CHECK ( Commission_Rate BETWEEN 0.00 AND 0.30 ),
-  Total_Earnings    NUMBER(8,2) NOT NULL
-      CONSTRAINT Sales_Valid_Total_Earnings
-          CHECK ( Total_Earnings &gt;= 0.00 ),
+  Gross_Earnings    NUMBER(8,2) NOT NULL
+      CONSTRAINT Sales_Valid_Gross_Earnings
+          CHECK ( Gross_Earnings &gt;= 0.00 ),
   --
   CONSTRAINT Sales_Check_Commission
       CHECK (    ( ( On_Commission = 'N' ) AND ( Commission_Rate = 0 ) )
@@ -348,7 +350,7 @@ CREATE TABLE Sales
 );
 				</code-block>
 				
-				<p indent="no">Similar to <code>Service_Staff</code> above. We also accepted <code>Other_Staff</code> as a table name. Note that the paragraph above about <code>Total_Earnings</code> describes the <em>process</em> of how it is calculated, not a constraint on its possible values, so implementing this as a constraint is incorrect.</p>
+				<p indent="no">Similar to <code>Service_Staff</code> above. We also accepted <code>Other_Staff</code> as a table name. Note that the paragraph above about <code>Gross_Earnings</code> describes the <em>process</em> of how it is calculated, not a constraint on its possible values, so implementing this as a constraint is incorrect.</p>
 				
 			</answer>
 				
@@ -490,7 +492,7 @@ CREATE TABLE Customer
 					<row>
 						<cell><tt>*</tt></cell>
 						<cell><code>Year</code></cell>
-						<cell>Year of manufacture, no earlier than 1980</cell>
+						<cell>Year of manufacture, no earlier than 1995</cell>
 					</row>
 					<row>
 						<cell><tt>*</tt></cell>
@@ -500,7 +502,7 @@ CREATE TABLE Customer
 					<row>
 						<cell><tt>*</tt></cell>
 						<cell><code>Odometer</code></cell>
-						<cell>Current odometer reading, 0.0–999<digitsep />999.9</cell>
+						<cell>Current odometer reading, 0.0–<number>999999.9</number></cell>
 					</row>
 					<row>
 						<cell><tt>*</tt></cell>
@@ -526,7 +528,7 @@ CREATE TABLE Customer
 				</tabular-body>
 			</tabular>
 			
-			<p indent="no">Happy Joe’s sell only modern cars, and so will not purchase anything manufactured before 1980. The value of <code>Flat_Rate</code> is determined by how frequently each particular type of car is sold (this information is not stored in the database); the “easier” it is to sell a car, the lower the value of <code>Flat_Rate</code>. All cars have a value for <code>Flat_Rate</code> because we do not know in advance whether they will be sold by a salesrep on commission or on flat rate. The value of <code>Flat_Rate</code> is independent of the sale price, which is why it is stored here rather than in <code>Sale</code>.</p>
+			<p indent="no">Happy Joe’s sell only modern cars, and so will not purchase anything manufactured before 1995. The value of <code>Flat_Rate</code> is determined by how frequently each particular type of car is sold (this information is not stored in the database); the “easier” it is to sell a car, the lower the value of <code>Flat_Rate</code>. All cars have a value for <code>Flat_Rate</code> because we do not know in advance whether they will be sold by a salesrep on commission or on flat rate. The value of <code>Flat_Rate</code> is independent of the sale price, which is why it is stored here rather than in <code>Sale</code>.</p>
 			
 			<answer>
 			
@@ -539,7 +541,7 @@ CREATE TABLE Car
   Make              VARCHAR2(20)    NOT NULL,
   Model             VARCHAR2(30)    NOT NULL,
   Year              NUMBER(4)       NOT NULL
-      CONSTRAINT Car_Valid_Year CHECK ( Year &gt;= 1980 ),
+      CONSTRAINT Car_Valid_Year CHECK ( Year &gt;= 1995 ),
   Colour            VARCHAR2(20)    NOT NULL,
   Odometer          NUMBER(7,1)     NOT NULL
       CONSTRAINT Car_Valid_Odometer 
@@ -568,7 +570,7 @@ CREATE TABLE Car
 
 		<section label="sec-feature">
 		
-			<title>The <tt>Feature</tt> entity</title>
+			<title>The <tt>Feature</tt> and <tt>Car<underscore />Feature</tt> entities</title>
 
 			<tabular border="1" align="left">
 				<tabular-columns>
@@ -577,6 +579,9 @@ CREATE TABLE Car
 					<column align="left" right-border="|"/>
 				</tabular-columns>
 				<tabular-body>
+					<row>
+						<cell header="yes" columns="3" align="left"><tt>Feature</tt></cell>
+					</row>
 					<row-rule/>
 					<row>
 						<cell header="yes"/>
@@ -599,6 +604,8 @@ CREATE TABLE Car
 			</tabular>
 			
 			<p indent="no">Cars may have any number of optional features, such as air conditioning, side airbags, body kit, iPod integration, cruise control, etc.</p>
+			
+			<p><code>Car_Feature</code> is an associative entity that exists only to link cars with features. It has no additional attributes of its own.</p>
 			
 			<answer>
 			
@@ -661,14 +668,24 @@ CREATE TABLE Car_Feature
 						<cell>1 character warranty code (see below)</cell>
 					</row>
 					<row>
-						<cell><tt>*</tt></cell>
-						<cell><code>Duration</code></cell>
-						<cell>In months (see below)</cell>
+						<cell><tt>o</tt></cell>
+						<cell><code>Max_Age</code></cell>
+						<cell>Of car in years (see below)</cell>
 					</row>
 					<row>
-						<cell><tt>*</tt></cell>
+						<cell><tt>o</tt></cell>
+						<cell><code>Max_KM</code></cell>
+						<cell>Of car in kilometres (see below)</cell>
+					</row>
+					<row>
+						<cell><tt>o</tt></cell>
+						<cell><code>Duration</code></cell>
+						<cell>Of warranty in months (see below)</cell>
+					</row>
+					<row>
+						<cell><tt>o</tt></cell>
 						<cell><code>Distance</code></cell>
-						<cell>In kilometres (see below)</cell>
+						<cell>Of warranty in kilometres (see below)</cell>
 					</row>
 					<row>
 						<cell><tt>*</tt></cell>
@@ -756,7 +773,7 @@ INSERT INTO Warranty ( W_Code, Duration, Distance, Description )
 				</tabular-body>
 			</tabular>
 			
-			<p indent="no">Purchases are for a single car only (i.e., no bulk purchases). Trade-ins are effectively treated as a special type of purchase (see <code>Sale</code> below).</p>
+			<p indent="no">Purchases are for a single car only (i.e., no bulk purchases). Trade-ins are effectively treated as a special type of purchase (see <hyperlink label="sec-sale"><reference label="sec-sale"/></hyperlink>).</p>
 
 			<answer>
 			
@@ -873,7 +890,9 @@ CREATE TABLE Sale
 				
 		</section>
 		
-		<newpage />
+        <vskip size="large" />
+        <vskip size="large" />
+        <vskip size="large" />
 		
 		<p indent="no">
 			<image basename="UsedCarWarranties" location="images" latex-options="width=\columnwidth,keepaspectratio">
