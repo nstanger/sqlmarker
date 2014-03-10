@@ -94,15 +94,16 @@ CREATE TABLE Staff
   Lastname      VARCHAR2(50)    NOT NULL,
   Address       VARCHAR2(150)   NOT NULL,
   -- Use VARCHAR2 for phone numbers in order to retain leading zeros.
-  -- Format: leading 0 plus 2 digits for carrier plus up to 8 digits, e.g.,
-  -- 02187654321, longer if we assume punctuation is included.
+  -- Format: leading 0 plus 1-digit area code plus up to 9 digits, e.g.,
+  -- 02187654321; longer if we allow punctuation to be included.
+  -- (http://en.wikipedia.org/wiki/Telephone_numbers_in_New_Zealand)
   Phone         VARCHAR2(11)    NOT NULL,
   Date_Hired    DATE            DEFAULT SYSDATE
                                 NOT NULL,
   Date_of_Birth DATE            NOT NULL,
   --
   CONSTRAINT Staff_Valid_Age
-      CHECK ( ( Date_Hired - TO_YMINTERVAL( '16-0' ) ) &gt;= Date_of_Birth ),
+      CHECK ( ( Date_Hired - TO_YMINTERVAL( '18-0' ) ) &gt;= Date_of_Birth ),
   --
   CONSTRAINT Staff_PK PRIMARY KEY ( Staff_ID )
 );
@@ -164,12 +165,12 @@ CREATE TABLE Staff
 				<code-block>
 CREATE TABLE Service
 ( Staff_ID      NUMBER(4),
-  -- Can't validate Hourly_Rate using a CHECK constraint, as we would need to
-  -- access values from the Staff table.
-  Hourly_Rate   NUMBER(5,2)     NOT NULL,
+  Hourly_Rate   NUMBER(5,2)     NOT NULL
+      CONSTRAINT Service_Hourly_Rate_Min
+          CHECK ( Hourly_Rate &gt;= 13.50 ),
   Total_Hours   NUMBER(6,2)     DEFAULT 0   NOT NULL
       CONSTRAINT Service_Total_Hours_Range
-          CHECK ( Total_Hours BETWEEN 0 AND 3500 )
+          CHECK ( Total_Hours BETWEEN 0 AND 4500 )
       CONSTRAINT Service_Total_Hours_Quarters
           CHECK ( TRUNC( Total_Hours * 4 ) =  ( Total_Hours * 4 ) ),
   --
@@ -177,33 +178,6 @@ CREATE TABLE Service
   CONSTRAINT Service_FK_to_Staff
       FOREIGN KEY ( Staff_ID ) REFERENCES Staff ON DELETE CASCADE
 );
-
-CREATE OR REPLACE TRIGGER Validate_Service_Hourly_Rate
-  BEFORE INSERT OR UPDATE OF Hourly_Rate ON Service
-  FOR EACH ROW
-DECLARE
-  Minimum_Rate NUMBER;
-BEGIN
-  -- Use the CASE feature of SELECT to make the query return the minimum
-  -- rate based on age rather than just retrieving the dates and calculating
-  -- the rate within the trigger. We assume that there are no employees with
-  -- an age &lt; 16 in the database, even though it's technically possible
-  -- with the current schema; see if you can figure out how :).
-  SELECT CASE WHEN ( ( SYSDATE - TO_YMINTERVAL( '18-0' ) ) &lt; Date_of_Birth )
-              THEN 10.4 -- these two should be constants somewhere!
-              ELSE 13
-         END INTO Minimum_Rate
-  FROM Staff
-  WHERE Staff.Staff_ID = :NEW.Staff_ID;
-  
-  IF ( :NEW.Hourly_Rate &lt; Minimum_Rate ) THEN
-    RAISE_APPLICATION_ERROR( -20000,
-        'Hourly pay rate of ' || TO_CHAR( :NEW.Hourly_Rate, '$90.00' ) ||
-        ' for employee ' || :NEW.Staff_ID || 
-        ' is less than their minimum rate of ' ||
-        TO_CHAR( Minimum_Rate, '$90.00' ) );
-  END IF;
-END;
 				</code-block>
 				
 				<p indent="no">It makes sense to include <code>ON DELETE CASCADE</code> on the foreign keys from subtypes to <code>Staff</code>, as subtype instances can’t exist independently of the corresponding supertype instance.</p>
@@ -247,36 +221,14 @@ END;
 				<code-block>
 CREATE TABLE Other
 ( Staff_ID      NUMBER(4),
-  -- Can't validate Salary using a CHECK constraint, as we would need to
-  -- access values from the Staff table.
-  Salary    NUMBER(8,2)     NOT NULL,
+  Salary    NUMBER(8,2)     NOT NULL
+      CONSTRAINT Other_Salary_Min
+          CHECK ( Salary &gt;= 28080 ),
   --
   CONSTRAINT Other_PK PRIMARY KEY ( Staff_ID ),
   CONSTRAINT Other_FK_to_Staff
       FOREIGN KEY ( Staff_ID ) REFERENCES Staff ON DELETE CASCADE
 );
-
-CREATE OR REPLACE TRIGGER Validate_Other_Salary
-  BEFORE INSERT OR UPDATE OF Salary ON Other
-  FOR EACH ROW
-DECLARE
-  Minimum_Salary NUMBER;
-BEGIN
-  SELECT CASE WHEN ( ( SYSDATE - TO_YMINTERVAL( '18-0' ) ) &lt; Date_of_Birth )
-              THEN 21632 -- these two should be constants somewhere!
-              ELSE 27040
-         END INTO Minimum_Salary
-  FROM Staff
-  WHERE Staff.Staff_ID = :NEW.Staff_ID;
-  
-  IF ( :NEW.Salary &lt; Minimum_Salary ) THEN
-    RAISE_APPLICATION_ERROR( -20000,
-        'Salary of ' || TO_CHAR( :NEW.Salary, '$999,990.00' ) ||
-        ' for employee ' || :NEW.Staff_ID || 
-        ' is less than their minimum salary of ' ||
-        TO_CHAR( Minimum_Salary, '$999,990.00' ) );
-  END IF;
-END;
 				</code-block>
 				
 				<p indent="no">Similar to <code>Service_Staff</code> above. We also accepted <code>Other_Staff</code> as a table name.</p>
@@ -336,6 +288,8 @@ CREATE TABLE Sales
   Commission_Rate   NUMBER(3,2) NOT NULL
       CONSTRAINT Sales_Valid_Commission_Rate
           CHECK ( Commission_Rate BETWEEN 0.00 AND 0.30 ),
+  -- We can't make Gross_Earnings a computed column, because it requires data
+  -- from other tables.
   Gross_Earnings    NUMBER(8,2) NOT NULL
       CONSTRAINT Sales_Valid_Gross_Earnings
           CHECK ( Gross_Earnings &gt;= 0.00 ),
@@ -553,6 +507,10 @@ CREATE TABLE Car
   Flat_Rate         NUMBER(4)       NOT NULL
       CONSTRAINT Car_Valid_Flat_Rate CHECK ( Flat_Rate &gt; 0 ),
   --
+  -- Not specified, but makes sense. Bonus marks!
+  CONSTRAINT Car_Valid_Service_Date
+      CHECK ( Last_Serviced &gt;= First_Registered )
+  --
   CONSTRAINT Car_PK PRIMARY KEY ( VIN )
 );
 				</code-block>
@@ -705,6 +663,8 @@ CREATE TABLE Car_Feature
 				<code-block>
 CREATE TABLE Warranty
 ( W_Code        CHAR(1),
+  Max_Age       NUMBER(1),
+  Max_KM        NUMBER(6),
   Duration      NUMBER(1),
   Distance      NUMBER(4),
   Notes         VARCHAR2(250),
@@ -713,13 +673,13 @@ CREATE TABLE Warranty
 );
 
 INSERT INTO Warranty ( W_Code, Duration, Distance, Description )
-  VALUES ( 'A' , 3, 5000, 'Category A motor vehicle' );
+  VALUES ( 'A', 4, 50000, 3, 5000, 'Category A motor vehicle' );
 INSERT INTO Warranty ( W_Code, Duration, Distance, Description )
-  VALUES ( 'B' , 2, 3000, 'Category B motor vehicle' );
+  VALUES ( 'B', 6, 75000, 2, 3000, 'Category B motor vehicle' );
 INSERT INTO Warranty ( W_Code, Duration, Distance, Description )
-  VALUES ( 'C' , 1, 1500, 'Category C motor vehicle' );
+  VALUES ( 'C', 8, 100000, 1, 1500, 'Category C motor vehicle' );
 INSERT INTO Warranty ( W_Code, Duration, Distance, Description )
-  VALUES ( 'D' , 0, 0, 'Category D motor vehicle' );
+  VALUES ( 'D', NULL, NULL, 0, 0, 'Category D motor vehicle' );
 				</code-block>
 				
 				<p indent="no">This is a lookup table that is intended to define the types of warranties allowed for vehicles. If the regulations change, it’s a simple matter to change the contents of the table to reflect this, which means that the table is effectively acting as a configurable constraint on warranty type. It would therefore be counterproductive to add constraints to the columns of this table based on the values specified in the Appendix, as the whole point of a lookup table is that the <em>contents</em> of the table effectively define a constraint. The values in the Appendix should therefore be used only to determine the data to be inserted into the table.</p>
@@ -860,16 +820,16 @@ CREATE TABLE Purchase
 CREATE SEQUENCE Sale_ID_Seq START WITH 10000000 MAXVALUE 99999999;
 
 CREATE TABLE Sale
-( Sale_ID   NUMBER(8),
-  Sale_Date DATE                NOT NULL,
-  Details       CLOB            NOT NULL,
-  Amount        NUMBER(6)       NOT NULL
+( Sale_ID     NUMBER(8),
+  Sale_Date   DATE          NOT NULL,
+  Details     CLOB          NOT NULL,
+  Amount      NUMBER(6)     NOT NULL
       CONSTRAINT Sale_Valid_Amount CHECK ( Amount &gt;= 0 ),
-  VIN           CHAR(17)        NOT NULL,
-  Customer_ID   NUMBER(6)       NOT NULL,
-  Salesrep_ID   NUMBER(4)       NOT NULL,
-  W_Code        CHAR(1)         NOT NULL,
-  Tradein_ID    NUMBER(8),
+  VIN         CHAR(17)      NOT NULL,
+  Customer_ID NUMBER(6)     NOT NULL,
+  Salesrep_ID NUMBER(4)     NOT NULL,
+  W_Code      CHAR(1)       NOT NULL,
+  Tradein_ID  NUMBER(8),
   --
   CONSTRAINT Sale_PK PRIMARY KEY ( Sale_ID ),
   CONSTRAINT Sale_FK_to_Car FOREIGN KEY ( VIN ) REFERENCES Car,
