@@ -77,7 +77,7 @@
 				</tabular-body>
 			</tabular>
 			
-			<p indent="no">As noted above, Happy Joe’s has about one hundred employees. The usual details such as name, address and phone number will be recorded. Employees must be at least 16 years old at the time they are first hired.</p>
+			<p indent="no">As noted above, Happy Joe’s has about one hundred employees. The usual details such as name, address and phone number will be recorded. Employees must be at least 18 years old at the time they are first hired.</p>
 			
 			<p>Note that <code>Service</code>, <code>Sales</code> and <code>Other</code> are all subtypes of <code>Staff</code>, and therefore use the same primary key as <code>Staff</code>.</p>
 				
@@ -155,7 +155,7 @@ CREATE TABLE Staff
 				</tabular-body>
 			</tabular>
 			
-			<p indent="no"><code>Hourly_Rate</code> must meet minimum wage requirements: at least <dollar-sign />11.00 for “starting out” workers, and at least <dollar-sign />13.50 for adults. <code>Total_Hours</code> is measured to the nearest quarter hour and must be in the range 0–3500 (= 40 hours per week <times /> 52 weeks per year, plus a generous allowance for overtime).</p>
+			<p indent="no"><code>Hourly_Rate</code> must meet the minimum wage requirements of at least <dollar-sign />13.50 for adults. <code>Total_Hours</code> is measured to the nearest quarter hour and must be in the range 0–4500 (= 40 hours per week <times /> 52 weeks per year, plus a generous buffer to allow for overtime).</p>
 			
 			<answer>
 			
@@ -238,7 +238,7 @@ END;
 				</tabular-body>
 			</tabular>
 			
-			<p indent="no"><code>Salary</code> must meet minimum wage requirements: at least <dollar-sign /><number>22880</number> (= <dollar-sign />11.00 <times /> 40 hours per week <times /> 52 weeks per year) for “starting out” workers, and at least <dollar-sign /><number>27040</number> for those 18 or older.</p>
+			<p indent="no"><code>Salary</code> must meet the minimum wage requirement of at least <dollar-sign /><number>28080</number> (= <dollar-sign />13.50 <times /> 40 hours per week <times /> 52 weeks per year) for adults.</p>
 			
 			<answer>
 			
@@ -321,7 +321,7 @@ END;
 			
 			<p indent="no">Some sales staff are paid on commission (up to 30<percent-sign /> of the value of each sale), while others are paid a flat rate per sale that varies depending on the type of car sold (e.g., <dollar-sign />100 for a Toyota Corolla vs.<space /><dollar-sign />500 for a BMW M3; these rates are stored in <code>Car</code>—see <hyperlink label="sec-car"><reference label="sec-car"/></hyperlink>). If the salesrep is paid on commission then <code>On_Commission</code> is “true” and <code>Commission_Rate</code> must be greater than zero. If the salesrep is paid on flat rate then <code>On_Commission</code> is “false” and <code>Commission_Rate</code> must be zero.</p>
 			
-			<p><code>Gross_Earnings</code> stores the gross amount (i.e., before tax) earned by a salesrep to date in the current financial year (1 April to 31 March). For salesreps who are on commission, this is the sum to date of <code>Commission_Rate</code><space /><times /><space /><code>Sale.Amount</code>. For salesreps who are not on commission, this is sum to date of <code>Car.Flat_Rate</code> (via <code>Sale</code>—see <hyperlink label="sec-car"><reference label="sec-car"/></hyperlink> and <hyperlink label="sec-sale"><reference label="sec-sale"/></hyperlink>).</p>
+			<p><code>Gross_Earnings</code> stores the gross amount (i.e., before tax) earned by a salesrep to date in the current financial year (1 April to 31 March). For salesreps who are on commission, this is the sum to date of <code>Commission_Rate</code><space /><times /><space /><code>Sale.Amount</code>. For salesreps who are not on commission, this is sum to date of <code>Car.Flat_Rate</code> for each car sold (see <code>Sale</code> in <hyperlink label="sec-sale"><reference label="sec-sale"/></hyperlink>).</p>
 		
 			<answer>
 			
@@ -419,7 +419,7 @@ CREATE TABLE Sales
 				</tabular-body>
 			</tabular>
 			
-			<p indent="no">The usual details will be recorded for each customer: name, address, phone and optionally an email address. The credit rating is also optional.</p>
+			<p indent="no">The usual details will be recorded for each customer: name, address, phone and optionally an email address.</p>
 				
 			<answer>
 			
@@ -603,7 +603,7 @@ CREATE TABLE Car
 				</tabular-body>
 			</tabular>
 			
-			<p indent="no">Cars may have any number of optional features, such as air conditioning, side airbags, body kit, iPod integration, cruise control, etc.</p>
+			<p indent="no">Cars may optionally have any number of special features, such as alloy wheels, side airbags, body kit, iPod integration, cruise control, etc.</p>
 			
 			<p><code>Car_Feature</code> is an associative entity that exists only to link cars with features. It has no additional attributes of its own.</p>
 			
@@ -688,15 +688,15 @@ CREATE TABLE Car_Feature
 						<cell>Of warranty in kilometres (see below)</cell>
 					</row>
 					<row>
-						<cell><tt>*</tt></cell>
-						<cell><code>Description</code></cell>
+						<cell><tt>o</tt></cell>
+						<cell><code>Notes</code></cell>
 						<cell>Up to 250 characters</cell>
 					</row>
 					<row-rule/>
 				</tabular-body>
 			</tabular>
 			
-			<p indent="no">The New Zealand government mandates four categories of dealer warranty for used cars. <code>Warranty</code> is a lookup table that records details of these warranty categories and enables them to be easily changed if the regulations change. An excerpt from a government discussion paper<footnote><em>Discussion Paper on Proposed Consumer Information Standard for Secondhand Motor Vehicles</em>, Ministry of Consumer Affairs, New Zealand Government, May 1998, ISBN 0-478-00075-8.</footnote> defining the different categories of warranty is included as “Appendix 4” at the end of this document; use these details to populate the table with appropriate data.</p>
+			<p indent="no">New Zealand legislation mandates four categories of dealer warranty for used cars. <code>Warranty</code> is a lookup table that records details of these warranty categories and enables them to be easily changed if the regulations change. An excerpt from a government discussion paper<footnote><em>Discussion Paper on Proposed Consumer Information Standard for Secondhand Motor Vehicles</em>, Ministry of Consumer Affairs, New Zealand Government, May 1998, ISBN 0-478-00075-8.</footnote> defining the different categories of warranty is included as “Appendix 4” at the end of this document; use this to populate the table with appropriate data.</p>
 			
 			<answer>
 			
@@ -705,9 +705,9 @@ CREATE TABLE Car_Feature
 				<code-block>
 CREATE TABLE Warranty
 ( W_Code        CHAR(1),
-  Duration      NUMBER(1)       NOT NULL,
-  Distance      NUMBER(4)       NOT NULL,
-  Description   VARCHAR2(250)   NOT NULL,
+  Duration      NUMBER(1),
+  Distance      NUMBER(4),
+  Notes         VARCHAR2(250),
   --
   CONSTRAINT Warranty_PK PRIMARY KEY ( W_Code )
 );
@@ -773,7 +773,7 @@ INSERT INTO Warranty ( W_Code, Duration, Distance, Description )
 				</tabular-body>
 			</tabular>
 			
-			<p indent="no">Purchases are for a single car only (i.e., no bulk purchases). Trade-ins are effectively treated as a special type of purchase (see <hyperlink label="sec-sale"><reference label="sec-sale"/></hyperlink>).</p>
+			<p indent="no">Purchases are for a single car only (i.e., no fleet purchases). Trade-ins are effectively treated as a special type of purchase (see <hyperlink label="sec-sale"><reference label="sec-sale"/></hyperlink>).</p>
 
 			<answer>
 			
@@ -850,7 +850,7 @@ CREATE TABLE Purchase
 				</tabular-body>
 			</tabular>
 
-			<p indent="no">Sales are for a single car only (i.e., no bulk sales). Some sales involve the trade-in of a single car, which is effectively treated as a special type of purchase that is linked to the corresponding sale.</p>
+			<p indent="no">Sales are for a single car only (i.e., no fleet sales). Some sales involve the trade-in of a single car, which is effectively treated as a special type of purchase that is linked to the corresponding sale.</p>
 
 			<answer>
 			
