@@ -37,7 +37,7 @@ abstract class Reporter
 	}
 	
 	/**
-	 *	$reportText is one of: PASSED, FAILED, ERROR, INCOMPLETE, SKIPPED, WARNING, NOTE, MISC, ...?
+	 *	$statusText is one of: PASSED, FAILED, ERROR, INCOMPLETE, SKIPPED, WARNING, NOTE, MISC, ...?
 	 *	$reportText is a printf-style string (although we actually use vprintf because of the array)
 	 *	$printfArguments is an array of arguments to $reportText
 	 */
