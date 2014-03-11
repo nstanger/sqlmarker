@@ -14,7 +14,9 @@ class ANSIReporter extends TextReporter
     
 	public function report ( $status, $reportText, $printfArguments = null )
 	{
-		if ( $this->getVerbosity() > 0 )
+	    if ( ( $status === Reporter::STATUS_DEBUG ) && ( $this->getVerbosity() !== Reporter::VERBOSITY_DEBUG ) ) return;
+	    
+		if ( $this->getVerbosity() > Reporter::VERBOSITY_NONE )
 		{
 			$fg = null;
 			$bg = null;
@@ -35,6 +37,7 @@ class ANSIReporter extends TextReporter
 					$bg = 'yellow';
 					break;
 				case Reporter::STATUS_NOTE:
+				case Reporter::STATUS_DEBUG:
 					$bg = 'light_gray';
 					break;
 				default:

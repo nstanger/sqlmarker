@@ -5,7 +5,9 @@ class TextReporter extends Reporter
 {
 	public function report ( $status, $reportText, $printfArguments = null )
 	{
-		if ( $this->getVerbosity() > 0 )
+	    if ( ( $status === Reporter::STATUS_DEBUG ) && ( $this->getVerbosity() !== Reporter::VERBOSITY_DEBUG ) ) return;
+	    
+		if ( $this->getVerbosity() > Reporter::VERBOSITY_NONE )
 		{
 			$statusText = '';
 			switch ( $status )
@@ -30,12 +32,13 @@ class TextReporter extends Reporter
 					break;
 				case Reporter::STATUS_NOTE:
 				case Reporter::STATUS_TEST:
+				case Reporter::STATUS_DEBUG:
 					break;
 				default:
 					$statusText .= '??? ';
 					break;
 			}
-			if ( $this->getVerbosity() > 1 ) $statusText .= $status . ': ';
+			if ( $this->getVerbosity() > Reporter::VERBOSITY_STUDENT ) $statusText .= $status . ': ';
 			
 		    $output = vsprintf( $statusText . $reportText . "\n", $printfArguments );
 		    fwrite( STDOUT, $output );

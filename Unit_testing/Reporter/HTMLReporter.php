@@ -13,7 +13,9 @@ class HTMLReporter extends Reporter
 	
 	public function report( $status, $reportText, $printfArguments = null )
 	{
-		if ( $this->getVerbosity() > 0 )
+	    if ( ( $status === Reporter::STATUS_DEBUG ) && ( $this->getVerbosity() !== Reporter::VERBOSITY_DEBUG ) ) return;
+	    
+		if ( $this->getVerbosity() > Reporter::VERBOSITY_NONE )
 		{
 			$statusText = '<p class="blackboard';
 			switch ( $status )
@@ -37,6 +39,7 @@ class HTMLReporter extends Reporter
 					$statusText .= ' yellow-ou result"><span style="font-size: large">⚠</span> ';
 					break;
 				case Reporter::STATUS_NOTE:
+				case Reporter::STATUS_DEBUG:
 					$statusText .= ' grey-light result">';
 					break;
 				default:
@@ -47,7 +50,7 @@ class HTMLReporter extends Reporter
 					$statusText .= ' yellow-ou result"><strong style="font-size: large">?</strong> ';
 					break;
 			}
-			if ( $this->getVerbosity() > 1 ) $statusText .= "<strong>" . ucfirst( strtolower( $status ) ) . ':</strong> ';
+			if ( $this->getVerbosity() > Reporter::VERBOSITY_STUDENT ) $statusText .= "<strong>" . ucfirst( strtolower( $status ) ) . ':</strong> ';
 			
 		    $message = vsprintf( $statusText . $reportText . "</span></p>\n", $printfArguments );
 		    fwrite( $this->output_stream, $message );

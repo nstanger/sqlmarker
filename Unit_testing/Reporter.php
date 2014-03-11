@@ -5,7 +5,13 @@ abstract class Reporter
 	// 0 == no output
 	// 1 == brief output (students?)
 	// 2 == verbose output (marking)
-	private $verbosity = 0;
+	// 3 == debug output
+	const VERBOSITY_NONE    = 0;
+	const VERBOSITY_STUDENT = 1;
+	const VERBOSITY_STAFF   = 2;
+	const VERBOSITY_DEBUG   = 3;
+	
+	private $verbosity      = self::VERBOSITY_NONE;
 	
 	const STATUS_PASS		= 'PASSED';
 	const STATUS_SKIPPED	= 'SKIPPED';
@@ -15,6 +21,7 @@ abstract class Reporter
 	const STATUS_WARNING	= 'WARNING';
 	const STATUS_NOTE		= 'NOTE';
 	const STATUS_TEST		= 'TEST';
+	const STATUS_DEBUG      = 'DEBUG';
 	
 	function __construct( $verbosity )
 	{
