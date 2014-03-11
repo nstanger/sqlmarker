@@ -906,8 +906,15 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		
 		if ( $columnType === 'NUMBER' )
 		{
+			/*
+				Note NVL() on Data_Precision to ensure that we don't get spurious errors for NUMBER 
+				columns with unspecified precision (=> Data_Precision is null). 38 is the maximum
+				precision for a NUMBER and will always be larger than the specified minimum precision
+				(but may be larger than any specified maximum precision). Data_Scale doesn't get the
+				same treatment, because it's still an error to not provide a scale when one is expected.
+			*/
 			$queryString = sprintf(
-				"SELECT Data_Type, Data_Precision, Data_Scale
+				"SELECT Data_Type, NVL( Data_Precision, 38 ), Data_Scale
 				 FROM User_Tab_Cols
 				 WHERE ( Table_Name = '%s' ) AND ( Column_Name = '%s' )",
 				strtoupper( $this->getTableName() ),
