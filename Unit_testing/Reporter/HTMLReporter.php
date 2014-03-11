@@ -3,9 +3,17 @@ require_once 'Reporter.php';
 
 class HTMLReporter extends Reporter
 {
+    private $output_stream;
+
+	function __construct( $verbosity )
+	{
+	    $this->output_stream = fopen( 'php://output', 'w' );
+		parent::__construct( $verbosity );
+	}
+	
 	public function report( $status, $reportText, $printfArguments = null )
 	{
-		if ( $this->getVerbosity() )
+		if ( $this->getVerbosity() > 0 )
 		{
 			$statusText = '<p class="blackboard';
 			switch ( $status )
@@ -41,7 +49,8 @@ class HTMLReporter extends Reporter
 			}
 			if ( $this->getVerbosity() > 1 ) $statusText .= "<strong>" . ucfirst( strtolower( $status ) ) . ':</strong> ';
 			
-			parent::report( $statusText, $reportText . "</span></p>\n", $printfArguments );
+		    $message = vsprintf( $statusText . $reportText . "</span></p>\n", $printfArguments );
+		    fwrite( $this->output_stream, $message );
 		}
 	}
 	

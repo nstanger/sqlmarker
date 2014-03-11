@@ -41,10 +41,7 @@ abstract class Reporter
 	 *	$reportText is a printf-style string (although we actually use vprintf because of the array)
 	 *	$printfArguments is an array of arguments to $reportText
 	 */
-	public function report( $statusText, $reportText, $printfArguments = null )
-	{
-		if ( $this->verbosity ) vprintf( $statusText . $reportText . "\n", $printfArguments );
-	}
+	abstract public function report( $statusText, $reportText, $printfArguments = null );
 	
 	abstract public function hr();
 }

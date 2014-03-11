@@ -14,7 +14,7 @@ class ANSIReporter extends TextReporter
     
 	public function report ( $status, $reportText, $printfArguments = null )
 	{
-		if ( $this->getVerbosity() )
+		if ( $this->getVerbosity() > 0 )
 		{
 			$fg = null;
 			$bg = null;
@@ -41,7 +41,7 @@ class ANSIReporter extends TextReporter
 					break;
 			}
 			
-			echo $this->ANSI->setColor( $fg, $bg );
+			fwrite( STDOUT, $this->ANSI->setColor( $fg, $bg ) );
 			
 			parent::report( $status, $reportText . $this->ANSI->resetANSI(), $printfArguments );
 		}

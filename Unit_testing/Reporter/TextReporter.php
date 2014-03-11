@@ -5,7 +5,7 @@ class TextReporter extends Reporter
 {
 	public function report ( $status, $reportText, $printfArguments = null )
 	{
-		if ( $this->getVerbosity() )
+		if ( $this->getVerbosity() > 0 )
 		{
 			$statusText = '';
 			switch ( $status )
@@ -37,7 +37,8 @@ class TextReporter extends Reporter
 			}
 			if ( $this->getVerbosity() > 1 ) $statusText .= $status . ': ';
 			
-			parent::report( $statusText, $reportText, $printfArguments );
+		    $output = vsprintf( $statusText . $reportText . "\n", $printfArguments );
+		    fwrite( STDOUT, $output );
 		}
 	}
 	
