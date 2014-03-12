@@ -892,17 +892,20 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			{
 			    if ( is_null( $numDecimals ) )
 			    {
-					$lengthSpec .= " (with no decimal places specified)";
+					$lengthSpec .= " (scale not specified ⇒ 0)";
 			    }
-				elseif ( $numDecimals > 0 ) // technically it could also be < 0, but this is uncommon
+				else
 				{
-					$lengthSpec .= " (including " . $numDecimals . " decimal places)";
+					$lengthSpec .= " (with scale " . $numDecimals . ")";
 				}
 			}
 		}
 		
-		self::$reporter->report( Reporter::STATUS_TEST, "[[ %s.%s length %s ]] ",
-			array( ucfirst( strtolower( $this->getTableName() ) ), ucfirst( strtolower( $columnName ) ), $lengthSpec ) );
+		self::$reporter->report( Reporter::STATUS_TEST, "[[ %s.%s %s %s ]] ",
+			array( ucfirst( strtolower( $this->getTableName() ) ),
+			       ucfirst( strtolower( $columnName ) ),
+			       ( $columnType === 'NUMBER' ) ? 'precision' : 'length',
+			       $lengthSpec ) );
 		
 		if ( $columnType === 'NUMBER' )
 		{
@@ -910,11 +913,12 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 				Note NVL() on Data_Precision to ensure that we don't get spurious errors for NUMBER 
 				columns with unspecified precision (=> Data_Precision is null). 38 is the maximum
 				precision for a NUMBER and will always be larger than the specified minimum precision
-				(but may be larger than any specified maximum precision). Data_Scale doesn't get the
-				same treatment, because it's still an error to not provide a scale when one is expected.
+				(but may be larger than any specified maximum precision). Data_Scale gets NVL'd to
+				zero because that's the expected value for no decimal places. If decimal places /are/
+				expected, this will still fail.
 			*/
 			$queryString = sprintf(
-				"SELECT Data_Type, NVL( Data_Precision, 38 ), Data_Scale
+				"SELECT Data_Type, NVL( Data_Precision, 38 ) AS Data_Precision, NVL( Data_Scale, 0 ) AS Data_Scale
 				 FROM User_Tab_Cols
 				 WHERE ( Table_Name = '%s' ) AND ( Column_Name = '%s' )",
 				strtoupper( $this->getTableName() ),
@@ -937,34 +941,43 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		
 		if ( $columnType === 'NUMBER' )
 		{
+            self::$reporter->report( Reporter::STATUS_DEBUG, "[[ expected: minimum precision = %s, maximum precision = %s, scale = %s ]]",
+                array( $minLength, $maxLength, $numDecimals ) );
+    		
+		    $actual_precision = $actual->getValue( 0, 'DATA_PRECISION' );
+		    $actual_scale     = $actual->getValue( 0, 'DATA_SCALE' );
+		    
+		    self::$reporter->report( Reporter::STATUS_DEBUG, "[[ actual: precision = %s, scale = %s ]] ",
+		        array( $actual_precision, $actual_scale ) );
+		
 			if ( RUN_MODE === 'staff' )
 			{
-				$errorString = sprintf(	'column %s.%s has unexpected length %d, %d [%+1.1f]',
+				$errorString = sprintf(	'column %s.%s has unexpected precision and/or scale %d, %d [%+1.1f]',
 										ucfirst( strtolower( $this->getTableName() ) ),
 										ucfirst( strtolower( $columnName ) ),
-										$actual->getValue( 0, 'DATA_PRECISION' ),
-										$actual->getValue( 0, 'DATA_SCALE' ),
+										$actual_precision,
+										$actual_scale,
 										$this->markAdjustments['incorrectLength']	);
 			}
 			else if ( RUN_MODE === 'student' )
 			{
 				$errorString = sprintf(
-					'column %s.%s has unexpected length; check the specification again or consult with the teaching staff',
+					'column %s.%s has unexpected precision and/or scale; check the specification again or consult with the teaching staff',
 					ucfirst( strtolower( $this->getTableName() ) ),
 					ucfirst( strtolower( $columnName ) )	);
 			}
 							
 			if ( $minLength > 0 )
 			{
-				$this->assertGreaterThanOrEqual( $minLength, $actual->getValue( 0, 'DATA_PRECISION' ), $errorString );
+				$this->assertGreaterThanOrEqual( $minLength, $actual_precision, $errorString );
 			}
 							
 			if ( $maxLength > 0 )
 			{
-				$this->assertLessThanOrEqual( $maxLength, $actual->getValue( 0, 'DATA_PRECISION' ), $errorString );
+				$this->assertLessThanOrEqual( $maxLength, $actual_precision, $errorString );
 			}
 						
-			$this->assertEquals( $numDecimals, $actual->getValue( 0, 'DATA_SCALE' ), $errorString );
+			$this->assertEquals( $numDecimals, $actual_scale, $errorString );
 		}
 		else
 		{
@@ -974,12 +987,19 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			// as they should have no length specified.
 			if ( $actual->getValue( 0, 'DATA_TYPE' ) != 'CLOB' )
 			{
+                self::$reporter->report( Reporter::STATUS_DEBUG, "[[ expected: minimum length = %s, maximum length = %2 ]]",
+                    array( $minLength, $maxLength ) );
+
+                $actual_length = $actual->getValue( 0, 'CHAR_LENGTH' );
+                
+                self::$reporter->report( Reporter::STATUS_DEBUG, "[[ actual: length = %s ]] ", array( $actual_length ) );
+            
 				if ( RUN_MODE === 'staff' )
 				{
 					$errorString = sprintf(	'column %s.%s has unexpected length %d [%+1.1f]',
 											ucfirst( strtolower( $this->getTableName() ) ),
 											ucfirst( strtolower( $columnName ) ),
-											$actual->getValue( 0, 'CHAR_LENGTH' ),
+											$actual_length,
 											$this->markAdjustments['incorrectLength']	);
 				}
 				else if ( RUN_MODE === 'student' )
@@ -992,11 +1012,11 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 								
 				if ( $maxLength > 0 )
 				{
-					$this->assertLessThanOrEqual( $maxLength, $actual->getValue( 0, 'CHAR_LENGTH' ), $errorString );
+					$this->assertLessThanOrEqual( $maxLength, $actual_length, $errorString );
 				}
 				if ( $minLength > 0 )
 				{
-					$this->assertGreaterThanOrEqual( $minLength, $actual->getValue( 0, 'CHAR_LENGTH' ), $errorString );
+					$this->assertGreaterThanOrEqual( $minLength, $actual_length, $errorString );
 				}
 								
 			}
