@@ -39,8 +39,6 @@ abstract class STINK_student_records_Test_Result extends PHPUnit_Extensions_Data
 											'test_value'	=>	"15",	),
 			'WEIGHTED_MARK'		=>	array(	'generic_type'	=>	'NUMBER',
 											'sql_type'		=>	array( 'NUMBER', 'FLOAT' ),
-											'min_length'    =>  null,
-											'decimals'      =>  null,
 											'underflow'		=>	-1,
 											'legal_values'  =>  array( 0 ),
 											'nullable'		=>	false,
