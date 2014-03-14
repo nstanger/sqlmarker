@@ -18,5 +18,11 @@ class STINK_student_records_Test_Schedule_data extends STINK_student_records_Tes
 	{
 		return $this->createXMLDataSet( TEST_CLASS_PATH . '/Schedule/STINK_student_records_Fixture_Schedule.xml' );
 	}
+	
+	
+	protected function willLoadFixture()
+	{
+	    return true;
+	}
 }
 ?>

@@ -20,6 +20,12 @@ class STINK_student_records_Test_Paper_data extends STINK_student_records_Test_P
 	}
 	
 	
+	protected function willLoadFixture()
+	{
+	    return true;
+	}
+	
+	
 	/**
 	 *	@dataProvider provideColumnUnderflowValues
 	 *	@expectedException PDOException

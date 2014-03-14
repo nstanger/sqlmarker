@@ -20,6 +20,12 @@ class STINK_student_records_Test_Student_structure extends STINK_student_records
 	}
 	
 	
+	protected function willLoadFixture()
+	{
+	    return false;
+	}
+	
+	
 	public function testTableExists()
 	{
 		$this->assertTableExists();

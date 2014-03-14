@@ -129,6 +129,10 @@ abstract class SimpleTestListener implements PHPUnit_Framework_TestListener
 			$this->suitePassCount++;
 			$this->passes[ $test->getName() ] = 1;
 		}
+		else
+		{
+			$this->passes[ $test->getName() ] = 0;
+		}
 	}
  
 	public function startTestSuite(PHPUnit_Framework_TestSuite $suite)

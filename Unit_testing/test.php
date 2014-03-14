@@ -255,6 +255,10 @@ foreach ( $testTables as $table )
 				}
 			}
 		}
+		else
+		{
+			$reporter->report( Reporter::STATUS_FAILURE, 'Table %s does not exist.', array( $table ) );
+		}
 	}
 	
 	if ( RUN_MODE !== 'student' )

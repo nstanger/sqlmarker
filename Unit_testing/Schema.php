@@ -118,7 +118,6 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	abstract protected function getFKColumnList();
 	
 	
-	
 	/**
 	 *	Return a list of the table's UNIQUE constraint column names.
 	 *
@@ -127,6 +126,14 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	 *	@return array( array( string+ ) )
 	 */
 	abstract protected function getUniqueColumnList();
+	
+	
+	/**
+	 *	Return whether or not the fixture should be loaded.
+	 *
+	 *	@return boolean
+	 */
+	abstract protected function willLoadFixture();
 	
 	/**#@-*/
 	
@@ -315,26 +322,36 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	
 	
 	/**
-	 *	Return the fixture setup operation.
-	 *
-	 *	We can't use the standard fixture setup operation with Oracle, because TRUNCATE doesn't work on tables that are referenced by foreign keys, even if the table is empty! We use the DELETE_ALL action operation instead.
+	 *	Return the appropriate fixture setup operation, depending on whether the fixture will be loaded.
 	 *
 	 *	@access protected
 	 *	@return PHPUnit_Extensions_Database_Operation_DatabaseOperation
 	 */
 	protected function getSetUpOperation()
 	{
-		return new PHPUnit_Extensions_Database_Operation_Composite(
-			array(
-				PHPUnit_Extensions_Database_Operation_Factory::DELETE_ALL(),
-				PHPUnit_Extensions_Database_Operation_Factory::INSERT()
-			)
-		);
+		if ( $this->willLoadFixture() )
+		{
+			// We can't use the default fixture setup operations with Oracle, because TRUNCATE doesn't work on
+			// tables that are referenced by foreign keys, even if the table is empty! We use the DELETE_ALL
+			// operation instead.
+			return new PHPUnit_Extensions_Database_Operation_Composite(
+				array(
+					PHPUnit_Extensions_Database_Operation_Factory::DELETE_ALL(),
+					PHPUnit_Extensions_Database_Operation_Factory::INSERT()
+				)
+			);
+		}
+		else
+		{
+			// If we're testing whether a table exists, and it doesn't, attempting to set up the fixture
+			// will fail with a nasty SQL error! So we just zero out the operation.
+			return new PHPUnit_Extensions_Database_Operation_Composite( array() );
+		}
 	}
 	
 	
 	/**
-	 *	Return the fixture teardown operation.
+	 *	Return the appropriate fixture teardown operation, depending on whether the fixture will be loaded.
 	 *
 	 *	We can't use the standard fixture teardown operation with Oracle, because TRUNCATE doesn't work on tables that are referenced by foreign keys, even if the table is empty! We use the DELETE_ALL action operation instead.
 	 *
@@ -343,9 +360,19 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	 */
 	protected function getTearDownOperation()
 	{
-		return new PHPUnit_Extensions_Database_Operation_Composite(
-			array( PHPUnit_Extensions_Database_Operation_Factory::DELETE_ALL() )
-		);
+		if ( $this->willLoadFixture() )
+		{
+			// We can't use the default fixture teardown operations with Oracle, because TRUNCATE doesn't work on
+			// tables that are referenced by foreign keys, even if the table is empty! We use the DELETE_ALL
+			// operation instead.
+			return new PHPUnit_Extensions_Database_Operation_Composite( array( PHPUnit_Extensions_Database_Operation_Factory::DELETE_ALL() ) );
+		}
+		else
+		{
+			// If we're testing whether a table exists, and it doesn't, attempting to tear down the fixture
+			// will fail with a nasty SQL error! So we just zero out the operation.
+			return new PHPUnit_Extensions_Database_Operation_Composite( array() );
+		}
 	}
 	
 	
@@ -1155,6 +1182,8 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		$substitutions[$columnName] = $legalValue;
 		$insertString = $this->constructInsert( $substitutions );
 		
+		self::$reporter->report( Reporter::STATUS_DEBUG, "[[ %s ]] ", array( $insertString ) );
+			
  		$stmt = $this->getConnection()->getConnection()->prepare( $insertString );
 		
 		$errorString = sprintf(

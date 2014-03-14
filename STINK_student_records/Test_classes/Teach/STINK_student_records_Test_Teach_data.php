@@ -20,6 +20,12 @@ class STINK_student_records_Test_Teach_data extends STINK_student_records_Test_T
 	}
 	
 	
+	protected function willLoadFixture()
+	{
+	    return true;
+	}
+	
+	
 	/**
 	 *	@dataProvider provideColumnLegalValues
 	 */
