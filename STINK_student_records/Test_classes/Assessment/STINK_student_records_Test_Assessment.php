@@ -93,5 +93,11 @@ abstract class STINK_student_records_Test_Assessment extends PHPUnit_Extensions_
 	{
 		return array( 'PAPER' => array( 'PAPER_CODE' ), );
 	}
+	
+	
+	public function getUniqueColumnList()
+	{
+		return array();
+	}
 }
 ?>

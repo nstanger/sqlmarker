@@ -48,5 +48,11 @@ abstract class STINK_student_records_Test_Staff extends PHPUnit_Extensions_Datab
 	{
 		return array( 'PERSON' => array( 'STAFF_ID' ) );
 	}
+	
+	
+	public function getUniqueColumnList()
+	{
+		return array();
+	}
 }
 ?>

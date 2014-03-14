@@ -75,5 +75,11 @@ abstract class STINK_student_records_Test_Person extends PHPUnit_Extensions_Data
 	{
 		return array();
 	}
+	
+	
+	public function getUniqueColumnList()
+	{
+		return array( array( 'USERNAME' ) );
+	}
 }
 ?>

@@ -65,5 +65,11 @@ abstract class STINK_student_records_Test_Student extends PHPUnit_Extensions_Dat
 			'STAFF' => array( 'SUPERVISOR_ID' ),
 		);
 	}
+	
+	
+	public function getUniqueColumnList()
+	{
+		return array();
+	}
 }
 ?>

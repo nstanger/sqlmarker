@@ -62,5 +62,11 @@ abstract class STINK_student_records_Test_Paper extends PHPUnit_Extensions_Datab
 	{
 		return array();
 	}
+	
+	
+	public function getUniqueColumnList()
+	{
+		return array();
+	}
 }
 ?>

@@ -117,6 +117,17 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	 */
 	abstract protected function getFKColumnList();
 	
+	
+	
+	/**
+	 *	Return a list of the table's UNIQUE constraint column names.
+	 *
+	 *	This should return a list of column names for each UNIQUE constraint.
+	 *
+	 *	@return array( array( string+ ) )
+	 */
+	abstract protected function getUniqueColumnList();
+	
 	/**#@-*/
 	
 	
@@ -168,6 +179,30 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		foreach ( $fkColumns as $columnName  )
 		{
 			array_push( $theList, array( 'COLUMN_NAME' => $columnName ) );
+		}
+		
+		return new SchemaTesting_DbUnit_ArrayDataSet( array( $datasetTableName => $theList ) );
+	}
+	
+	
+	/**
+	 *	Return the list of column names for each unique constraint as an array data set.
+	 *
+	 *	The argument specifies the name of the table in the dataset.
+	 *
+	 *	@return SchemaTesting_DbUnit_ArrayDataSet
+	 */
+	protected function getUniqueColumnListAsDataSet( $datasetTableName )
+	{
+		$theList = array();
+		$uniqueColumns = $this->getUniqueColumnList();
+		
+		foreach ( $uniqueColumns as $constraint  )
+		{
+		    foreach ( $constraint as $key => $columnName )
+		    {
+			    array_push( $theList, array( 'COLUMN_NAME' => $columnName, 'POSITION' => $key + 1 ) );
+		    }
 		}
 		
 		return new SchemaTesting_DbUnit_ArrayDataSet( array( $datasetTableName => $theList ) );
@@ -1518,8 +1553,54 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			   AND ( Child.Constraint_Type = 'R' )
 			 ORDER BY User_Cons_Columns.Position",
 			strtoupper( $this->getTableName() ),
-			strtoupper( $referencedTableName ),
-			strtoupper( implode( "', '", $this->getFKColumnListForTable( $referencedTableName ) ) )
+			strtoupper( $referencedTableName )
+		);
+						
+		$actual = $this->getConnection()->createQueryTable( $tableName, $queryString );
+		
+		// Note that we can't use the same trick as for PKs of the second test depending on the first, as this
+		// doesn't work when the first test is iterated by a data provider :(. (This probably makes sense when
+		// you think about how test execution works in general.) We also can't directly access the protected
+		// "data" member of the query table, so we resort to checking whether the row count is zero and skipping
+		// the test if so.
+		if ( $actual->getRowCount() == 0 ) $this->markTestSkipped( 'FK is missing anyway' );
+
+		$errorString = sprintf(
+			"the FK constraint for %s has incorrect columns [%+1.1f]",
+			ucfirst( strtolower( $this->getTableName() ) ),
+			$this->markAdjustments['unnamedConstraint']
+		);
+						
+		$this->assertTablesEqual( $expected->getTable( $tableName ), $actual, $errorString );
+	}
+	
+	
+	/**
+	 *	Assert that the unique constraints of a table include the correct columns.
+	 *
+	 *	We can query User_Cons_Columns to see whether the lists match. [? ->] Tests that use this should use provideFKReferencedTables as their data provider.
+	 *
+	 *	@access protected
+	 *	@return void
+	 */
+	public function assertUniqueColumns()
+	{
+		$tableName = $this->getTableName() . '_unique_cols';
+		$expected = $this->getUniqueColumnListAsDataSet( $tableName );
+		$uniqueColumns = $this->getUniqueColumnlist();
+		
+// 		self::$reporter->report( Reporter::STATUS_TEST, "[[ %s FK → %s: %s ]] ",
+// 			array(	ucfirst( strtolower( $this->getTableName() ) ),
+// 					ucfirst( strtolower( $referencedTableName ) ),
+// 	 				ucwords( strtolower( implode( ', ', $fkColumns[$referencedTableName] ) ) ) ) );
+
+		$queryString = sprintf(
+			"SELECT User_Cons_Columns.Column_Name, User_Cons_Columns.Position
+			 FROM User_Constraints INNER JOIN User_Cons_Columns USING ( Constraint_Name )
+			 WHERE ( User_Constraints.Table_Name = '%s' )
+			   AND ( User_Constraints.Constraint_Type = 'U' )
+			 ORDER BY User_Cons_Columns.Position",
+			strtoupper( $this->getTableName() )
 		);
 						
 		$actual = $this->getConnection()->createQueryTable( $tableName, $queryString );

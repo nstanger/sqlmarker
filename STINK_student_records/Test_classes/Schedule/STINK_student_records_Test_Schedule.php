@@ -41,5 +41,11 @@ abstract class STINK_student_records_Test_Schedule extends PHPUnit_Extensions_Da
 			'PAPER'			=>	array( 'PAPER_CODE' ),
 		);
 	}
+	
+	
+	public function getUniqueColumnList()
+	{
+		return array();
+	}
 }
 ?>

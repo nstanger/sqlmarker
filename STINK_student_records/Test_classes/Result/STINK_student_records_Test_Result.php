@@ -69,5 +69,11 @@ abstract class STINK_student_records_Test_Result extends PHPUnit_Extensions_Data
 			'ENROLMENT'		=>	array( 'ENROLMENT_ID' ),
 		);
 	}
+	
+	
+	public function getUniqueColumnList()
+	{
+		return array();
+	}
 }
 ?>

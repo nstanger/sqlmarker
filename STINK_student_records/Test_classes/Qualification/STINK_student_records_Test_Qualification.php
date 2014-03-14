@@ -43,5 +43,11 @@ abstract class STINK_student_records_Test_Qualification extends PHPUnit_Extensio
 	{
 		return array();
 	}
+	
+	
+	public function getUniqueColumnList()
+	{
+		return array();
+	}
 }
 ?>
