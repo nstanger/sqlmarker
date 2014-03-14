@@ -52,6 +52,8 @@ foreach ( $testTables as $table )
 	require_once "${table}/${structureTest}.php";
 	require_once "${table}/${dataTest}.php";
 	
+	$structurePassed = false;
+	
 	$listener->reset();
 	$reporter->hr();
 	
@@ -124,10 +126,12 @@ foreach ( $testTables as $table )
 					
 					if ( RUN_MODE !== 'student' )
 					{
+					    // Critical to data testing.
 						if ( $suite->testExists( "${structureTest}::testColumnNullability" ) )
 						{
 							$testResult = $suite->run( $result, '/testColumnNullability/' );
-							if ( $listener->wasSuccessful( "${structureTest}::testColumnNullability" ) )
+							$structurePassed = $listener->wasSuccessful( "${structureTest}::testColumnNullability" );
+							if ( $structurePassed )
 							{
 								$reporter->report( Reporter::STATUS_PASS, 'All columns of table %s have the expected nullability.', array( $table ) );
 							}
