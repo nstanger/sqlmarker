@@ -3,11 +3,11 @@ require_once 'Reporter.php';
 
 class HTMLReporter extends Reporter
 {
-    private $output_stream;
+    private $outputStream;
 
 	function __construct( $verbosity )
 	{
-	    $this->output_stream = fopen( 'php://output', 'w' );
+	    $this->outputStream = fopen( 'php://output', 'w' );
 		parent::__construct( $verbosity );
 	}
 	
@@ -42,7 +42,6 @@ class HTMLReporter extends Reporter
 				case Reporter::STATUS_DEBUG:
 					$statusText .= ' grey-light result">';
 					break;
-				default:
 				case Reporter::STATUS_TEST:
 					$statusText .= ' style="font-weight: bold;">';
 					break;
@@ -53,7 +52,7 @@ class HTMLReporter extends Reporter
 			if ( $this->getVerbosity() > Reporter::VERBOSITY_STUDENT ) $statusText .= "<strong>" . ucfirst( strtolower( $status ) ) . ':</strong> ';
 			
 		    $message = vsprintf( $statusText . $reportText . "</span></p>\n", $printfArguments );
-		    fwrite( $this->output_stream, $message );
+		    fwrite( $this->outputStream, $message );
 		}
 	}
 	
