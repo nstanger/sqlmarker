@@ -1053,7 +1053,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		self::$reporter->report( Reporter::STATUS_TEST, "[[ %s.%s %s %s ]] ",
 			array( ucfirst( strtolower( $this->getTableName() ) ),
 			       ucfirst( strtolower( $columnName ) ),
-			       ( $columnType === 'NUMBER' ) ? 'precision' : 'length',
+			       ( $columnType === 'NUMBER' ) ? 'precision and scale' : 'length',
 			       $lengthSpec ) );
 		
 		if ( $columnType === 'NUMBER' )
