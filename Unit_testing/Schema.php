@@ -1,6 +1,9 @@
 <?php
-require_once "ArrayDataSet.php";
-require_once "Reporter.php";
+require_once 'ArrayDataSet.php';
+require_once 'Reporter.php';
+require_once 'PHPUnit/Framework/Constraint/GreaterThanSC.php';
+require_once 'PHPUnit/Framework/Constraint/LessThanSC.php';
+require_once 'PHPUnit/Framework/Constraint/IsEqualSC.php';
 
 abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_Extensions_Database_TestCase
 {
@@ -65,9 +68,18 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
      */
     public static function assertEqualsSC($expected, $actual, $message = '', $delta = 0, $maxDepth = 10, $canonicalize = FALSE, $ignoreCase = FALSE)
     {
-        $constraint = new PHPUnit_Framework_Constraint_IsEqualSC(
-          $expected, $delta, $maxDepth, $canonicalize, $ignoreCase
-        );
+    	if ( RUN_MODE === 'student' )
+    	{
+			$constraint = new PHPUnit_Framework_Constraint_IsEqualSC(
+			  $expected, $delta, $maxDepth, $canonicalize, $ignoreCase
+			);
+    	}
+    	else
+    	{
+			$constraint = new PHPUnit_Framework_Constraint_IsEqual(
+			  $expected, $delta, $maxDepth, $canonicalize, $ignoreCase
+			);
+    	}
 
         self::assertThat($actual, $constraint, $message);
     }
@@ -83,9 +95,14 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
      */
     public static function assertGreaterThanOrEqualSC($expected, $actual, $message = '')
     {
-        self::assertThat(
-          $actual, self::greaterThanOrEqualSC($expected), $message
-        );
+    	if ( RUN_MODE === 'student' )
+    	{
+			self::assertThat( $actual, self::greaterThanOrEqualSC($expected), $message );
+    	}
+    	else
+    	{
+			self::assertThat( $actual, self::greaterThanOrEqual($expected), $message );
+    	}
     }
 
 	
@@ -99,7 +116,14 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
      */
     public static function assertLessThanOrEqualSC($expected, $actual, $message = '')
     {
-        self::assertThat($actual, self::lessThanOrEqualSC($expected), $message);
+    	if ( RUN_MODE === 'student' )
+    	{
+	        self::assertThat($actual, self::lessThanOrEqualSC($expected), $message);
+    	}
+    	else
+    	{
+	        self::assertThat($actual, self::lessThanOrEqual($expected), $message);
+    	}
     }
 
 
@@ -114,10 +138,20 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
      */
     public static function greaterThanOrEqualSC($value)
     {
-        return self::logicalOr(
-          new PHPUnit_Framework_Constraint_IsEqualSC($value),
-          new PHPUnit_Framework_Constraint_GreaterThanSC($value)
-        );
+    	if ( RUN_MODE === 'student' )
+    	{
+			return self::logicalOr(
+			  new PHPUnit_Framework_Constraint_IsEqualSC($value),
+			  new PHPUnit_Framework_Constraint_GreaterThanSC($value)
+			);
+    	}
+    	else
+    	{
+			return self::logicalOr(
+			  new PHPUnit_Framework_Constraint_IsEqual($value),
+			  new PHPUnit_Framework_Constraint_GreaterThan($value)
+			);
+    	}
     }
 
 
