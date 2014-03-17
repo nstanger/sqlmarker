@@ -67,6 +67,52 @@
 class PHPUnit_Framework_Constraint_IsEqualSC extends PHPUnit_Framework_Constraint_IsEqual
 {
     /**
+     * Evaluates the constraint for parameter $other
+     *
+     * If $returnResult is set to FALSE (the default), an exception is thrown
+     * in case of a failure. NULL is returned otherwise.
+     *
+     * If $returnResult is TRUE, the result of the evaluation is returned as
+     * a boolean value instead: TRUE in case of success, FALSE in case of a
+     * failure.
+     *
+     * @param  mixed $other Value or object to evaluate.
+     * @param  string $description Additional information about the test
+     * @param  bool $returnResult Whether to return a result or throw an exception
+     * @return mixed
+     * @throws PHPUnit_Framework_ExpectationFailedException
+     */
+    public function evaluate($other, $description = '', $returnResult = FALSE)
+    {
+        $comparatorFactory = PHPUnit_Framework_ComparatorFactory::getDefaultInstance();
+
+        try {
+            $comparator = $comparatorFactory->getComparatorFor(
+              $other, $this->value
+            );
+
+            $comparator->assertEquals(
+              $this->value,
+              $other,
+              $this->delta,
+              $this->canonicalize,
+              $this->ignoreCase
+            );
+        }
+
+        catch (PHPUnit_Framework_ComparisonFailure $f) {
+            if ($returnResult) {
+                return FALSE;
+            }
+            
+            $this->fail($other, $description);
+        }
+
+        return TRUE;
+    }
+
+
+    /**
      * Returns a string representation of the constraint.
      *
      * @return string
