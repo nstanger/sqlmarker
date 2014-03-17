@@ -49,6 +49,8 @@ foreach ( $testTables as $table )
 	$structureTest	= "${scenario}_Test_${table}_structure";
 	$dataTest		= "${scenario}_Test_${table}_data";
 	
+	$runDataTests   = true;
+	
 	require_once "${table}/${structureTest}.php";
 	require_once "${table}/${dataTest}.php";
 	
@@ -108,6 +110,7 @@ foreach ( $testTables as $table )
 																$listener->countTests( "${structureTest}::testColumnLength" ),
 																$table,
 																Reporter::pluralise( "${structureTest}::testColumnLength", 'has', 'have' ) ) ) ;
+			                        $runDataTests = false;
 								}
 							}
 						}
@@ -121,6 +124,7 @@ foreach ( $testTables as $table )
 									Reporter::pluralise( $listener->countNonPasses( "${structureTest}::testColumnDataType" ), "has", "have" )
 								) ) ;
 							$reporter->report( Reporter::STATUS_SKIPPED, 'column length tests, as the data types do not match what was expected.', null );
+			                $runDataTests = false;
 						}
 					}
 					
@@ -144,6 +148,7 @@ foreach ( $testTables as $table )
 										$table,
 										Reporter::pluralise( $listener->countNonPasses( "${structureTest}::testColumnNullability" ), "has", "have" )
 									) ) ;
+			                    $runDataTests = false;
 							}
 						}
 						if ( $suite->testExists( "${structureTest}::testColumnDefault" ) )
@@ -176,6 +181,7 @@ foreach ( $testTables as $table )
 							Reporter::pluralise( $listener->countNonPasses( "${structureTest}::testColumnExists" ), 'is', 'are' )
 						) ) ;
 					$reporter->report( Reporter::STATUS_SKIPPED, 'data type, length and nullability tests as they will include spurious errors.', null );
+			        $runDataTests = false;
 				}
 			}
 			
@@ -264,6 +270,7 @@ foreach ( $testTables as $table )
 		else
 		{
 			$reporter->report( Reporter::STATUS_FAILURE, 'Table %s does not exist.', array( $table ) );
+			$runDataTests = false;
 		}
 	}
 	
@@ -272,9 +279,9 @@ foreach ( $testTables as $table )
 		$reporter->report( Reporter::STATUS_NOTE, 'Testing constraints of table %s.', array( $table ) );
 		
 		/*
-			If the table or required columns are missing or misnamed, we need to skip the data testing entirely, as the INSERTs will just error out. We can't incorporate this into the if above, because we're using a completely different test suite.
+			If the table or required columns are missing or misnamed, or have issues like incorrect data types or lengths, we need to skip the data testing entirely, as the INSERTs will (may) just error out. We can't incorporate this into the if above, because we're using a completely different test suite.
 		*/
-		if ( $structurePassed )
+		if ( $runDataTests )
 		{
 			$suite = new Searchable_TestSuite( $dataTest );
 			
