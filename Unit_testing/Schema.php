@@ -1136,7 +1136,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			// as they should have no length specified.
 			if ( $actual->getValue( 0, 'DATA_TYPE' ) != 'CLOB' )
 			{
-                self::$reporter->report( Reporter::STATUS_DEBUG, "[[ expected: minimum length = %s, maximum length = %2 ]]",
+                self::$reporter->report( Reporter::STATUS_DEBUG, "[[ expected: minimum length = %s, maximum length = %s ]]",
                     array( $minLength, $maxLength ) );
 
                 $actual_length = $actual->getValue( 0, 'CHAR_LENGTH' );
