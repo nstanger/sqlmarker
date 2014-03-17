@@ -51,7 +51,94 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		'incorrectNullability'	=>	-0.5,
 	);
 	
+
+    /**
+     * Asserts that two variables are equal.
+     *
+     * @param  mixed   $expected
+     * @param  mixed   $actual
+     * @param  string  $message
+     * @param  float   $delta
+     * @param  integer $maxDepth
+     * @param  boolean $canonicalize
+     * @param  boolean $ignoreCase
+     */
+    public static function assertEqualsSC($expected, $actual, $message = '', $delta = 0, $maxDepth = 10, $canonicalize = FALSE, $ignoreCase = FALSE)
+    {
+        $constraint = new PHPUnit_Framework_Constraint_IsEqualSC(
+          $expected, $delta, $maxDepth, $canonicalize, $ignoreCase
+        );
+
+        self::assertThat($actual, $constraint, $message);
+    }
+
+
+    /**
+     * Asserts that a value is greater than or equal to another value.
+     *
+     * @param  mixed   $expected
+     * @param  mixed   $actual
+     * @param  string  $message
+     * @since  Method available since Release 3.1.0
+     */
+    public static function assertGreaterThanOrEqualSC($expected, $actual, $message = '')
+    {
+        self::assertThat(
+          $actual, self::greaterThanOrEqualSC($expected), $message
+        );
+    }
+
 	
+    /**
+     * Asserts that a value is smaller than or equal to another value.
+     *
+     * @param  mixed   $expected
+     * @param  mixed   $actual
+     * @param  string  $message
+     * @since  Method available since Release 3.1.0
+     */
+    public static function assertLessThanOrEqualSC($expected, $actual, $message = '')
+    {
+        self::assertThat($actual, self::lessThanOrEqualSC($expected), $message);
+    }
+
+
+    /**
+     * Returns a PHPUnit_Framework_Constraint_Or matcher object that wraps
+     * a PHPUnit_Framework_Constraint_IsEqual and a
+     * PHPUnit_Framework_Constraint_GreaterThan matcher object.
+     *
+     * @param  mixed $value
+     * @return PHPUnit_Framework_Constraint_Or
+     * @since  Method available since Release 3.1.0
+     */
+    public static function greaterThanOrEqualSC($value)
+    {
+        return self::logicalOr(
+          new PHPUnit_Framework_Constraint_IsEqualSC($value),
+          new PHPUnit_Framework_Constraint_GreaterThanSC($value)
+        );
+    }
+
+
+    /**
+     * Returns a PHPUnit_Framework_Constraint_Or matcher object that wraps
+     * a PHPUnit_Framework_Constraint_IsEqual and a
+     * PHPUnit_Framework_Constraint_LessThan matcher object.
+     *
+     * @param  mixed $value
+     * @return PHPUnit_Framework_Constraint_Or
+     * @since  Method available since Release 3.1.0
+     */
+    public static function lessThanOrEqualSC($value)
+    {
+        return self::logicalOr(
+          new PHPUnit_Framework_Constraint_IsEqualSC($value),
+          new PHPUnit_Framework_Constraint_LessThanSC($value)
+        );
+    }
+
+
 	/**
 	 *	Convert the input text into a form that is acceptable to SQL. Text values are wrapped in '', and any embedded ' are converted to ''. "&" is also converted to "'||chr(38)||'" (mainly for Oracle).
 	 */
@@ -778,7 +865,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		}
 		
 		$actual = $this->getConnection()->createQueryTable( "user_tables", $queryString );
-		$this->assertEquals( 1, $actual->getRowCount(), $errorString );
+		self::assertEquals( 1, $actual->getRowCount(), $errorString );
 	}
 	
 	
@@ -850,7 +937,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			}
 		}
 		
-		$this->assertEquals( 1, $theCount, $errorString );
+		self::assertEquals( 1, $theCount, $errorString );
 	}
 	
 	
@@ -905,7 +992,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 				$this->markAdjustments['incorrectDataType']	);
 		}
 						
-		$this->assertContains( $actual->getValue( 0, 'DATA_TYPE' ), $columnTypeList, $errorString );
+		self::assertContains( $actual->getValue( 0, 'DATA_TYPE' ), $columnTypeList, $errorString );
 	}
 	
 	
@@ -1006,40 +1093,40 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
             self::$reporter->report( Reporter::STATUS_DEBUG, "[[ expected: minimum precision = %s, maximum precision = %s, scale = %s ]]",
                 array( $minLength, $maxLength, $numDecimals ) );
     		
-		    $actual_precision = $actual->getValue( 0, 'DATA_PRECISION' );
-		    $actual_scale     = $actual->getValue( 0, 'DATA_SCALE' );
+		    $actualPrecision = $actual->getValue( 0, 'DATA_PRECISION' );
+		    $actualScale     = $actual->getValue( 0, 'DATA_SCALE' );
 		    
 		    self::$reporter->report( Reporter::STATUS_DEBUG, "[[ actual: precision = %s, scale = %s ]] ",
-		        array( $actual_precision, $actual_scale ) );
+		        array( $actualPrecision, $actualScale ) );
 		
 			if ( RUN_MODE === 'staff' )
 			{
 				$errorString = sprintf(	'column %s.%s has unexpected precision and/or scale %d, %d [%+1.1f]',
 										ucfirst( strtolower( $this->getTableName() ) ),
 										ucfirst( strtolower( $columnName ) ),
-										$actual_precision,
-										$actual_scale,
+										$actualPrecision,
+										$actualScale,
 										$this->markAdjustments['incorrectLength']	);
 			}
 			else if ( RUN_MODE === 'student' )
 			{
 				$errorString = sprintf(
-					'column %s.%s has unexpected precision and/or scale; check the specification again or consult with the teaching staff',
+					'column %s.%s has unexpected precision and/or scale; check the specification again or consult with the teaching staff.',
 					ucfirst( strtolower( $this->getTableName() ) ),
 					ucfirst( strtolower( $columnName ) )	);
 			}
 							
 			if ( $minLength > 0 )
 			{
-				$this->assertGreaterThanOrEqual( $minLength, $actual_precision, $errorString );
+				self::assertGreaterThanOrEqualSC( $minLength, $actualPrecision, $errorString );
 			}
 							
 			if ( $maxLength > 0 )
 			{
-				$this->assertLessThanOrEqual( $maxLength, $actual_precision, $errorString );
+				self::assertLessThanOrEqualSC( $maxLength, $actualPrecision, $errorString );
 			}
 						
-			$this->assertEquals( $numDecimals, $actual_scale, $errorString );
+			self::assertEqualsSC( $numDecimals, $actualScale, $errorString );
 		}
 		else
 		{
@@ -1067,18 +1154,18 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 				else if ( RUN_MODE === 'student' )
 				{
 					$errorString = sprintf(
-						'column %s.%s has unexpected length; check the specification again or consult with the teaching staff',
+						'column %s.%s has unexpected length; check the specification again or consult with the teaching staff.',
 						ucfirst( strtolower( $this->getTableName() ) ),
 						ucfirst( strtolower( $columnName ) )	);
 				}
 								
 				if ( $maxLength > 0 )
 				{
-					$this->assertLessThanOrEqual( $maxLength, $actual_length, $errorString );
+					self::assertLessThanOrEqualSC( $maxLength, $actual_length, $errorString );
 				}
 				if ( $minLength > 0 )
 				{
-					$this->assertGreaterThanOrEqual( $minLength, $actual_length, $errorString );
+					self::assertGreaterThanOrEqualSC( $minLength, $actual_length, $errorString );
 				}
 								
 			}
@@ -1120,7 +1207,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 								$actual->getValue( 0, 'NULLABLE' ),
 								$this->markAdjustments['incorrectNullability']	);
 		
-		$this->assertEquals( $actual->getValue( 0, 'NULLABLE' ), $columnNullability, $errorString );
+		self::assertEquals( $actual->getValue( 0, 'NULLABLE' ), $columnNullability, $errorString );
 	}
 	
 	
@@ -1156,7 +1243,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 								$actualDefault,
 								$this->markAdjustments['incorrectDefault']	);
 		
-		$this->assertEquals( $actualDefault, $columnDefault, $errorString );
+		self::assertEquals( $actualDefault, $columnDefault, $errorString );
 	}
 	
 	
@@ -1198,13 +1285,13 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		*/
 		try
 		{
-			$this->assertTrue( $stmt->execute(), $errorString );
+			self::assertTrue( $stmt->execute(), $errorString );
 		}
 		catch ( PDOException $e )
 		{
 			if ( ( strpos( $e->getMessage(), "check constraint" ) !== FALSE ) )
 			{
-				$this->assertTrue( FALSE, $errorString );
+				self::assertTrue( FALSE, $errorString );
 			}
 			else
 			{
@@ -1253,7 +1340,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		*/
 		try
 		{
-			$this->assertTrue( $stmt->execute(), $errorString );
+			self::assertTrue( $stmt->execute(), $errorString );
 		}
 		catch ( PDOException $e )
 		{
@@ -1305,7 +1392,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			$this->markAdjustments['incorrectCheck']
 		);
 						
-		$this->assertTrue( $stmt->execute(), $errorString );
+		self::assertTrue( $stmt->execute(), $errorString );
 	}
 	
 	
@@ -1346,7 +1433,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			$this->markAdjustments['incorrectCheck']
 		);
 		
-		$this->assertTrue( $stmt->execute(), $errorString );
+		self::assertTrue( $stmt->execute(), $errorString );
 	}
 	
 	
@@ -1389,7 +1476,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		*/
 		try
 		{
-			$this->assertTrue( $stmt->execute(), $errorString );
+			self::assertTrue( $stmt->execute(), $errorString );
 		}
 		catch ( PDOException $e )
 		{
@@ -1441,7 +1528,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			$this->markAdjustments['incorrectCheck']
 		);
 		
-		$this->assertTrue( $stmt->execute(), $errorString );
+		self::assertTrue( $stmt->execute(), $errorString );
 	}
 	
 	
@@ -1473,7 +1560,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			$this->markAdjustments['incorrectPK']
 		);
 						
-		$this->assertEquals( 1, $actual->getRowCount(), $errorString );
+		self::assertEquals( 1, $actual->getRowCount(), $errorString );
 		
 		return $actual->getValue( 0, 'CONSTRAINT_NAME' );
 	}
@@ -1511,7 +1598,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			$this->markAdjustments['incorrectPK']
 		);
 						
-		$this->assertTablesEqual( $expected->getTable( $tableName ), $actual, $errorString );
+		self::assertTablesEqual( $expected->getTable( $tableName ), $actual, $errorString );
 	}
 	
 	
@@ -1548,7 +1635,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			$this->markAdjustments['incorrectPK']
 		);
 						
-		$this->assertGreaterThan( 0, $actual->getRowCount(), $errorString );
+		self::assertGreaterThan( 0, $actual->getRowCount(), $errorString );
 	}
 	
 	
@@ -1600,7 +1687,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			$this->markAdjustments['unnamedConstraint']
 		);
 						
-		$this->assertTablesEqual( $expected->getTable( $tableName ), $actual, $errorString );
+		self::assertTablesEqual( $expected->getTable( $tableName ), $actual, $errorString );
 	}
 	
 	
@@ -1647,7 +1734,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			$this->markAdjustments['unnamedConstraint']
 		);
 						
-		$this->assertTablesEqual( $expected->getTable( $tableName ), $actual, $errorString );
+		self::assertTablesEqual( $expected->getTable( $tableName ), $actual, $errorString );
 	}
 	
 	
@@ -1700,7 +1787,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			$this->markAdjustments['unnamedConstraint']
 		);
 						
-		$this->assertNotRegExp( '/^SYS_/', $constraintName, $errorString );
+		self::assertNotRegExp( '/^SYS_/', $constraintName, $errorString );
 	}
 	
 
@@ -1713,7 +1800,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 //	 {
 //	 	echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . " table primary key (UNIQUE) ]]\n";
 //	 	$stmt = $this->getConnection()->getConnection()->prepare( "INSERT INTO $this->getTableName() VALUES ( 326, 'foo', 'bar', '1234567', 'baz', 'Manufacturing', 'Technician', 12345, 'quux' )" );
-//	 	$this->assertTrue( $stmt->execute(), ucfirst( strtolower( $this->getTableName() ) ) . " PK constraint is missing or incorrectly implemented (permits duplicates) [-1]" );
+//	 	self::assertTrue( $stmt->execute(), ucfirst( strtolower( $this->getTableName() ) ) . " PK constraint is missing or incorrectly implemented (permits duplicates) [-1]" );
 //	 }
 	
 	/**
@@ -1725,7 +1812,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 //	 {
 //	 	echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . " table primary key (NOT NULL) ]]\n";
 //	 	$stmt = $this->getConnection()->getConnection()->prepare( "INSERT INTO $this->getTableName() VALUES ( null, 'foo', 'bar', '1234567', 'baz', 'Manufacturing', 'Technician', 12345, 'quux' )" );
-//	 	$this->assertTrue( $stmt->execute(), ucfirst( strtolower( $this->getTableName() ) ) . " PK constraint is missing or incorrectly implemented (permits nulls) [-1]" );
+//	 	self::assertTrue( $stmt->execute(), ucfirst( strtolower( $this->getTableName() ) ) . " PK constraint is missing or incorrectly implemented (permits nulls) [-1]" );
 //	 }
 	
 	/**
@@ -1737,7 +1824,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 //	 {
 //	 	echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . ".Staff_ID data type (NUMBER) ]]\n";
 //	 	$stmt = $this->getConnection()->getConnection()->prepare( "INSERT INTO $this->getTableName() VALUES ( 'abc', 'foo', 'bar', '1234567', 'baz', 'Manufacturing', 'Technician', 12345, 'quux' )" );
-//	 	$this->assertTrue( $stmt->execute(), ucfirst( strtolower( $this->getTableName() ) ) . '.Staff_ID data type is not NUMBER [-1]' );
+//	 	self::assertTrue( $stmt->execute(), ucfirst( strtolower( $this->getTableName() ) ) . '.Staff_ID data type is not NUMBER [-1]' );
 //	 }
 	
 	/**
@@ -1749,7 +1836,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 //	 {
 //	 	echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . ".Staff_ID maximum value (9999999) ]]\n";
 //	 	$stmt = $this->getConnection()->getConnection()->prepare( "INSERT INTO $this->getTableName() VALUES ( 9999999, 'foo', 'bar', '1234567', 'baz', 'Manufacturing', 'Technician', 12345, 'quux' )" );
-//	 	$this->assertTrue( $stmt->execute(), ucfirst( strtolower( $this->getTableName() ) ) . '.Staff_ID size is too small (< 7 digits) [-0.5]' );
+//	 	self::assertTrue( $stmt->execute(), ucfirst( strtolower( $this->getTableName() ) ) . '.Staff_ID size is too small (< 7 digits) [-0.5]' );
 //	 }
 	
 	/**
@@ -1761,7 +1848,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 //	 {
 //	 	echo "\n[[ Testing whether " . ucfirst( strtolower( $this->getTableName() ) ) . ".Staff_ID maximum size (7 digits) ]]\n";
 //	 	$stmt = $this->getConnection()->getConnection()->prepare( "INSERT INTO $this->getTableName() VALUES ( 99999999, 'foo', 'bar', '1234567', 'baz', 'Manufacturing', 'Technician', 12345, 'quux' )" );
-//	 	$this->assertTrue( $stmt->execute(), ucfirst( strtolower( $this->getTableName() ) ) . '.Staff_ID size is too large (> 7-digits) [-0.5]' );
+//	 	self::assertTrue( $stmt->execute(), ucfirst( strtolower( $this->getTableName() ) ) . '.Staff_ID size is too large (> 7-digits) [-0.5]' );
 //	 }
 }
 ?>
