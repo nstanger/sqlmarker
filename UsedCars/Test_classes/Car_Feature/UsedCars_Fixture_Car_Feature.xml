@@ -1,0 +1,67 @@
+<dataset>
+  <table name="qualification">
+    <column>abbreviation</column>
+    <column>full_name</column>
+    <column>type</column>
+    <row>
+      <value>BSc</value>
+      <value>Bachelor of Science</value>
+      <value>Degree</value>
+    </row>
+    <row>
+      <value>BCom</value>
+      <value>Bachelor of Commerce</value>
+      <value>Degree</value>
+    </row>
+  </table>
+  <table name="paper">
+    <column>paper_code</column>
+    <column>title</column>
+    <column>description</column>
+    <column>points</column>
+    <column>period</column>
+    <row>
+      <value>ACCT112</value>
+      <value>Introduction to Accounting</value>
+      <value>A whole lotta text going on.</value>
+      <value>18</value>
+      <value>S1</value>
+    </row>
+    <row>
+      <value>BSNS106</value>
+      <value>Information and Communication in Organisations</value>
+      <value>A whole lotta text going on.</value>
+      <value>18</value>
+      <value>S1</value>
+    </row>
+    <row>
+      <value>COMP160</value>
+      <value>General Programming</value>
+      <value>A whole lotta text going on.</value>
+      <value>18</value>
+      <value>SS</value>
+    </row>
+    <row>
+      <value>INFO214</value>
+      <value>Business ICT Infrstructure</value>
+      <value>A whole lotta text going on.</value>
+      <value>18</value>
+      <value>S2</value>
+    </row>
+    <row>
+      <value>INFO321</value>
+      <value>Enterprise Data Management</value>
+      <value>A whole lotta text going on.</value>
+      <value>18</value>
+      <value>S2</value>
+    </row>
+  </table>
+  <table name="schedule">
+    <column>abbreviation</column>
+    <column>paper_code</column>
+    <row>
+      <value>BSc</value>
+      <value>INFO321</value>
+    </row>
+  </table>
+</dataset>

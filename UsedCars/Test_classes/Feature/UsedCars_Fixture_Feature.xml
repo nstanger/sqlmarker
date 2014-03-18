@@ -1,0 +1,12 @@
+<dataset>
+  <table name="qualification">
+    <column>abbreviation</column>
+    <column>full_name</column>
+    <column>type</column>
+    <row>
+      <value>BSc</value>
+      <value>Bachelor of Science</value>
+      <value>Degree</value>
+    </row>
+  </table>
+</dataset>

@@ -1,0 +1,10 @@
+<dataset>
+  <table name="enrolment">
+    <column>enrolment_id</column>
+    <column>description</column>
+    <column>year_enrolled</column>
+    <column>comments</column>
+    <column>student_id</column>
+    <column>paper_code</column>
+  </table>
+</dataset>

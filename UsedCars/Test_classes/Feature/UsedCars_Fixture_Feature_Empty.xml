@@ -1,0 +1,7 @@
+<dataset>
+  <table name="qualification">
+    <column>abbreviation</column>
+    <column>full_name</column>
+    <column>type</column>
+  </table>
+</dataset>

@@ -1,0 +1,6 @@
+<dataset>
+  <table name="schedule">
+    <column>abbreviation</column>
+    <column>paper_code</column>
+  </table>
+</dataset>
