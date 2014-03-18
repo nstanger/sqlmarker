@@ -4,6 +4,8 @@ require_once 'Reporter.php';
 require_once 'PHPUnit/Framework/Constraint/GreaterThanSC.php';
 require_once 'PHPUnit/Framework/Constraint/LessThanSC.php';
 require_once 'PHPUnit/Framework/Constraint/IsEqualSC.php';
+require_once 'PHPUnit/Framework/Constraint/StringContainsSC.php';
+require_once 'PHPUnit/Framework/Constraint/TraversableContainsSC.php';
 
 abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_Extensions_Database_TestCase
 {
@@ -124,6 +126,41 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
     	{
 	        self::assertThat($actual, self::lessThanOrEqual($expected), $message);
     	}
+    }
+
+
+    /**
+     * Asserts that a haystack contains a needle.
+     *
+     * @param  mixed   $needle
+     * @param  mixed   $haystack
+     * @param  string  $message
+     * @param  boolean $ignoreCase
+     * @param  boolean $checkForObjectIdentity
+     * @since  Method available since Release 2.1.0
+     */
+    public static function assertContainsSC($needle, $haystack, $message = '', $ignoreCase = FALSE, $checkForObjectIdentity = TRUE)
+    {
+        if (is_array($haystack) ||
+            is_object($haystack) && $haystack instanceof Traversable) {
+            $constraint = new PHPUnit_Framework_Constraint_TraversableContainsSC(
+              $needle, $checkForObjectIdentity
+            );
+        }
+
+        else if (is_string($haystack)) {
+            $constraint = new PHPUnit_Framework_Constraint_StringContainsSC(
+              $needle, $ignoreCase
+            );
+        }
+
+        else {
+            throw PHPUnit_Util_InvalidArgumentHelper::factory(
+              2, 'array, iterator or string'
+            );
+        }
+
+        self::assertThat($haystack, $constraint, $message);
     }
 
 
@@ -886,7 +923,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		if ( RUN_MODE === 'staff' )
 		{
 			$errorString = sprintf(
-				"couldn't find the %s table [%+1.1f] --- check for misspelled [%+1.1f] or delimited [%+1.1f] identifiers",
+				"Couldn't find the %s table [%+1.1f] --- check for misspelled [%+1.1f] or delimited [%+1.1f] identifiers.",
 				ucfirst( strtolower( $this->getTableName() ) ),
 				$this->markAdjustments['missingTable'],
 				$this->markAdjustments['misspelledIdentifier'],
@@ -895,7 +932,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		}
 		else if ( RUN_MODE === 'student' )
 		{
-			$errorString = sprintf( "couldn't find the %s table", ucfirst( strtolower( $this->getTableName() ) ) );
+			$errorString = sprintf( "Couldn't find the %s table.", ucfirst( strtolower( $this->getTableName() ) ) );
 		}
 		
 		$actual = $this->getConnection()->createQueryTable( "user_tables", $queryString );
@@ -929,7 +966,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		if ( RUN_MODE === 'staff' )
 		{
 			$errorString = sprintf(
-				"couldn't find the %s.%s column --- check for misspelled [%+1.1f] or delimited [%+1.1f] identifiers",
+				"Couldn't find the %s.%s column --- check for misspelled [%+1.1f] or delimited [%+1.1f] identifiers.",
 				ucfirst( strtolower( $this->getTableName() ) ),
 				ucfirst( strtolower( $columnName ) ),
 				$this->markAdjustments['misspelledIdentifier'],
@@ -938,7 +975,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		}
 		else if ( RUN_MODE === 'student' )
 		{
-			$errorString = sprintf(	"couldn't find the %s.%s column",
+			$errorString = sprintf(	"Couldn't find the %s.%s column.",
 									ucfirst( strtolower( $this->getTableName() ) ),
 									ucfirst( strtolower( $columnName ) )	);
 		}
@@ -1010,7 +1047,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		
 		if ( RUN_MODE === 'staff' )
 		{
-			$errorString = sprintf(	'column %s.%s has unexpected data type %s [%+1.1f]',
+			$errorString = sprintf(	'Column %s.%s has unexpected data type %s [%+1.1f].',
 									ucfirst( strtolower( $this->getTableName() ) ),
 									ucfirst( strtolower( $columnName ) ),
 									$actual->getValue( 0, 'DATA_TYPE' ),
@@ -1019,14 +1056,14 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		else if ( RUN_MODE === 'student' )
 		{
 			$errorString = sprintf(
-				'column %s.%s has unexpected data type %s; check the specification again or consult with the teaching staff',
+				'Column %s.%s has unexpected data type %s; check the specification again or consult with the teaching staff.',
 				ucfirst( strtolower( $this->getTableName() ) ),
 				ucfirst( strtolower( $columnName ) ),
 				$actual->getValue( 0, 'DATA_TYPE' ),
 				$this->markAdjustments['incorrectDataType']	);
 		}
 						
-		self::assertContains( $actual->getValue( 0, 'DATA_TYPE' ), $columnTypeList, $errorString );
+		self::assertContainsSC( $actual->getValue( 0, 'DATA_TYPE' ), $columnTypeList, $errorString );
 	}
 	
 	
@@ -1135,7 +1172,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		
 			if ( RUN_MODE === 'staff' )
 			{
-				$errorString = sprintf(	'column %s.%s has unexpected precision and/or scale %d, %d [%+1.1f]',
+				$errorString = sprintf(	'Column %s.%s has unexpected precision and/or scale %d, %d [%+1.1f].',
 										ucfirst( strtolower( $this->getTableName() ) ),
 										ucfirst( strtolower( $columnName ) ),
 										$actualPrecision,
@@ -1145,7 +1182,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			else if ( RUN_MODE === 'student' )
 			{
 				$errorString = sprintf(
-					'column %s.%s has unexpected precision and/or scale; check the specification again or consult with the teaching staff.',
+					'Column %s.%s has unexpected precision and/or scale; check the specification again or consult with the teaching staff.',
 					ucfirst( strtolower( $this->getTableName() ) ),
 					ucfirst( strtolower( $columnName ) )	);
 			}
@@ -1179,7 +1216,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
             
 				if ( RUN_MODE === 'staff' )
 				{
-					$errorString = sprintf(	'column %s.%s has unexpected length %d [%+1.1f]',
+					$errorString = sprintf(	'Column %s.%s has unexpected length %d [%+1.1f].',
 											ucfirst( strtolower( $this->getTableName() ) ),
 											ucfirst( strtolower( $columnName ) ),
 											$actual_length,
@@ -1188,7 +1225,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 				else if ( RUN_MODE === 'student' )
 				{
 					$errorString = sprintf(
-						'column %s.%s has unexpected length; check the specification again or consult with the teaching staff.',
+						'Column %s.%s has unexpected length; check the specification again or consult with the teaching staff.',
 						ucfirst( strtolower( $this->getTableName() ) ),
 						ucfirst( strtolower( $columnName ) )	);
 				}
@@ -1235,7 +1272,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		
 		$actual = $this->getConnection()->createQueryTable( $this->getTableName() . '_' . $columnName, $queryString );
 		
-		$errorString = sprintf(	'column %s.%s has incorrect nullability "%s" [%+1.1f]',
+		$errorString = sprintf(	'Column %s.%s has incorrect nullability "%s" [%+1.1f].',
 								ucfirst( strtolower( $this->getTableName() ) ),
 								ucfirst( strtolower( $columnName ) ),
 								$actual->getValue( 0, 'NULLABLE' ),
@@ -1271,7 +1308,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		// Defaults for text and (literal) date columns come with single quotes around them. Also, for some reason trim() with ' added to the standard character list won't strip off the trailing quote if there's whitespace following it, so we have to trim twice: once for whitespace, once for the quotes. Grr.
 		$actualDefault = trim( trim( $actual->getValue( 0, 'DATA_DEFAULT' ) ), "'" );
 		
-		$errorString = sprintf(	'column %s.%s has incorrect default "%s" [%+1.1f]',
+		$errorString = sprintf(	'Column %s.%s has incorrect default "%s" [%+1.1f].',
 								ucfirst( strtolower( $this->getTableName() ) ),
 								ucfirst( strtolower( $columnName ) ),
 								$actualDefault,
@@ -1308,7 +1345,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
  		$stmt = $this->getConnection()->getConnection()->prepare( $insertString );
 		
 		$errorString = sprintf(
-			"column %s.%s won't accept legal value %s [%+1.1f]",
+			"Column %s.%s won't accept legal value %s [%+1.1f].",
 			ucfirst( strtolower( $this->getTableName() ) ),
 			ucfirst( strtolower( $columnName ) ),
 			$legalValue,
@@ -1363,7 +1400,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
  		$stmt = $this->getConnection()->getConnection()->prepare( $insertString );
 		
 		$errorString = sprintf(
-			"column %s.%s accepts illegal value %s [%+1.1f]",
+			"Column %s.%s accepts illegal value %s [%+1.1f].",
 			ucfirst( strtolower( $this->getTableName() ) ),
 			ucfirst( strtolower( $columnName ) ),
 			$illegalValue,
@@ -1419,7 +1456,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
  		$stmt = $this->getConnection()->getConnection()->prepare( $insertString );
 		
 		$errorString = sprintf(
-			"column %s.%s accepts illegal value %s [%+1.1f]",
+			"Column %s.%s accepts illegal value %s [%+1.1f].",
 			ucfirst( strtolower( $this->getTableName() ) ),
 			ucfirst( strtolower( $columnName ) ),
 			$illegalValue,
@@ -1460,7 +1497,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
  		$stmt = $this->getConnection()->getConnection()->prepare( $insertString );
 		
 		$errorString = sprintf(
-			"column %s.%s accepts illegal values <= %s [%+1.1f]",
+			"Column %s.%s accepts illegal values <= %s [%+1.1f].",
 			ucfirst( strtolower( $this->getTableName() ) ),
 			ucfirst( strtolower( $columnName ) ),
 			$underflowValue,
@@ -1499,7 +1536,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
  		$stmt = $this->getConnection()->getConnection()->prepare( $insertString );
 		
 		$errorString = sprintf(
-			"column %s.%s accepts illegal values >= %s [%+1.1f]",
+			"Column %s.%s accepts illegal values >= %s [%+1.1f].",
 			ucfirst( strtolower( $this->getTableName() ) ),
 			ucfirst( strtolower( $columnName ) ),
 			$overflowValue,
@@ -1555,7 +1592,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
  		$stmt = $this->getConnection()->getConnection()->prepare( $insertString );
 		
 		$errorString = sprintf(
-			"column %s.%s accepts illegal values >= %s [%+1.1f]",
+			"Column %s.%s accepts illegal values >= %s [%+1.1f].",
 			ucfirst( strtolower( $this->getTableName() ) ),
 			ucfirst( strtolower( $columnName ) ),
 			$overflowValue,
@@ -1589,7 +1626,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		$actual = $this->getConnection()->createQueryTable( $this->getTableName() . '_PK', $queryString );
 
 		$errorString = sprintf(
-			"couldn't find a PK constraint for %s [%+1.1f]",
+			"Couldn't find a PK constraint for %s [%+1.1f].",
 			ucfirst( strtolower( $this->getTableName() ) ),
 			$this->markAdjustments['incorrectPK']
 		);
@@ -1627,7 +1664,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		$actual = $this->getConnection()->createQueryTable( $tableName, $queryString );
 
 		$errorString = sprintf(
-			"the PK constraint for %s has incorrect columns [%+1.1f]",
+			"The PK constraint for %s has incorrect columns [%+1.1f].",
 			ucfirst( strtolower( $this->getTableName() ) ),
 			$this->markAdjustments['incorrectPK']
 		);
@@ -1663,7 +1700,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		$actual = $this->getConnection()->createQueryTable( $this->getTableName() . '_FK', $queryString );
 
 		$errorString = sprintf(
-			"couldn't find a FK constraint for %s referencing %s [%+1.1f]",
+			"Couldn't find a FK constraint for %s referencing %s [%+1.1f].",
 			ucfirst( strtolower( $this->getTableName() ) ),
 			ucfirst( strtolower( $referencedTableName ) ),
 			$this->markAdjustments['incorrectPK']
@@ -1716,7 +1753,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		if ( $actual->getRowCount() == 0 ) $this->markTestSkipped( 'FK is missing anyway' );
 
 		$errorString = sprintf(
-			"the FK constraint for %s has incorrect columns [%+1.1f]",
+			"The FK constraint for %s has incorrect columns [%+1.1f].",
 			ucfirst( strtolower( $this->getTableName() ) ),
 			$this->markAdjustments['unnamedConstraint']
 		);
@@ -1763,7 +1800,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		if ( $actual->getRowCount() == 0 ) $this->markTestSkipped( 'FK is missing anyway' );
 
 		$errorString = sprintf(
-			"the FK constraint for %s has incorrect columns [%+1.1f]",
+			"The FK constraint for %s has incorrect columns [%+1.1f].",
 			ucfirst( strtolower( $this->getTableName() ) ),
 			$this->markAdjustments['unnamedConstraint']
 		);
@@ -1814,7 +1851,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			array( ucfirst( strtolower( $this->getTableName() ) ), $longType, $constraintName ) );
 
 		$errorString = sprintf(
-			"the %s constraint %s for %s hasn't been explicitly named [%+1.1f]",
+			"The %s constraint %s for %s hasn't been explicitly named [%+1.1f].",
 			$longType,
 			$constraintName,
 			ucfirst( strtolower( $this->getTableName() ) ),
