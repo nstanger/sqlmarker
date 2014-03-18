@@ -65,6 +65,9 @@ try
 	define( 'OUTPUT_VERBOSITY', 2 );
 	define( 'RUN_MODE', 'student' );
 	
+	$logMessage = sprintf( '%s: user %s connected%s', date( 'Y-m-d H:i:s' ), ORACLE_USERNAME, "\n" );
+	file_put_contents( 'logs/connect.log', $logMessage, FILE_APPEND | LOCK_EX );
+	
 	require_once 'test_config.php';
 
 	// Test that the database connection works.
