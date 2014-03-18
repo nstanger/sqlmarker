@@ -61,8 +61,7 @@ CREATE TABLE Staff
                                 NOT NULL,
   Date_of_Birth DATE            NOT NULL,
   --
-  CONSTRAINT Staff_Valid_Age
-      CHECK ( ( Date_Hired - TO_YMINTERVAL( '18-0' ) ) >= Date_of_Birth ),
+  CONSTRAINT Staff_Valid_Age CHECK ( ( Date_Hired - TO_YMINTERVAL( '18-0' ) ) >= Date_of_Birth ),
   --
   CONSTRAINT Staff_PK PRIMARY KEY ( Staff_ID )
 );
@@ -74,18 +73,12 @@ CREATE TABLE Staff
 --
 CREATE TABLE Service
 ( Staff_ID      NUMBER(4),
-  Hourly_Rate   NUMBER(5,2)     NOT NULL
-      CONSTRAINT Service_Hourly_Rate_Min
-          CHECK ( Hourly_Rate >= 13.50 ),
-  Total_Hours   NUMBER(6,2)     DEFAULT 0   NOT NULL
-      CONSTRAINT Service_Total_Hours_Range
-          CHECK ( Total_Hours BETWEEN 0 AND 4500 )
-      CONSTRAINT Service_Total_Hours_Quarters
-          CHECK ( TRUNC( Total_Hours * 4 ) =  ( Total_Hours * 4 ) ),
+  Hourly_Rate   NUMBER(5,2)             NOT NULL    CONSTRAINT Service_Hourly_Rate_Min      CHECK ( Hourly_Rate >= 13.50 ),
+  Total_Hours   NUMBER(6,2) DEFAULT 0   NOT NULL    CONSTRAINT Service_Total_Hours_Range    CHECK ( Total_Hours BETWEEN 0 AND 4500 )
+                                                    CONSTRAINT Service_Total_Hours_Quarters CHECK ( TRUNC( Total_Hours * 4 ) =  ( Total_Hours * 4 ) ),
   --
   CONSTRAINT Service_PK PRIMARY KEY ( Staff_ID ),
-  CONSTRAINT Service_FK_to_Staff
-      FOREIGN KEY ( Staff_ID ) REFERENCES Staff ON DELETE CASCADE
+  CONSTRAINT Service_FK_to_Staff FOREIGN KEY ( Staff_ID ) REFERENCES Staff ON DELETE CASCADE
 );
 
 
@@ -95,13 +88,11 @@ CREATE TABLE Service
 --
 CREATE TABLE Other
 ( Staff_ID      NUMBER(4),
-  Salary    NUMBER(8,2)     NOT NULL
-      CONSTRAINT Other_Salary_Min
-          CHECK ( Salary >= 28080 ),
+  Salary        NUMBER(8,2)     NOT NULL    CONSTRAINT Other_Salary_Min CHECK ( Salary >= 28080 ),
   --
   CONSTRAINT Other_PK PRIMARY KEY ( Staff_ID ),
-  CONSTRAINT Other_FK_to_Staff
-      FOREIGN KEY ( Staff_ID ) REFERENCES Staff ON DELETE CASCADE
+  --
+  CONSTRAINT Other_FK_to_Staff FOREIGN KEY ( Staff_ID ) REFERENCES Staff ON DELETE CASCADE
 );
 
 
@@ -111,25 +102,18 @@ CREATE TABLE Other
 --
 CREATE TABLE Sales
 ( Staff_ID          NUMBER(4),
-  On_Commission     CHAR(1)     DEFAULT 'N' NOT NULL
-      CONSTRAINT Sales_Valid_On_Commission
-          CHECK ( On_Commission IN ( 'Y', 'N' ) ),
-  Commission_Rate   NUMBER(3,2) NOT NULL
-      CONSTRAINT Sales_Valid_Commission_Rate
-          CHECK ( Commission_Rate BETWEEN 0.00 AND 0.30 ),
+  On_Commission     CHAR(1)     DEFAULT 'N' NOT NULL    CONSTRAINT Sales_Valid_On_Commission    CHECK ( On_Commission IN ( 'Y', 'N' ) ),
+  Commission_Rate   NUMBER(3,2)             NOT NULL    CONSTRAINT Sales_Valid_Commission_Rate  CHECK ( Commission_Rate BETWEEN 0.00 AND 0.30 ),
   -- We can't make Gross_Earnings a computed column, because it requires data
   -- from other tables.
-  Gross_Earnings    NUMBER(8,2) NOT NULL
-      CONSTRAINT Sales_Valid_Gross_Earnings
-          CHECK ( Gross_Earnings >= 0.00 ),
+  Gross_Earnings    NUMBER(8,2)             NOT NULL    CONSTRAINT Sales_Valid_Gross_Earnings   CHECK ( Gross_Earnings >= 0.00 ),
   --
-  CONSTRAINT Sales_Check_Commission
-      CHECK (    ( ( On_Commission = 'N' ) AND ( Commission_Rate = 0 ) )
-              OR ( ( On_Commission = 'Y' ) AND ( Commission_Rate > 0 ) ) ),
+  CONSTRAINT Sales_Check_Commission CHECK (    ( ( On_Commission = 'N' ) AND ( Commission_Rate = 0 ) )
+                                            OR ( ( On_Commission = 'Y' ) AND ( Commission_Rate > 0 ) ) ),
   --
   CONSTRAINT Sales_PK PRIMARY KEY ( Staff_ID ),
-  CONSTRAINT Sales_FK_to_Staff
-      FOREIGN KEY ( Staff_ID ) REFERENCES Staff ON DELETE CASCADE
+  --
+  CONSTRAINT Sales_FK_to_Staff FOREIGN KEY ( Staff_ID ) REFERENCES Staff ON DELETE CASCADE
 );
 
 
@@ -145,10 +129,8 @@ CREATE TABLE Customer
   Lastname      VARCHAR2(50)    NOT NULL,
   Address       VARCHAR2(150)   NOT NULL,
   Phone         VARCHAR2(11)    NOT NULL,
-  Email         VARCHAR2(50),   -- optionally CHECK format if desired
-  Credit_Rating CHAR(1)
-      CONSTRAINT Customer_Valid_Credit_Rating
-          CHECK ( Credit_Rating IN ( 'A', 'B', 'C', 'D' ) ),
+  Email         VARCHAR2(50),               -- optionally CHECK format if desired
+  Credit_Rating CHAR(1)                     CONSTRAINT Customer_Valid_Credit_Rating CHECK ( Credit_Rating IN ( 'A', 'B', 'C', 'D' ) ),
   Comments      CLOB,
   --
   CONSTRAINT Customer_PK PRIMARY KEY ( Customer_ID )
@@ -160,26 +142,20 @@ CREATE TABLE Customer
 -- Car table
 --
 CREATE TABLE Car
-( VIN               CHAR(17),       -- optionally CHECK format if desired
+( VIN               CHAR(17),                   -- optionally CHECK format if desired
   Registration      VARCHAR2(6)     NOT NULL,
   Make              VARCHAR2(20)    NOT NULL,
   Model             VARCHAR2(30)    NOT NULL,
-  Year              NUMBER(4)       NOT NULL
-      CONSTRAINT Car_Valid_Year CHECK ( Year >= 1995 ),
+  Year              NUMBER(4)       NOT NULL    CONSTRAINT Car_Valid_Year       CHECK ( Year >= 1995 ),
   Colour            VARCHAR2(20)    NOT NULL,
-  Odometer          NUMBER(7,1)     NOT NULL
-      CONSTRAINT Car_Valid_Odometer 
-          CHECK ( Odometer BETWEEN 0.0 AND 999999.9 ),
+  Odometer          NUMBER(7,1)     NOT NULL    CONSTRAINT Car_Valid_Odometer   CHECK ( Odometer BETWEEN 0.0 AND 999999.9 ),
   First_Registered  DATE            NOT NULL,
   Last_Serviced     DATE,
-  Price             NUMBER(6)       NOT NULL
-      CONSTRAINT Car_Valid_Price CHECK ( Price >= 0 ),
-  Flat_Rate         NUMBER(4)       NOT NULL
-      CONSTRAINT Car_Valid_Flat_Rate CHECK ( Flat_Rate > 0 ),
+  Price             NUMBER(6)       NOT NULL    CONSTRAINT Car_Valid_Price      CHECK ( Price >= 0 ),
+  Flat_Rate         NUMBER(4)       NOT NULL    CONSTRAINT Car_Valid_Flat_Rate  CHECK ( Flat_Rate > 0 ),
   --
   -- Not specified, but makes sense. Bonus marks!
-  CONSTRAINT Car_Valid_Service_Date
-      CHECK ( Last_Serviced >= First_Registered ),
+  CONSTRAINT Car_Valid_Service_Date CHECK ( Last_Serviced >= First_Registered ),
   --
   CONSTRAINT Car_PK PRIMARY KEY ( VIN )
 );
@@ -190,8 +166,8 @@ CREATE TABLE Car
 -- Feature table
 --
 CREATE TABLE Feature
-( Feature_Code  VARCHAR2(5),
-  Description   VARCHAR2(100)     NOT NULL,
+( Feature_Code  CHAR(5),
+  Description   VARCHAR2(100)   NOT NULL,
   --
   CONSTRAINT Feature_PK PRIMARY KEY ( Feature_Code )
 );
@@ -203,13 +179,12 @@ CREATE TABLE Feature
 --
 CREATE TABLE Car_Feature
 ( VIN           CHAR(17),
-  Feature_Code  VARCHAR2(5),
+  Feature_Code  CHAR(5),
   --
   CONSTRAINT Car_Feature_PK PRIMARY KEY ( VIN, Feature_Code ),
-  CONSTRAINT Car_Feature_FK_to_Car
-      FOREIGN KEY ( VIN ) REFERENCES Car ON DELETE CASCADE,
-  CONSTRAINT Car_Feature_FK_to_Feature
-      FOREIGN KEY ( Feature_Code ) REFERENCES Feature ON DELETE CASCADE
+  --
+  CONSTRAINT Car_Feature_FK_to_Car      FOREIGN KEY ( VIN )          REFERENCES Car     ON DELETE CASCADE,
+  CONSTRAINT Car_Feature_FK_to_Feature  FOREIGN KEY ( Feature_Code ) REFERENCES Feature ON DELETE CASCADE
 );
 
 
@@ -228,10 +203,10 @@ CREATE TABLE Warranty
   CONSTRAINT Warranty_PK PRIMARY KEY ( W_Code )
 );
 
--- INSERT INTO Warranty ( W_Code, Duration, Distance, Description ) VALUES ( 'A', 4,    50000,  3, 5000, 'Category A motor vehicle' );
--- INSERT INTO Warranty ( W_Code, Duration, Distance, Description ) VALUES ( 'B', 6,    75000,  2, 3000, 'Category B motor vehicle' );
--- INSERT INTO Warranty ( W_Code, Duration, Distance, Description ) VALUES ( 'C', 8,    100000, 1, 1500, 'Category C motor vehicle' );
--- INSERT INTO Warranty ( W_Code, Duration, Distance, Description ) VALUES ( 'D', NULL, NULL,   0, 0,    'Category D motor vehicle' );
+-- INSERT INTO Warranty ( W_Code, Max_Age, Max_KM, Duration, Distance, Description ) VALUES ( 'A', 4,    50000,  3, 5000, 'Category A motor vehicle' );
+-- INSERT INTO Warranty ( W_Code, Max_Age, Max_KM, Duration, Distance, Description ) VALUES ( 'B', 6,    75000,  2, 3000, 'Category B motor vehicle' );
+-- INSERT INTO Warranty ( W_Code, Max_Age, Max_KM, Duration, Distance, Description ) VALUES ( 'C', 8,    100000, 1, 1500, 'Category C motor vehicle' );
+-- INSERT INTO Warranty ( W_Code, Max_Age, Max_KM, Duration, Distance, Description ) VALUES ( 'D', NULL, NULL,   0, 0,    'Category D motor vehicle' );
 
 
 --------------------------------------------------------------------------------
@@ -244,18 +219,16 @@ CREATE TABLE Purchase
 ( Purchase_ID   NUMBER(8),
   Purchase_Date DATE            NOT NULL,
   Details       CLOB            NOT NULL,
-  Amount        NUMBER(6)       NOT NULL
-      CONSTRAINT Purchase_Valid_Amount CHECK ( Amount >= 0 ),
+  Amount        NUMBER(6)       NOT NULL    CONSTRAINT Purchase_Valid_Amount CHECK ( Amount >= 0 ),
   VIN           CHAR(17)        NOT NULL,
   Customer_ID   NUMBER(6)       NOT NULL,
   Salesrep_ID   NUMBER(4)       NOT NULL,
   --
   CONSTRAINT Purchase_PK PRIMARY KEY ( Purchase_ID ),
-  CONSTRAINT Purchase_FK_to_Car FOREIGN KEY ( VIN ) REFERENCES Car,
-  CONSTRAINT Purchase_FK_to_Customer 
-      FOREIGN KEY ( Customer_ID ) REFERENCES Customer,
-  CONSTRAINT Purchase_FK_to_Sales
-      FOREIGN KEY ( Salesrep_ID ) REFERENCES Sales
+  --
+  CONSTRAINT Purchase_FK_to_Car      FOREIGN KEY ( VIN )         REFERENCES Car,
+  CONSTRAINT Purchase_FK_to_Customer FOREIGN KEY ( Customer_ID ) REFERENCES Customer,
+  CONSTRAINT Purchase_FK_to_Sales    FOREIGN KEY ( Salesrep_ID ) REFERENCES Sales
 );
 
 
@@ -269,8 +242,7 @@ CREATE TABLE Sale
 ( Sale_ID     NUMBER(8),
   Sale_Date   DATE          NOT NULL,
   Details     CLOB          NOT NULL,
-  Amount      NUMBER(6)     NOT NULL
-      CONSTRAINT Sale_Valid_Amount CHECK ( Amount >= 0 ),
+  Amount      NUMBER(6)     NOT NULL    CONSTRAINT Sale_Valid_Amount CHECK ( Amount >= 0 ),
   VIN         CHAR(17)      NOT NULL,
   Customer_ID NUMBER(6)     NOT NULL,
   Salesrep_ID NUMBER(4)     NOT NULL,
@@ -278,15 +250,12 @@ CREATE TABLE Sale
   Tradein_ID  NUMBER(8),
   --
   CONSTRAINT Sale_PK PRIMARY KEY ( Sale_ID ),
-  CONSTRAINT Sale_FK_to_Car FOREIGN KEY ( VIN ) REFERENCES Car,
-  CONSTRAINT Sale_FK_to_Customer 
-      FOREIGN KEY ( Customer_ID ) REFERENCES Customer,
-  CONSTRAINT Sale_FK_to_Warranty
-      FOREIGN KEY ( W_Code ) REFERENCES Warranty,
-  CONSTRAINT Sale_FK_to_Sales
-      FOREIGN KEY ( Salesrep_ID ) REFERENCES Sales,
-  CONSTRAINT Sale_FK_to_Purchase
-      FOREIGN KEY ( Tradein_ID ) REFERENCES Purchase
+  --
+  CONSTRAINT Sale_FK_to_Car      FOREIGN KEY ( VIN )         REFERENCES Car,
+  CONSTRAINT Sale_FK_to_Customer FOREIGN KEY ( Customer_ID ) REFERENCES Customer,
+  CONSTRAINT Sale_FK_to_Warranty FOREIGN KEY ( W_Code )      REFERENCES Warranty,
+  CONSTRAINT Sale_FK_to_Sales    FOREIGN KEY ( Salesrep_ID ) REFERENCES Sales,
+  CONSTRAINT Sale_FK_to_Purchase FOREIGN KEY ( Tradein_ID )  REFERENCES Purchase
 );
 
 
