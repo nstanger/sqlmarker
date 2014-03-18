@@ -1,16 +1,28 @@
 <dataset>
-  <table name="Paper">
-    <column>paper_code</column>
-    <column>title</column>
-    <column>description</column>
-    <column>points</column>
-    <column>period</column>
+  <table name="car">
+    <column>vin</column>
+    <column>registration</column>
+    <column>make</column>
+    <column>model</column>
+    <column>year</column>
+    <column>colour</column>
+    <column>odometer</column>
+    <column>first_registered</column>
+    <column>last_serviced</column>
+    <column>price</column>
+    <column>flat_rate</column>
     <row>
-      <value>INFO321</value>
-      <value>Enterprise Data Management</value>
-      <value>A whole lotta text going on.</value>
-      <value>18</value>
-      <value>S2</value>
+      <value>7A8DH1E0701123456</value>
+      <value>NFO214</value>
+      <value>Holden</value>
+      <value>Barina</value>
+      <value>1999</value>
+      <value>Green</value>
+      <value>225271.8</value>
+      <value>1999-05-23</value>
+      <value>2013-11-18</value>
+      <value>2999</value>
+      <value>20</value>
     </row>
   </table>
 </dataset>

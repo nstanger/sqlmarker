@@ -1,9 +1,15 @@
 <dataset>
-  <table name="paper">
-    <column>paper_code</column>
-    <column>title</column>
-    <column>description</column>
-    <column>points</column>
-    <column>period</column>
+  <table name="car">
+    <column>vin</column>
+    <column>registration</column>
+    <column>make</column>
+    <column>model</column>
+    <column>year</column>
+    <column>colour</column>
+    <column>odometer</column>
+    <column>first_registered</column>
+    <column>last_serviced</column>
+    <column>price</column>
+    <column>flat_rate</column>
   </table>
 </dataset>
