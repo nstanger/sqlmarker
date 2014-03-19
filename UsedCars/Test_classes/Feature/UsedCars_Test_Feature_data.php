@@ -1,11 +1,11 @@
 <?php
-require_once "Qualification/STINK_student_records_Test_Qualification.php";
+require_once "Feature/UsedCars_Test_Feature.php";
 
 /**
  *	@backupGlobals disabled
  *	@backupStaticAttributes disabled
  */
-class STINK_student_records_Test_Qualification_data extends STINK_student_records_Test_Qualification
+class UsedCars_Test_Feature_data extends UsedCars_Test_Feature
 {
 	/**
 	 *	Return fixture data set for current database connection.
@@ -16,46 +16,13 @@ class STINK_student_records_Test_Qualification_data extends STINK_student_record
 	 */
 	protected function getDataSet()
 	{
-		return $this->createXMLDataSet( TEST_CLASS_PATH . '/Qualification/STINK_student_records_Fixture_Qualification.xml' );
+		return $this->createXMLDataSet( TEST_CLASS_PATH . '/Feature/UsedCars_Fixture_Feature.xml' );
 	}
 	
 	
 	protected function willLoadFixture()
 	{
 	    return true;
-	}
-	
-	
-	/**
-	 *	@dataProvider provideColumnLegalValues
-	 */
-	public function testColumnLegalValue( $columnName, $legalValue )
-	{
-   		$this->assertColumnLegalValue( $columnName, $legalValue );
-	}
-	
-	
-	/**
-	 *	@dataProvider provideColumnIllegalValues
-	 *	@expectedException PDOException
-	 *	@expectedExceptionMessage check constraint
-	 *	@expectedExceptionCode HY000
-	 */
-	public function testColumnIllegalValueExplicit( $columnName, $illegalValue )
-	{
-   		$this->assertColumnIllegalValueExplicit( $columnName, $illegalValue );
-	}
-	
-	
-	/**
-	 *	@dataProvider provideColumnIllegalValues
-	 *	@expectedException PDOException
-	 *	@expectedExceptionMessage length exceeded
-	 *	@expectedExceptionCode HY000
-	 */
-	public function testColumnIllegalValueImplicit( $columnName, $illegalValue )
-	{
-   		$this->assertColumnIllegalValueImplicit( $columnName, $illegalValue );
 	}
 }
 ?>

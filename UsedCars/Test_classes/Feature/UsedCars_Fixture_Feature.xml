@@ -1,12 +1,30 @@
 <dataset>
-  <table name="qualification">
-    <column>abbreviation</column>
-    <column>full_name</column>
-    <column>type</column>
+  <table name="feature">
+    <column>feature_code</column>
+    <column>description</column>
     <row>
-      <value>BSc</value>
-      <value>Bachelor of Science</value>
-      <value>Degree</value>
+      <value>IPOD</value>
+      <value>iPod integration</value>
+    </row>
+    <row>
+      <value>IPOD</value>
+      <value>iPod integration</value>
+    </row>
+    <row>
+      <value>ALLOY</value>
+      <value>Alloy wheels</value>
+    </row>
+    <row>
+      <value>SABAG</value>
+      <value>Side airbags</value>
+    </row>
+    <row>
+      <value>BODKT</value>
+      <value>Body kit</value>
+    </row>
+    <row>
+      <value>CRUZE</value>
+      <value>Cruise control</value>
     </row>
   </table>
 </dataset>
