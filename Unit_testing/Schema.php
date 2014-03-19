@@ -230,6 +230,22 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	}
 	
 	
+	/**
+	 *	Convert the values in an array into a form that is acceptable for inclusion into an IN expression in SQL. For example, the array (v1, v2, v3) will be sqlified to the string "v1, v2, v3", which can then be inlined into an IN expression to give "IN ( v1, v2, v3 )". Uses sqlifyValue to process each of the individual values. Note that all values are assumed to be of the same generic type (they should be anyway)!
+	 */
+	protected function sqlifyList( $srcList, $srcType )
+	{
+		$sqlifiedList = array();
+		
+		foreach ( $srcList as $srcKey => $srcValue )
+		{
+			$sqlifiedList[$srcKey] = $this->sqlifyValue( $srcValue, $srcType );
+		}
+		
+		return implode( ', ', $sqlifiedList );
+	}
+	
+	
 	/**#@+
 	 *	Return table name, list of columns, etc.
 	 *
@@ -383,7 +399,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	{
 		$theColumns = $this->getColumnList();
 		
-		if ( isset( $theColumns[$columnName]['aliases'] ) )
+		if ( array_key_exists( 'aliases', $theColumns[$columnName] ) )
 		{
 			return $theColumns[$columnName]['aliases'];
 		}
@@ -1000,7 +1016,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 					if ( $actual->getRowCount() === 1 )
 					{
 						self::$reporter->report(	Reporter::STATUS_WARNING,
-													'Found alternative name “%s” for %s.%s; please rename it to “%s”.',
+													'Found alternative name “%s” for %s.%s; we recommend renaming it to “%s”.',
 													array( $alias, $this->getTableName(), $columnName, $columnName )	);
 						break;
 					}
