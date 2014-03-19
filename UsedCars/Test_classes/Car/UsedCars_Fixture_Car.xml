@@ -24,5 +24,31 @@
       <value>2999</value>
       <value>20</value>
     </row>
+    <row>
+      <value>7A8DH1E0701654321</value>
+      <value>DEF234</value>
+      <value>Subaru</value>
+      <value>Impreza</value>
+      <value>2004</value>
+      <value>Silver</value>
+      <value>95431.5</value>
+      <value>2004-08-06</value>
+      <value />
+      <value>11995</value>
+      <value>50</value>
+    </row>
+    <row>
+      <value>7A8DH1E0701341652</value>
+      <value>GEF20</value>
+      <value>BMW</value>
+      <value>M3</value>
+      <value>2008</value>
+      <value>Black</value>
+      <value>45500</value>
+      <value>2008-04-14</value>
+      <value>2014-02-10</value>
+      <value>45995</value>
+      <value>200</value>
+    </row>
   </table>
 </dataset>
