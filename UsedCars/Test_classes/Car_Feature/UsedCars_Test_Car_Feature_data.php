@@ -1,11 +1,11 @@
 <?php
-require_once "Schedule/STINK_student_records_Test_Schedule.php";
+require_once "Car_Feature/UsedCars_Test_Car_Feature.php";
 
 /**
  *	@backupGlobals disabled
  *	@backupStaticAttributes disabled
  */
-class STINK_student_records_Test_Schedule_data extends STINK_student_records_Test_Schedule
+class UsedCars_Test_Car_Feature_data extends UsedCars_Test_Car_Feature
 {
 	/**
 	 *	Return fixture data set for current database connection.
@@ -16,7 +16,7 @@ class STINK_student_records_Test_Schedule_data extends STINK_student_records_Tes
 	 */
 	protected function getDataSet()
 	{
-		return $this->createXMLDataSet( TEST_CLASS_PATH . '/Schedule/STINK_student_records_Fixture_Schedule.xml' );
+		return $this->createXMLDataSet( TEST_CLASS_PATH . '/Car_Feature/UsedCars_Fixture_Car_Feature.xml' );
 	}
 	
 	

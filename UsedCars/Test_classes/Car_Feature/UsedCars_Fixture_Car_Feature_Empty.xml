@@ -1,6 +1,6 @@
 <dataset>
-  <table name="schedule">
-    <column>abbreviation</column>
-    <column>paper_code</column>
+  <table name="car_feature">
+    <column>vin</column>
+    <column>feature_code</column>
   </table>
 </dataset>

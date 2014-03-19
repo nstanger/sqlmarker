@@ -1,64 +1,87 @@
 <dataset>
-  <table name="qualification">
-    <column>abbreviation</column>
-    <column>full_name</column>
-    <column>type</column>
+  <table name="car">
+    <column>vin</column>
+    <column>registration</column>
+    <column>make</column>
+    <column>model</column>
+    <column>year</column>
+    <column>colour</column>
+    <column>odometer</column>
+    <column>first_registered</column>
+    <column>last_serviced</column>
+    <column>price</column>
+    <column>flat_rate</column>
     <row>
-      <value>BSc</value>
-      <value>Bachelor of Science</value>
-      <value>Degree</value>
+      <value>7A8DH1E0701123456</value>
+      <value>NFO214</value>
+      <value>Holden</value>
+      <value>Barina</value>
+      <value>1999</value>
+      <value>Green</value>
+      <value>225271.8</value>
+      <value>1999-05-23</value>
+      <value>2013-11-18</value>
+      <value>2999</value>
+      <value>20</value>
     </row>
     <row>
-      <value>BCom</value>
-      <value>Bachelor of Commerce</value>
-      <value>Degree</value>
+      <value>7A8DH1E0701654321</value>
+      <value>DEF234</value>
+      <value>Subaru</value>
+      <value>Impreza</value>
+      <value>2004</value>
+      <value>Silver</value>
+      <value>95431.5</value>
+      <value>2004-08-06</value>
+      <value />
+      <value>11995</value>
+      <value>50</value>
+    </row>
+    <row>
+      <value>7A8DH1E0701341652</value>
+      <value>GEF20</value>
+      <value>BMW</value>
+      <value>M3</value>
+      <value>2008</value>
+      <value>Black</value>
+      <value>45500</value>
+      <value>2008-04-14</value>
+      <value>2014-02-10</value>
+      <value>45995</value>
+      <value>200</value>
     </row>
   </table>
-  <table name="paper">
-    <column>paper_code</column>
-    <column>title</column>
+  <table name="feature">
+    <column>feature_code</column>
     <column>description</column>
-    <column>points</column>
-    <column>period</column>
     <row>
-      <value>ACCT112</value>
-      <value>Introduction to Accounting</value>
-      <value>A whole lotta text going on.</value>
-      <value>18</value>
-      <value>S1</value>
+      <value>IPOD</value>
+      <value>iPod integration</value>
     </row>
     <row>
-      <value>BSNS106</value>
-      <value>Information and Communication in Organisations</value>
-      <value>A whole lotta text going on.</value>
-      <value>18</value>
-      <value>S1</value>
+      <value>IPOD</value>
+      <value>iPod integration</value>
     </row>
     <row>
-      <value>COMP160</value>
-      <value>General Programming</value>
-      <value>A whole lotta text going on.</value>
-      <value>18</value>
-      <value>SS</value>
+      <value>ALLOY</value>
+      <value>Alloy wheels</value>
     </row>
     <row>
-      <value>INFO214</value>
-      <value>Business ICT Infrstructure</value>
-      <value>A whole lotta text going on.</value>
-      <value>18</value>
-      <value>S2</value>
+      <value>SABAG</value>
+      <value>Side airbags</value>
     </row>
     <row>
-      <value>INFO321</value>
-      <value>Enterprise Data Management</value>
-      <value>A whole lotta text going on.</value>
-      <value>18</value>
-      <value>S2</value>
+      <value>BODKT</value>
+      <value>Body kit</value>
+    </row>
+    <row>
+      <value>CRUZE</value>
+      <value>Cruise control</value>
     </row>
   </table>
-  <table name="schedule">
-    <column>abbreviation</column>
-    <column>paper_code</column>
+  <table name="car_feature">
+    <column>vin</column>
+    <column>feature_code</column>
     <row>
       <value>BSc</value>
       <value>INFO321</value>
