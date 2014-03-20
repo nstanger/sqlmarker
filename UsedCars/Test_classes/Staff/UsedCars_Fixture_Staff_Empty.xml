@@ -1,11 +1,11 @@
 <dataset>
-  <table name="person">
-    <column>person_id</column>
-    <column>surname</column>
-    <column>other_names</column>
-    <column>contact_phone</column>
-    <column>contact_address</column>
-    <column>email</column>
-    <column>username</column>
+  <table name="staff">
+    <column>staff_id</column>
+    <column>firstname</column>
+    <column>lastname</column>
+    <column>address</column>
+    <column>phone</column>
+    <column>date_hired</column>
+    <column>date_of_birth</column>
   </table>
 </dataset>
