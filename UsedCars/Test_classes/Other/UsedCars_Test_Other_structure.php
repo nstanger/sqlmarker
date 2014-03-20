@@ -1,11 +1,11 @@
 <?php
-require_once "Student/STINK_student_records_Test_Student.php";
+require_once "Other/UsedCars_Test_Other.php";
 
 /**
  *	@backupGlobals disabled
  *	@backupStaticAttributes disabled
  */
-class STINK_student_records_Test_Student_structure extends STINK_student_records_Test_Student
+class UsedCars_Test_Other_structure extends UsedCars_Test_Other
 {
 	/**
 	 *	Return fixture data set for current database connection.
@@ -16,7 +16,7 @@ class STINK_student_records_Test_Student_structure extends STINK_student_records
 	 */
 	protected function getDataSet()
 	{
-		return $this->createXMLDataSet( TEST_CLASS_PATH . '/Student/STINK_student_records_Fixture_Student_Empty.xml' );
+		return $this->createXMLDataSet( TEST_CLASS_PATH . '/Other/UsedCars_Fixture_Other_Empty.xml' );
 	}
 	
 	
@@ -65,15 +65,6 @@ class STINK_student_records_Test_Student_structure extends STINK_student_records
 	public function testColumnNullability( $columnName, $columnNullability )
 	{
    		$this->assertColumnNullability( $columnName, $columnNullability );
-	}
-	
-	
-	/**
-	 *	@dataProvider provideColumnDefaults
-	 */
-	public function testColumnDefault( $columnName, $columnDefault )
-	{
-   		$this->assertColumnDefault( $columnName, $columnDefault );
 	}
 	
 	
