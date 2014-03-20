@@ -1,9 +1,12 @@
 <dataset>
-  <table name="student">
-    <column>student_id</column>
-    <column>home_phone</column>
-    <column>home_address</column>
-    <column>international</column>
-    <column>supervisor_id</column>
+  <table name="customer">
+    <column>customer_id</column>
+    <column>firstname</column>
+    <column>lastname</column>
+    <column>address</column>
+    <column>phone</column>
+    <column>email</column>
+    <column>credit_rating</column>
+    <column>comments</column>
   </table>
 </dataset>
