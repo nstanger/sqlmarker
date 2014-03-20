@@ -1,16 +1,17 @@
 <?php
 
 $testTables = array(
-	'Qualification',
-	'Paper',
-	'Schedule',
-	'Person',
 	'Staff',
-	'Student',
-	'Teach',
-	'Enrolment',
-	'Assessment',
-	'Result',
+	'Service',
+	'Other',
+	'Sales',
+	'Customer',
+	'Car',
+	'Feature',
+	'Car_Feature',
+	'Warranty',
+	'Purchase',
+	'Sale',
 );
 
 ?>
