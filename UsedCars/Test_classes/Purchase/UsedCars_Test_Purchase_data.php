@@ -1,11 +1,11 @@
 <?php
-require_once "STINK_student_records_Test_Result.php";
+require_once "UsedCars_Test_Purchase.php";
 
 /**
  *	@backupGlobals disabled
  *	@backupStaticAttributes disabled
  */
-class STINK_student_records_Test_Result_data extends STINK_student_records_Test_Result
+class UsedCars_Test_Purchase_data extends UsedCars_Test_Purchase
 {
 	/**
 	 *	Return fixture data set for current database connection.
@@ -16,7 +16,7 @@ class STINK_student_records_Test_Result_data extends STINK_student_records_Test_
 	 */
 	protected function getDataSet()
 	{
-		return $this->createXMLDataSet( TEST_CLASS_PATH . '/Result/STINK_student_records_Fixture_Result.xml' );
+		return $this->createXMLDataSet( TEST_CLASS_PATH . '/Purchase/UsedCars_Fixture_Purchase.xml' );
 	}
 	
 	
@@ -44,30 +44,6 @@ class STINK_student_records_Test_Result_data extends STINK_student_records_Test_
 	public function testColumnUnderflowValue( $columnName, $underflowValue )
 	{
    		$this->assertColumnUnderflowValue( $columnName, $underflowValue );
-	}
-	
-	
-	/**
-	 *	@dataProvider provideColumnOverflowValues
-	 *	@expectedException PDOException
-	 *	@expectedExceptionMessage check constraint
-	 *	@expectedExceptionCode HY000
-	 */
-	public function testColumnOverflowValueExplicit( $columnName, $overflowValue )
-	{
-   		$this->assertColumnOverflowValueExplicit( $columnName, $overflowValue );
-	}
-	
-	
-	/**
-	 *	@dataProvider provideColumnOverflowValues
-	 *	@expectedException PDOException
-	 *	@expectedExceptionMessage length exceeded
-	 *	@expectedExceptionCode HY000
-	 */
-	public function testColumnOverflowValueImplicit( $columnName, $overflowValue )
-	{
-   		$this->assertColumnOverflowValueImplicit( $columnName, $overflowValue );
 	}
 }
 ?>

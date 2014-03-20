@@ -1,9 +1,11 @@
 <dataset>
-  <table name="result">
-    <column>assessment_id</column>
-    <column>enrolment_id</column>
-    <column>raw_mark</column>
-    <column>weighted_mark</column>
-    <column>percentage_mark</column>
+  <table name="purchase">
+    <column>purchase_id</column>
+    <column>purchase_date</column>
+    <column>details</column>
+    <column>amount</column>
+    <column>vin</column>
+    <column>customer_id</column>
+    <column>salesrep_id</column>
   </table>
 </dataset>
