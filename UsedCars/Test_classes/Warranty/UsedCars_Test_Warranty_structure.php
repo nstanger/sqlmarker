@@ -1,11 +1,11 @@
 <?php
-require_once "Enrolment/STINK_student_records_Test_Enrolment.php";
+require_once "Warranty/UsedCars_Test_Warranty.php";
 
 /**
  *	@backupGlobals disabled
  *	@backupStaticAttributes disabled
  */
-class STINK_student_records_Test_Enrolment_structure extends STINK_student_records_Test_Enrolment
+class UsedCars_Test_Warranty_structure extends UsedCars_Test_Warranty
 {
 	/**
 	 *	Return fixture data set for current database connection.
@@ -16,7 +16,7 @@ class STINK_student_records_Test_Enrolment_structure extends STINK_student_recor
 	 */
 	protected function getDataSet()
 	{
-		return $this->createXMLDataSet( TEST_CLASS_PATH . '/Enrolment/STINK_student_records_Fixture_Enrolment_Empty.xml' );
+		return $this->createXMLDataSet( TEST_CLASS_PATH . '/Warranty/UsedCars_Fixture_Warranty_Empty.xml' );
 	}
 	
 	
@@ -80,24 +80,6 @@ class STINK_student_records_Test_Enrolment_structure extends STINK_student_recor
 	public function testPKColumns( $constraintName )
 	{
 		$this->assertPKColumns( $constraintName );
-	}
-	
-	
-	/**
-	 *	@dataProvider provideFKReferencedTables
-	 */
-	public function testFKsExist( $referencedTableName )
-	{
-		return $this->assertFKsExist( $referencedTableName );
-	}
-	
-	
-	/**
-	 *	@dataProvider provideFKReferencedTables
-	 */
-	public function testFKColumns( $referencedTableName )
-	{
-		$this->assertFKColumns( $referencedTableName );
 	}
 	
 	

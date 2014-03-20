@@ -1,10 +1,10 @@
 <dataset>
-  <table name="enrolment">
-    <column>enrolment_id</column>
-    <column>description</column>
-    <column>year_enrolled</column>
-    <column>comments</column>
-    <column>student_id</column>
-    <column>paper_code</column>
+  <table name="warranty">
+    <column>w_code</column>
+    <column>max_age</column>
+    <column>max_km</column>
+    <column>duration</column>
+    <column>distance</column>
+    <column>notes</column>
   </table>
 </dataset>
