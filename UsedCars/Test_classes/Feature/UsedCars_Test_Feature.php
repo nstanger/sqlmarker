@@ -17,12 +17,12 @@ abstract class UsedCars_Test_Feature extends PHPUnit_Extensions_Database_TestCas
                                             'min_length'    =>  5,
                                             'max_length'    =>  5,
                                             'nullable'      =>  false,
-                                            'test_value'    =>  "AIRCN", ),
+                                            'test_value'    =>  'AIRCN', ),
             'DESCRIPTION'       =>  array(  'generic_type'  =>  'TEXT',
                                             'sql_type'      =>  array( 'VARCHAR2', 'VARCHAR' ),
                                             'min_length'    =>  100,
                                             'nullable'      =>  false,
-                                            'test_value'    =>  "Air conditioning", ),
+                                            'test_value'    =>  'Air conditioning', ),
         );
     }
     

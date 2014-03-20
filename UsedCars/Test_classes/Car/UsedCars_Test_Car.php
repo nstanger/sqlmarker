@@ -41,7 +41,7 @@ abstract class UsedCars_Test_Car extends PHPUnit_Extensions_Database_TestCase_Cr
                                             'nullable'      =>  false,
                                             'underflow'     =>  1994,
                                             'legal_values'  =>  array( 1995 ),
-                                            'test_value'    =>  2012,   ),
+                                            'test_value'    =>  '2012',   ),
             'COLOUR'            =>  array(  'generic_type'  =>  'TEXT',
                                             'sql_type'      =>  array( 'VARCHAR2', 'VARCHAR' ),
                                             'min_length'    =>  20,
@@ -55,7 +55,7 @@ abstract class UsedCars_Test_Car extends PHPUnit_Extensions_Database_TestCase_Cr
                                             'overflow'      =>  1000000,
                                             'legal_values'  =>  array( 0, 1234.5, 88765, 210000.4, 999999.9 ),
                                             'nullable'      =>  false,
-                                            'test_value'    =>  80000,   ),
+                                            'test_value'    =>  '80000',   ),
             'FIRST_REGISTERED'  =>  array(  'generic_type'  =>  'DATE',
                                             'sql_type'      =>  array( 'DATE' ),
                                             'nullable'      =>  false,
@@ -73,7 +73,7 @@ abstract class UsedCars_Test_Car extends PHPUnit_Extensions_Database_TestCase_Cr
                                             'underflow'     =>  -1,
                                             'legal_values'  =>  array( 0, 1234, 88765, 210000, 999999 ),
                                             'nullable'      =>  false,
-                                            'test_value'    =>  25000,   ),
+                                            'test_value'    =>  '25000',   ),
             'FLAT_RATE'         =>  array(  'generic_type'  =>  'NUMBER',
                                             'sql_type'      =>  array( 'NUMBER', 'INTEGER', 'SMALLINT' ),
                                             'min_length'    =>  4,
@@ -81,7 +81,7 @@ abstract class UsedCars_Test_Car extends PHPUnit_Extensions_Database_TestCase_Cr
                                             'underflow'     =>  0,
                                             'legal_values'  =>  array( 1, 10, 100, 1000, 10000 ),
                                             'nullable'      =>  false,
-                                            'test_value'    =>  150,   ),
+                                            'test_value'    =>  '150',   ),
         );
     }
     
