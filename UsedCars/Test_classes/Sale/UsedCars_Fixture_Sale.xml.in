@@ -1,0 +1,219 @@
+<dataset>
+  <table name="car">
+    <column>vin</column>
+    <column>registration</column>
+    <column>make</column>
+    <column>model</column>
+    <column>year</column>
+    <column>colour</column>
+    <column>odometer</column>
+    <column>first_registered</column>
+    <column>last_serviced</column>
+    <column>price</column>
+    <column>flat_rate</column>
+    <row>
+      <value>7A8DH1E0701123456</value>
+      <value>NFO214</value>
+      <value>Holden</value>
+      <value>Barina</value>
+      <value>1999</value>
+      <value>Green</value>
+      <value>225271.8</value>
+      <value>1999-05-23</value>
+      <value>2013-11-18</value>
+      <value>2999</value>
+      <value>20</value>
+    </row>
+    <row>
+      <value>7A8DH1E0701654321</value>
+      <value>DEF234</value>
+      <value>Subaru</value>
+      <value>Impreza</value>
+      <value>2004</value>
+      <value>Silver</value>
+      <value>95431.5</value>
+      <value>2004-08-06</value>
+      <value />
+      <value>11995</value>
+      <value>50</value>
+    </row>
+    <row>
+      <value>7A8DH1E0701341652</value>
+      <value>GEF20</value>
+      <value>BMW</value>
+      <value>M3</value>
+      <value>2008</value>
+      <value>Black</value>
+      <value>45500</value>
+      <value>2008-04-14</value>
+      <value>2014-02-10</value>
+      <value>45995</value>
+      <value>200</value>
+    </row>
+  </table>
+  <table name="customer">
+    <column>customer_id</column>
+    <column>firstname</column>
+    <column>lastname</column>
+    <column>address</column>
+    <column>phone</column>
+    <column>email</column>
+    <column>credit_rating</column>
+    <column>comments</column>
+    <row>
+      <value>234567</value>
+      <value>Russell</value>
+      <value>Sang</value>
+      <value>74 Patmos Avenue</value>
+      <value>02139414116</value>
+      <value>rsang@example.nz</value>
+      <value>A</value>
+      <value>A-grade customer.</value>
+    </row>
+    <row>
+      <value>234569</value>
+      <value>Helen</value>
+      <value>Patrick</value>
+      <value>28 Cherry Drive</value>
+      <value>02137254888</value>
+      <value>helen_patrick@foo.bar.nz</value>
+      <value>D</value>
+      <value />
+    </row>
+    <row>
+      <value>234568</value>
+      <value>Stephanie</value>
+      <value>Torrence</value>
+      <value>21 Elwyn Crescent</value>
+      <value>02737076169</value>
+      <value>stef_1234@example.com</value>
+      <value />
+      <value>Has she bought anything yet?</value>
+    </row>
+    <row>
+      <value>234570</value>
+      <value>Clifford</value>
+      <value>Johns</value>
+      <value>45 Pine Hill Road</value>
+      <value>02136507402</value>
+      <value>mobycat@frabjous.co.nz</value>
+      <value>C</value>
+      <value>Talks a lot.</value>
+    </row>
+    <row>
+      <value>234571</value>
+      <value>William</value>
+      <value>Charles</value>
+      <value>34 Scobie Road</value>
+      <value>02232104933</value>
+      <value />
+      <value>B</value>
+      <value />
+    </row>
+  </table>
+  <table name="staff">
+    <column>staff_id</column>
+    <column>firstname</column>
+    <column>lastname</column>
+    <column>address</column>
+    <column>phone</column>
+    <column>date_hired</column>
+    <column>date_of_birth</column>
+    <row>
+      <value>4567</value>
+      <value>Sang</value>
+      <value>Dyson</value>
+      <value>74 Patmos Avenue</value>
+      <value>02139414116</value>
+      <value>2008-12-05</value>
+      <value>1979-06-17</value>
+    </row>
+    <row>
+      <value>4569</value>
+      <value>Patricia</value>
+      <value>Kwak</value>
+      <value>28 Cherry Drive</value>
+      <value>02137254888</value>
+      <value>2012-04-23</value>
+      <value>1967-08-08</value>
+    </row>
+    <row>
+      <value>4568</value>
+      <value>Teresa</value>
+      <value>Soto</value>
+      <value>21 Elwyn Crescent</value>
+      <value>02737076169</value>
+      <value>2005-06-04</value>
+      <value>1992-12-25</value>
+    </row>
+    <row>
+      <value>4570</value>
+      <value>John</value>
+      <value>Reed</value>
+      <value>45 Pine Hill Road</value>
+      <value>02136507402</value>
+      <value>2013-08-13</value>
+      <value>1985-05-21</value>
+    </row>
+    <row>
+      <value>4571</value>
+      <value>Charles</value>
+      <value>Barajas</value>
+      <value>34 Scobie Road</value>
+      <value>02232104933</value>
+      <value>2001-11-09</value>
+      <value>1964-09-15</value>
+    </row>
+  </table>
+  <table name="sales">
+    <column>staff_id</column>
+    <column>on_commission</column>
+    <column>commission_rate</column>
+    <column>gross_earnings</column>
+    <row>
+      <value>4567</value>
+      <value>##TRUE_VALUE##</value>
+      <value>0.15</value>
+      <value>12345.67</value>
+    </row>
+    <row>
+      <value>4569</value>
+      <value>##FALSE_VALUE##</value>
+      <value>0</value>
+      <value>12345.67</value>
+    </row>
+  </table>
+  <table name="sale">
+    <column>sale_id</column>
+    <column>sale_date</column>
+    <column>details</column>
+    <column>amount</column>
+    <column>vin</column>
+    <column>customer_id</column>
+    <column>salesrep_id</column>
+    <column>w_code</column>
+    <column>tradein_id</column>
+    <row>
+      <value>12345678</value>
+      <value>2014-01-10</value>
+      <value>Blah blah blah</value>
+      <value>29995</value>
+      <value>7A8DH1E0701123456</value>
+      <value>234567</value>
+      <value>4567</value>
+      <value>D</value>
+      <value />
+    </row>
+    <row>
+      <value>12345680</value>
+      <value>2014-02-15</value>
+      <value>Blah blah blah</value>
+      <value>36950</value>
+      <value>7A8DH1E0701341652</value>
+      <value>234569</value>
+      <value>4567</value>
+      <value>B</value>
+      <value>12345679</value>
+    </row>
+  </table>
+</dataset>

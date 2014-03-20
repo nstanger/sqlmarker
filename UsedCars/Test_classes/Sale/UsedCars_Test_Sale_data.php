@@ -1,11 +1,11 @@
 <?php
-require_once "Teach/STINK_student_records_Test_Teach.php";
+require_once "Sale/UsedCars_Test_Sale.php";
 
 /**
  *	@backupGlobals disabled
  *	@backupStaticAttributes disabled
  */
-class STINK_student_records_Test_Teach_data extends STINK_student_records_Test_Teach
+class UsedCars_Test_Sale_data extends UsedCars_Test_Sale
 {
 	/**
 	 *	Return fixture data set for current database connection.
@@ -16,7 +16,7 @@ class STINK_student_records_Test_Teach_data extends STINK_student_records_Test_T
 	 */
 	protected function getDataSet()
 	{
-		return $this->createXMLDataSet( TEST_CLASS_PATH . '/Teach/STINK_student_records_Fixture_Teach.xml' );
+		return $this->createXMLDataSet( TEST_CLASS_PATH . '/Sale/UsedCars_Fixture_Sale.xml' );
 	}
 	
 	

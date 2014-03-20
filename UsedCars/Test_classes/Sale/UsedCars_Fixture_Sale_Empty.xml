@@ -1,8 +1,13 @@
 <dataset>
-  <table name="teach">
-    <column>staff_id</column>
-    <column>paper_code</column>
-    <column>year_taught</column>
-    <column>role</column>
+  <table name="sale">
+    <column>sale_id</column>
+    <column>sale_date</column>
+    <column>details</column>
+    <column>amount</column>
+    <column>vin</column>
+    <column>customer_id</column>
+    <column>salesrep_id</column>
+    <column>w_code</column>
+    <column>tradein_id</column>
   </table>
 </dataset>
