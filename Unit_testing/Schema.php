@@ -1016,7 +1016,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 					if ( $actual->getRowCount() === 1 )
 					{
 						self::$reporter->report(	Reporter::STATUS_WARNING,
-													'Found alternative name “%s” for %s.%s; we recommend renaming it to “%s”.',
+													'Found alternative name “%s” for %s.%s; we recommend renaming it to “%s”. This warning may lead to further errors below.',
 													array( $alias, $this->getTableName(), $columnName, $columnName )	);
 						break;
 					}
