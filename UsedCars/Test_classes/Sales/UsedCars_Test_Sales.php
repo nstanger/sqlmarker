@@ -19,6 +19,7 @@ abstract class UsedCars_Test_Sales extends PHPUnit_Extensions_Database_TestCase_
                                             'max_length'    =>  4,
                                             'decimals'      =>  0,
                                             'nullable'      =>  false,
+                                            'aliases'       =>  array( 'SALES_ID', 'SALES_STAFF_ID', 'SALESREP_ID' ),
                                             'test_value'    =>  '4571',  ), // Has to be an unused Person_ID in the fixture because of the FK.
             'ON_COMMISSION'     =>  array(  'generic_type'  =>  'TEXT',
                                             'sql_type'      =>  array( 'CHAR', 'VARCHAR2', 'VARCHAR' ),

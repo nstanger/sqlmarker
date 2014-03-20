@@ -19,6 +19,7 @@ abstract class UsedCars_Test_Other extends PHPUnit_Extensions_Database_TestCase_
                                             'max_length'    =>  4,
                                             'decimals'      =>  0,
                                             'nullable'      =>  false,
+                                            'aliases'       =>  array( 'OTHER_ID', 'OTHER_STAFF_ID' ),
                                             'test_value'    =>  '4571',  ), // Has to be an unused Person_ID in the fixture because of the FK.
             'SALARY'            =>  array(  'generic_type'  =>  'NUMBER',
                                             'sql_type'      =>  array( 'NUMBER', 'DECIMAL' ),

@@ -19,6 +19,7 @@ abstract class UsedCars_Test_Service extends PHPUnit_Extensions_Database_TestCas
                                             'max_length'    =>  4,
                                             'decimals'      =>  0,
                                             'nullable'      =>  false,
+                                            'aliases'       =>  array( 'SERVICE_ID', 'SERVICE_STAFF_ID' ),
                                             'test_value'    =>  '4571',  ), // Has to be an unused Person_ID in the fixture because of the FK.
             'HOURLY_RATE'       =>  array(  'generic_type'  =>  'NUMBER',
                                             'sql_type'      =>  array( 'NUMBER', 'DECIMAL' ),
