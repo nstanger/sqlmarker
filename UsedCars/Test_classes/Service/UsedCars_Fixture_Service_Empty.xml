@@ -1,9 +1,7 @@
 <dataset>
-  <table name="student">
-    <column>student_id</column>
-    <column>home_phone</column>
-    <column>home_address</column>
-    <column>international</column>
-    <column>supervisor_id</column>
+  <table name="service">
+    <column>staff_id</column>
+    <column>hourly_rate</column>
+    <column>total_hours</column>
   </table>
 </dataset>

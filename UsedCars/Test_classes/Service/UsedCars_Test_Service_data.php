@@ -1,11 +1,11 @@
 <?php
-require_once "Student/STINK_student_records_Test_Student.php";
+require_once "Service/UsedCars_Test_Service.php";
 
 /**
  *	@backupGlobals disabled
  *	@backupStaticAttributes disabled
  */
-class STINK_student_records_Test_Student_data extends STINK_student_records_Test_Student
+class UsedCars_Test_Service_data extends UsedCars_Test_Service
 {
 	/**
 	 *	Return fixture data set for current database connection.
@@ -16,7 +16,7 @@ class STINK_student_records_Test_Student_data extends STINK_student_records_Test
 	 */
 	protected function getDataSet()
 	{
-		return $this->createXMLDataSet( TEST_CLASS_PATH . '/Student/STINK_student_records_Fixture_Student.xml' );
+		return $this->createXMLDataSet( TEST_CLASS_PATH . '/Service/UsedCars_Fixture_Service.xml' );
 	}
 	
 	
@@ -56,6 +56,42 @@ class STINK_student_records_Test_Student_data extends STINK_student_records_Test
 	public function testColumnIllegalValueImplicit( $columnName, $illegalValue )
 	{
    		$this->assertColumnIllegalValueImplicit( $columnName, $illegalValue );
+	}
+	
+	
+	/**
+	 *	@dataProvider provideColumnUnderflowValues
+	 *	@expectedException PDOException
+	 *	@expectedExceptionMessage check constraint
+	 *	@expectedExceptionCode HY000
+	 */
+	public function testColumnUnderflowValue( $columnName, $underflowValue )
+	{
+   		$this->assertColumnUnderflowValue( $columnName, $underflowValue );
+	}
+	
+	
+	/**
+	 *	@dataProvider provideColumnOverflowValues
+	 *	@expectedException PDOException
+	 *	@expectedExceptionMessage check constraint
+	 *	@expectedExceptionCode HY000
+	 */
+	public function testColumnOverflowValueExplicit( $columnName, $overflowValue )
+	{
+   		$this->assertColumnOverflowValueExplicit( $columnName, $overflowValue );
+	}
+	
+	
+	/**
+	 *	@dataProvider provideColumnOverflowValues
+	 *	@expectedException PDOException
+	 *	@expectedExceptionMessage length exceeded
+	 *	@expectedExceptionCode HY000
+	 */
+	public function testColumnOverflowValueImplicit( $columnName, $overflowValue )
+	{
+   		$this->assertColumnOverflowValueImplicit( $columnName, $overflowValue );
 	}
 }
 ?>
