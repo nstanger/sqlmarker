@@ -1018,6 +1018,15 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 						self::$reporter->report(	Reporter::STATUS_WARNING,
 													'Found alternative name “%s” for %s.%s; we recommend renaming it to “%s”. This warning may lead to further errors below.',
 													array( $alias, $this->getTableName(), $columnName, $columnName )	);
+						$logMessage = sprintf( '%s: user %s used alias %s.%s for %s.%s%s',
+							date( 'Y-m-d H:i:s' ),
+							ORACLE_USERNAME,
+							$this->getTableName(),
+							$alias,
+							$this->getTableName(),
+							$columnName,
+							"\n" );
+						file_put_contents( 'logs/aliases.log', $logMessage, FILE_APPEND | LOCK_EX );
 						break;
 					}
 				}
