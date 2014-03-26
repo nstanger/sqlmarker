@@ -33,7 +33,7 @@ abstract class UsedCars_Test_Sales extends PHPUnit_Extensions_Database_TestCase_
                                             'test_value'    =>  TRUE_VALUE,    ),
             'COMMISSION_RATE'   =>  array(  'generic_type'  =>  'NUMBER',
                                             'sql_type'      =>  array( 'NUMBER', 'DECIMAL' ),
-                                            'min_length'    =>  3,
+                                            'min_length'    =>  2,
                                             'max_length'    =>  3,
                                             'decimals'      =>  2,
                                             'underflow'     =>  -0.01,
