@@ -18,7 +18,7 @@ abstract class UsedCars_Test_Customer extends PHPUnit_Extensions_Database_TestCa
                                             'max_length'    =>  6,
                                             'decimals'      =>  0,
                                             'nullable'      =>  false,
-                                            'test_value'    =>  '234571',  ),
+                                            'test_value'    =>  '234550',  ),
             'FIRSTNAME'         =>  array(  'generic_type'  =>  'TEXT',
                                             'sql_type'      =>  array( 'VARCHAR2', 'VARCHAR' ),
                                             'min_length'    =>  50,
