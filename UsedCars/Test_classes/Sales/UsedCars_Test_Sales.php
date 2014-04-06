@@ -47,9 +47,8 @@ abstract class UsedCars_Test_Sales extends PHPUnit_Extensions_Database_TestCase_
                                             'min_length'    =>  8,
                                             'decimals'      =>  2,
                                             'underflow'     =>  -0.01,
-                                            'overflow'     =>  1000000,
                                             'legal_values'  =>  array( 0, 1, 10.27, 100.38, 1000.49, 100000.51, 999999.99 ),
-                                            'illegal_values'=>  array( -10, 2000000 ),
+                                            'illegal_values'=>  array( -10 ),
                                             'nullable'      =>  false,
                                             'test_value'    =>  12345.67,    ),
         );

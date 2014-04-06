@@ -35,6 +35,7 @@ abstract class UsedCars_Test_Purchase extends PHPUnit_Extensions_Database_TestCa
                                             'decimals'      =>  0,
                                             'underflow'     =>  -1,
                                             'legal_values'  =>  array( 0, 1234, 88765, 210000, 999999 ),
+                                            'illegal_values'=>  array( -100 ),
                                             'test_value'    =>  '25995',   ),
             // No need to test legal values because of the FK. If the FK is missing it's broken anyway!
             'VIN'               =>  array(  'generic_type'  =>  'TEXT',
