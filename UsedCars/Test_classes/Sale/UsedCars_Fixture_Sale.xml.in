@@ -19,8 +19,8 @@
       <value>1999</value>
       <value>Green</value>
       <value>225271.8</value>
-      <value>1999-05-23</value>
-      <value>2013-11-18</value>
+      <value>23-MAY-1999</value>
+      <value>18-NOV-2013</value>
       <value>2999</value>
       <value>20</value>
     </row>
@@ -32,7 +32,7 @@
       <value>2004</value>
       <value>Silver</value>
       <value>95431.5</value>
-      <value>2004-08-06</value>
+      <value>06-AUG-2004</value>
       <value />
       <value>11995</value>
       <value>50</value>
@@ -45,8 +45,8 @@
       <value>2008</value>
       <value>Black</value>
       <value>45500</value>
-      <value>2008-04-14</value>
-      <value>2014-02-10</value>
+      <value>14-APR-2008</value>
+      <value>10-FEB-2014</value>
       <value>45995</value>
       <value>200</value>
     </row>
@@ -125,8 +125,8 @@
       <value>Dyson</value>
       <value>74 Patmos Avenue</value>
       <value>02139414116</value>
-      <value>2008-12-05</value>
-      <value>1979-06-17</value>
+      <value>05-DEC-2008</value>
+      <value>17-JUN-1979</value>
     </row>
     <row>
       <value>4569</value>
@@ -134,8 +134,8 @@
       <value>Kwak</value>
       <value>28 Cherry Drive</value>
       <value>02137254888</value>
-      <value>2012-04-23</value>
-      <value>1967-08-08</value>
+      <value>23-APR-2012</value>
+      <value>08-AUG-1967</value>
     </row>
     <row>
       <value>4568</value>
@@ -143,8 +143,8 @@
       <value>Soto</value>
       <value>21 Elwyn Crescent</value>
       <value>02737076169</value>
-      <value>2005-06-04</value>
-      <value>1992-12-25</value>
+      <value>04-APR-2005</value>
+      <value>25-DEC-1986</value>
     </row>
     <row>
       <value>4570</value>
@@ -152,8 +152,8 @@
       <value>Reed</value>
       <value>45 Pine Hill Road</value>
       <value>02136507402</value>
-      <value>2013-08-13</value>
-      <value>1985-05-21</value>
+      <value>13-AUG-2013</value>
+      <value>21-MAY-1985</value>
     </row>
     <row>
       <value>4571</value>
@@ -161,8 +161,8 @@
       <value>Barajas</value>
       <value>34 Scobie Road</value>
       <value>02232104933</value>
-      <value>2001-11-09</value>
-      <value>1964-09-15</value>
+      <value>09-NOV-2001</value>
+      <value>15-SEP-1964</value>
     </row>
   </table>
   <table name="sales">
@@ -183,6 +183,73 @@
       <value>12345.67</value>
     </row>
   </table>
+  <table name="warranty">
+    <column>w_code</column>
+    <column>max_age</column>
+    <column>max_km</column>
+    <column>duration</column>
+    <column>distance</column>
+    <column>notes</column>
+    <row>
+      <value>A</value>
+      <value>4</value>
+      <value>50000</value>
+      <value>3</value>
+      <value>5000</value>
+      <value>Category A motor vehicle</value>
+    </row>
+    <row>
+      <value>B</value>
+      <value>6</value>
+      <value>75000</value>
+      <value>2</value>
+      <value>3000</value>
+      <value>Category B motor vehicle</value>
+    </row>
+    <row>
+      <value>C</value>
+      <value>8</value>
+      <value>100000</value>
+      <value>1</value>
+      <value>1500</value>
+      <value>Category C motor vehicle</value>
+    </row>
+    <row>
+      <value>D</value>
+      <value />
+      <value />
+      <value>0</value>
+      <value>0</value>
+      <value>Category D motor vehicle</value>
+    </row>
+  </table>
+  <table name="purchase">
+    <column>purchase_id</column>
+    <column>purchase_date</column>
+    <column>details</column>
+    <column>amount</column>
+    <column>vin</column>
+    <column>customer_id</column>
+    <column>salesrep_id</column>
+    <row>
+      <value>12345678</value>
+      <value>10-JAN-2014</value>
+      <value>Blah blah blah</value>
+      <value>29995</value>
+      <value>7A8DH1E0701123456</value>
+      <value>234567</value>
+      <value>4567</value>
+    </row>
+    <row>
+      <value>12345679</value>
+      <value>25-JAN-2014</value>
+      <value>Blah blah blah</value>
+      <value>45995</value>
+      <value>7A8DH1E0701654321</value>
+      <value>234568</value>
+      <value>4569</value>
+    </row>
+  </table>
   <table name="sale">
     <column>sale_id</column>
     <column>sale_date</column>
@@ -195,7 +262,7 @@
     <column>tradein_id</column>
     <row>
       <value>12345678</value>
-      <value>2014-01-10</value>
+      <value>10-JAN-2014</value>
       <value>Blah blah blah</value>
       <value>29995</value>
       <value>7A8DH1E0701123456</value>
@@ -206,7 +273,7 @@
     </row>
     <row>
       <value>12345680</value>
-      <value>2014-02-15</value>
+      <value>15-FEB-2014</value>
       <value>Blah blah blah</value>
       <value>36950</value>
       <value>7A8DH1E0701341652</value>
