@@ -211,7 +211,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 
 
 	/**
-	 *	Convert the input text into a form that is acceptable to SQL. Text values are wrapped in '', and any embedded ' are converted to ''. "&" is also converted to "'||chr(38)||'" (mainly for Oracle).
+	 *	Convert the input text into a form that is acceptable to SQL. Text values are wrapped in '', and any embedded ' are converted to ''. "&" is also converted to "'||chr(38)||'" (mainly for Oracle). This should probably use something like PDO::quote(), but I'm not sure if the Oracle driver implements this.
 	 */
 	protected function sqlifyValue( $srcValue, $srcType )
 	{
@@ -221,9 +221,18 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			$sqlifiedValue = str_replace( "'", "''", $sqlifiedValue );
 			$sqlifiedValue = str_replace( '&', "' || chr(38) || '", $sqlifiedValue );
 		}
-		if ( ( $srcType === 'TEXT' ) || ( $srcType === 'DATE' ) )
+		if ( $srcType === 'TEXT' )
 		{
 			$sqlifiedValue = "'" . $sqlifiedValue . "'";
+		}
+		// Dates are trickier, as we might be passing a date function call (e.g., TO_DATE).
+		// If it starts with a digit, we can reasonably assume it's a date literal and should be quoted.
+		if ( $srcType === 'DATE' )
+		{
+			if ( preg_match( '/^[12]/', $sqlifiedValue ) )
+			{
+				$sqlifiedValue = "'" . $sqlifiedValue . "'";
+			}
 		}
 		
 		return $sqlifiedValue;
