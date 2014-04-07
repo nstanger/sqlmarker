@@ -39,30 +39,6 @@ class UsedCars_Test_Car_data extends UsedCars_Test_Car
 	
 	
 	/**
-	 *	@dataProvider provideColumnOverflowValues
-	 *	@expectedException PDOException
-	 *	@expectedExceptionMessage check constraint
-	 *	@expectedExceptionCode HY000
-	 */
-	public function testColumnOverflowValueExplicit( $columnName, $overflowValue )
-	{
-   		$this->assertColumnOverflowValueExplicit( $columnName, $overflowValue );
-	}
-	
-	
-	/**
-	 *	@dataProvider provideColumnOverflowValues
-	 *	@expectedException PDOException
-	 *	@expectedExceptionMessage length exceeded
-	 *	@expectedExceptionCode HY000
-	 */
-	public function testColumnOverflowValueImplicit( $columnName, $overflowValue )
-	{
-   		$this->assertColumnOverflowValueImplicit( $columnName, $overflowValue );
-	}
-	
-	
-	/**
 	 *	@dataProvider provideColumnLegalValues
 	 */
 	public function testColumnLegalValue( $columnName, $legalValue )
