@@ -1368,18 +1368,36 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		}
 		
 		// Should never be called in student run mode.
-		self::$reporter->report( Reporter::STATUS_TEST, "[[ %s.%s accepts “%s” ]] ",
+		self::$reporter->report( Reporter::STATUS_TEST, '[[ %s.%s accepts “%s” ]] ',
 			array( ucfirst( strtolower( $this->getTableName() ) ), ucfirst( strtolower( $columnName ) ), $legalValue ) );
 		
 		$substitutions[$columnName] = $legalValue;
+		
+		/*
+			Also substitute associated values in related columns. This is needed for situations where two or more columns appear in a table-level constraint in such a way that the value of one column determines the value of one or more other columns. For example, if On_Commission = 'Y', then Commission_Rate must be > 0, else if On_Commission = 'N', then Commission_Rate must be 0.
+			
+			TODO: Identical code also appears in assertColumnIllegalValueImplicit() and assertColumnIllegalValueExplicit(), and should therefore be refactored at some stage.
+		*/
+		$columnList = $this->getColumnList();
+		if ( isset( $columnList[$columnName]['related_values'][strval( $legalValue )] ) )
+		{
+			foreach ( $columnList[$columnName]['related_values'][strval( $legalValue )] as $relatedColumn => $relatedValue )
+			{
+				self::$reporter->report( Reporter::STATUS_DEBUG, '[[ Substituting related value “%s” for %s.%s ]] ',
+					array( $relatedValue, ucfirst( strtolower( $this->getTableName() ) ), ucfirst( strtolower( $relatedColumn ) ) ) );
+				
+				$substitutions[$relatedColumn] = $relatedValue;
+			}
+		}
+		
 		$insertString = $this->constructInsert( $substitutions );
 		
-		self::$reporter->report( Reporter::STATUS_DEBUG, "[[ %s ]] ", array( $insertString ) );
+		self::$reporter->report( Reporter::STATUS_DEBUG, '[[ %s ]] ', array( $insertString ) );
 			
  		$stmt = $this->getConnection()->getConnection()->prepare( $insertString );
 		
 		$errorString = sprintf(
-			"Column %s.%s won't accept legal value %s [%+1.1f].",
+			'Column %s.%s won’t accept legal value %s [%+1.1f].',
 			ucfirst( strtolower( $this->getTableName() ) ),
 			ucfirst( strtolower( $columnName ) ),
 			$legalValue,
@@ -1394,7 +1412,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		}
 		catch ( PDOException $e )
 		{
-			if ( ( strpos( $e->getMessage(), "check constraint" ) !== FALSE ) )
+			if ( ( strpos( $e->getMessage(), 'check constraint' ) !== FALSE ) )
 			{
 				self::assertTrue( FALSE, $errorString );
 			}
@@ -1429,6 +1447,18 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			array( ucfirst( strtolower( $this->getTableName() ) ), ucfirst( strtolower( $columnName ) ), $illegalValue ) );
 		
 		$substitutions[$columnName] = $illegalValue;
+		
+		$columnList = $this->getColumnList();
+		if ( isset( $columnList[$columnName]['related_values'][strval( $illegalValue )] ) )
+		{
+			foreach ( $columnList[$columnName]['related_values'][strval( $illegalValue )] as $relatedColumn => $relatedValue )
+			{
+				self::$reporter->report( Reporter::STATUS_DEBUG, '[[ Substituting related value “%s” for %s.%s ]] ',
+					array( $relatedValue, ucfirst( strtolower( $this->getTableName() ) ), ucfirst( strtolower( $relatedColumn ) ) ) );
+				$substitutions[$relatedColumn] = $relatedValue;
+			}
+		}
+		
 		$insertString = $this->constructInsert( $substitutions );
 		
  		$stmt = $this->getConnection()->getConnection()->prepare( $insertString );
@@ -1485,6 +1515,17 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			array( ucfirst( strtolower( $this->getTableName() ) ), ucfirst( strtolower( $columnName ) ), $illegalValue ) );
 		
 		$substitutions[$columnName] = $illegalValue;
+		
+		$columnList = $this->getColumnList();
+		if ( isset( $columnList[$columnName]['related_values'][strval( $illegalValue )] ) )
+		{
+			foreach ( $columnList[$columnName]['related_values'][strval( $illegalValue )] as $relatedColumn => $relatedValue )
+			{
+				self::$reporter->report( Reporter::STATUS_DEBUG, '[[ Substituting related value “%s” for %s.%s ]] ',
+					array( $relatedValue, ucfirst( strtolower( $this->getTableName() ) ), ucfirst( strtolower( $relatedColumn ) ) ) );
+				$substitutions[$relatedColumn] = $relatedValue;
+			}
+		}
 		$insertString = $this->constructInsert( $substitutions );
 		
  		$stmt = $this->getConnection()->getConnection()->prepare( $insertString );
