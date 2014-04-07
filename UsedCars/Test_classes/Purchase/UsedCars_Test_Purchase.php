@@ -18,7 +18,7 @@ abstract class UsedCars_Test_Purchase extends PHPUnit_Extensions_Database_TestCa
                                             'max_length'    =>  8,
                                             'decimals'      =>  0,
                                             'nullable'      =>  false,
-                                            'test_value'    =>  '12345678',   ),
+                                            'test_value'    =>  '12345670',   ),
             'PURCHASE_DATE'     =>  array(  'generic_type'  =>  'DATE',
                                             'sql_type'      =>  array( 'DATE' ),
                                             'nullable'      =>  false,
@@ -26,7 +26,7 @@ abstract class UsedCars_Test_Purchase extends PHPUnit_Extensions_Database_TestCa
             'DETAILS'           =>  array(  'generic_type'  =>  'TEXT',
                                             'sql_type'      =>  array( 'VARCHAR2', 'VARCHAR', 'CLOB' ),
                                             'min_length'    =>  500,
-                                            'nullable'      =>  true,
+                                            'nullable'      =>  false,
                                             'test_value'    =>  'Blah blah blah',   ),
             'AMOUNT'             =>  array( 'generic_type'  =>  'NUMBER',
                                             'sql_type'      =>  array( 'NUMBER', 'INTEGER' ),
@@ -43,7 +43,7 @@ abstract class UsedCars_Test_Purchase extends PHPUnit_Extensions_Database_TestCa
                                             'min_length'    =>  17,
                                             'max_length'    =>  17,
                                             'nullable'      =>  false,
-                                            'test_value'    =>  '7AT0DH1EX09123456', ),
+                                            'test_value'    =>  '7A8DH1E0701341652', ),
             // No need to test legal values because of the FK. If the FK is missing it's broken anyway!
             'CUSTOMER_ID'       =>  array(  'generic_type'  =>  'NUMBER',
                                             'sql_type'      =>  array( 'NUMBER', 'INTEGER' ),
@@ -59,7 +59,7 @@ abstract class UsedCars_Test_Purchase extends PHPUnit_Extensions_Database_TestCa
                                             'max_length'    =>  4,
                                             'decimals'      =>  0,
                                             'nullable'      =>  false,
-                                            'test_value'    =>  '4571',  ),
+                                            'test_value'    =>  '4567',  ),
         );
     }
     
