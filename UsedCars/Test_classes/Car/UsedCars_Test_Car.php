@@ -82,7 +82,7 @@ abstract class UsedCars_Test_Car extends PHPUnit_Extensions_Database_TestCase_Cr
                                             'min_length'    =>  4,
                                             'decimals'      =>  0,
                                             'underflow'     =>  0,
-                                            'legal_values'  =>  array( 1, 10, 100, 1000, 10000 ),
+                                            'legal_values'  =>  array( 1, 10, 100, 1000 ),
                                             'illegal_values'=>  array( -100, -1 ),
                                             'nullable'      =>  false,
                                             'test_value'    =>  '150',   ),
