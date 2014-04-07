@@ -331,7 +331,12 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	protected function getPKColumnListAsDataSet( $datasetTableName )
 	{
 		$theList = array();
-		foreach ( $this->getPKColumnList() as $columnName )
+		$pkColumns = $this->getPKColumnList();
+		
+		// Sort alphabetically so that we don't fail if the actual column order is different.
+		sort( $pkColumns );
+		
+		foreach ( $pkColumns as $columnName )
 		{
 			array_push( $theList, array( 'COLUMN_NAME' => $columnName ) );
 		}
@@ -366,6 +371,9 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 		$theList = array();
 		$fkColumns = $this->getFKColumnListForTable( $referencedTable );
 		
+		// Sort alphabetically so that we don't fail if the actual column order is different.
+		sort( $fkColumns );
+		
 		foreach ( $fkColumns as $columnName  )
 		{
 			array_push( $theList, array( 'COLUMN_NAME' => $columnName ) );
@@ -386,6 +394,9 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	{
 		$theList = array();
 		$uniqueColumns = $this->getUniqueColumnList();
+		
+		// Sort alphabetically so that we don't fail if the actual column order is different.
+		sort( $uniqueColumns );
 		
 		foreach ( $uniqueColumns as $constraint  )
 		{
@@ -1729,10 +1740,10 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			array( ucfirst( strtolower( $this->getTableName() ) ), ucwords( strtolower( implode( ', ', $this->getPKColumnList() ) ) ) ) );
 
 		$queryString = sprintf(
-			"SELECT Column_Name
+			"SELECT User_Cons_Columns.Column_Name
 			 FROM User_Cons_Columns
-			 WHERE ( Constraint_Name = '%s' )
-			 ORDER BY Position",
+			 WHERE ( User_Cons_Columns.Constraint_Name = '%s' )
+			 ORDER BY User_Cons_Columns.Column_Name",
 			strtoupper( $constraintName )
 		);
 						
@@ -1813,7 +1824,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			 WHERE ( Child.Table_Name = '%s' )
 			   AND ( Parent.Table_Name = '%s' )
 			   AND ( Child.Constraint_Type = 'R' )
-			 ORDER BY User_Cons_Columns.Position",
+			 ORDER BY User_Cons_Columns.Column_Name",
 			strtoupper( $this->getTableName() ),
 			strtoupper( $referencedTableName )
 		);
@@ -1861,7 +1872,7 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 			 FROM User_Constraints INNER JOIN User_Cons_Columns USING ( Constraint_Name )
 			 WHERE ( User_Constraints.Table_Name = '%s' )
 			   AND ( User_Constraints.Constraint_Type = 'U' )
-			 ORDER BY User_Cons_Columns.Position",
+			 ORDER BY User_Cons_Columns.Column_Name",
 			strtoupper( $this->getTableName() )
 		);
 						
