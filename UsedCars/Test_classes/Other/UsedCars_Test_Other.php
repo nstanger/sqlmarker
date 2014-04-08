@@ -23,8 +23,7 @@ abstract class UsedCars_Test_Other extends PHPUnit_Extensions_Database_TestCase_
                                             'test_value'    =>  '4571',  ), // Has to be an unused Person_ID in the fixture because of the FK.
             'SALARY'            =>  array(  'generic_type'  =>  'NUMBER',
                                             'sql_type'      =>  array( 'NUMBER', 'DECIMAL' ),
-                                            'min_length'    =>  8,
-                                            'max_length'    =>  8,
+                                            'min_length'    =>  7,
                                             'decimals'      =>  2,
                                             'nullable'      =>  false,
                                             'underflow'     =>  28079.99,
