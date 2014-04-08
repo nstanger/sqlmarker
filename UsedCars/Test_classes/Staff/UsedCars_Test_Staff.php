@@ -45,12 +45,12 @@ abstract class UsedCars_Test_Staff extends PHPUnit_Extensions_Database_TestCase_
             'DATE_HIRED'        =>  array(  'generic_type'  =>  'DATE',
                                             'sql_type'      =>  array( 'DATE' ),
                                             'nullable'      =>  false,
-                                            // 'default' => 'SYSDATE',
+                                            'default'       =>  'SYSDATE',
                                             'test_value'    =>  "TO_DATE( '2012-03-28', 'YYYY-MM-DD' )" ),
             'DATE_OF_BIRTH'     =>  array(  'generic_type'  =>  'DATE',
                                             'sql_type'      =>  array( 'DATE' ),
                                             'nullable'      =>  false,
-                                            //'underflow'     => "SYSDATE - TO_YMINTERVAL( '18-0' ) - 1",
+                                            'underflow'     => "SYSDATE - TO_YMINTERVAL( '18-0' ) - 1",
                                             'test_value'    =>  "TO_DATE( '2012-03-28', 'YYYY-MM-DD' )" ),
         );
     }

@@ -24,5 +24,17 @@ class UsedCars_Test_Staff_data extends UsedCars_Test_Staff
 	{
 	    return true;
 	}
+	
+	
+	/**
+	 *	@dataProvider provideColumnUnderflowValues
+	 *	@expectedException PDOException
+	 *	@expectedExceptionMessage check constraint
+	 *	@expectedExceptionCode HY000
+	 */
+	public function testColumnUnderflowValue( $columnName, $underflowValue )
+	{
+   		$this->assertColumnUnderflowValue( $columnName, $underflowValue );
+	}
 }
 ?>

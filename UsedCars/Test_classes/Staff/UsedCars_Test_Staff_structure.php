@@ -68,6 +68,15 @@ class UsedCars_Test_Staff_structure extends UsedCars_Test_Staff
 	}
 	
 	
+	/**
+	 *	@dataProvider provideColumnDefaults
+	 */
+	public function testColumnDefault( $columnName, $columnDefault )
+	{
+   		$this->assertColumnDefault( $columnName, $columnDefault );
+	}
+	
+	
 	public function testPKExists()
 	{
 		return $this->assertPKExists();
