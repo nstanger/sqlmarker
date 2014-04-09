@@ -52,7 +52,7 @@ abstract class UsedCars_Test_Customer extends PHPUnit_Extensions_Database_TestCa
                                                 'test.email@some-place.co', 'email@thing.example.co.uk', 'email_address@example.com' ),
                                             'illegal_values'=>  array(
                                                 '@example.com', 'email@', 'email@@example.com', 'email.com', 'email@com',
-                                                'email@example..com' ),
+                                                'email@example..com', 'email com' ),
                                             'test_value'    =>  'test.email@example.com',   ),
             'CREDIT_RATING'     =>  array(  'generic_type'  =>  'TEXT',
                                             'sql_type'      =>  array( 'CHAR', 'VARCHAR2', 'VARCHAR' ),
