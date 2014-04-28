@@ -93,10 +93,6 @@ CREATE TABLE Staff
   Firstname     VARCHAR2(50)    NOT NULL,
   Lastname      VARCHAR2(50)    NOT NULL,
   Address       VARCHAR2(150)   NOT NULL,
-  -- Use VARCHAR2 for phone numbers in order to retain leading zeros.
-  -- Format: leading 0 plus 1-digit area code plus up to 9 digits, e.g.,
-  -- 02187654321; longer if we allow punctuation to be included.
-  -- (http://en.wikipedia.org/wiki/Telephone_numbers_in_New_Zealand)
   Phone         VARCHAR2(11)    NOT NULL,
   Date_Hired    DATE            DEFAULT SYSDATE
                                 NOT NULL,
@@ -109,7 +105,11 @@ CREATE TABLE Staff
 );
 				</code-block>
 				
-				<p indent="no">This solution uses the discrete approach for transforming subtypes (i.e., one relation for the supertype, plus one relation for each of the subtypes). The reason for this is that the three <code>Staff</code> subtypes each have their own attributes and it’s easier to add more subtypes if necessary. You could probably also make a reasonable argument for the additive approach (one relation for each subtype, including the supertype attributes in each) if you assume that the subtypes are exclusive, i.e., a staff member can’t be two different types at once (this seems unlikely in practice, however). The integrated approach is inappropriate for this scenario because it would force us to make all the subtype attributes optional (allow nulls), where currently they are all mandatory (no nulls).</p>
+				<p indent="no">This schema uses what’s known as the “discrete approach” for subtypes (i.e., one relation for the supertype, plus one relation for each of the subtypes). The reason for this is that the three <code>Staff</code> subtypes each have their own attributes and it’s easier to add more subtypes if necessary.</p>
+				
+				<p>A surprising number of people seemed to be very confused about the primary keys of the subtype tables, despite the very clear statement that they “use the same primary key as <code>Staff</code>” (i.e., <code>Staff_ID</code>). Some people didn’t even specify primary keys for the subtype tables at all, or worse, specified primary keys for some (usually <code>Sales</code>) and not others! Another related issue was introducing something like a <code>Salesrep_ID</code> (or <code>Service_ID</code>, or whatever) in addition to the <code>Staff_ID</code>. While <code>Salesrep_ID</code> on its own is generally OK (we generally accepted this as a solution), the combination of both <code>Salesrep_ID</code> and <code>Staff_ID</code> is pointless, as they’ll both be unique and therefore might as well be the same value anyway.</p>
+				
+				<p>Phone numbers should always be stored as text rather than numbers, to allow for things like punctuation and leading zeroes (which would vanish if the column used a numeric data type). Wikipedia’s entry on the <hyperlink url="http://en.wikipedia.org/wiki/Telephone_numbers_in_New_Zealand">New Zealand telephone numbering system</hyperlink> reveals that numbers are at least 11 digits long if we ignore punctuation, so this is the minimum length that we accepted.</p>
 				
 				<p>There are several different ways to calculate the age: using <code>INTERVAL</code> types as shown above, using the <code>MONTHS_BETWEEN</code> function, or simply doing your own date arithmetic calculation based on the number of days between the two dates. However, when doing the latter, you need to take into account two things:</p>
 				
@@ -121,7 +121,9 @@ CREATE TABLE Staff
 					
 				</enumerated-list>
 				
-				<p indent="no">If you work on the basis that “one year is 365 days”, then your age calculation could be off by up to a week! (Incidentally, using something like <code>TO_CHAR(date, 'YYYY')</code> is even worse; if <code>Date_of_Birth</code> is December 31 and <code>Date_Hired</code> is January 1, the calculation will be off by a whole year!) The built-in date functions already take these factors into account, so it's much safer to use them than to implement your own solution.</p>
+				<p indent="no">If you work on the basis that “one year is 365 days”, then your age calculation could be off by up to a week! (Incidentally, using something like <code>TO_CHAR( &lt;date&gt;, 'YYYY')</code> is even worse; if <code>Date_of_Birth</code> is December 31 and <code>Date_Hired</code> is January 1, the calculation will be off by a whole year!) The built-in date functions already take these factors into account, so it's much safer to use them than to implement your own solution.</p>
+				
+				<p>A few people stated that the age constraint “can’t be implemented in Oracle”. This is clearly incorrect, as can be seen above. We can only assume that they got this mixed up with the inability in <OracleServer /> to use <code>SYSDATE</code> in <code>CHECK</code> constraints (because the result of the function isn’t deterministic). However, the age constraint doesn’t need to use <code>SYSDATE</code>, as it just directly compares two fixed date values.</p>
 				
 			</answer>
 				
@@ -180,9 +182,11 @@ CREATE TABLE Service
 );
 				</code-block>
 				
-				<p indent="no">It makes sense to include <code>ON DELETE CASCADE</code> on the foreign keys from subtypes to <code>Staff</code>, as subtype instances can’t exist independently of the corresponding supertype instance.</p>
+				<p indent="no">While not explicitly specified, it makes sense to include <code>ON DELETE CASCADE</code> on the foreign keys from subtypes to <code>Staff</code>, as subtype instances can’t exist independently of the corresponding supertype instance. We awarded bonus marks for implementing an appropriate <code>CASCADE</code>.</p>
 				
-				<p>We also accepted <code>Service_Staff</code> as a table name, on the theory that this is a reasonable transformation for the purposes of clarity.</p>
+				<p>A few people seemed to be confused by the explanation of why the upper bound for <code>Total_Hours</code> was 4500, and added on some random number of hours to cater for overtime. This was, however, already included in the original upper bound of 4500, which should have been fairly clear from the calculation (40 <times /> 52 is only 2080).</p>
+				
+				<p>Disappointingly, only two people attempted to implement the <code>Service_Total_Hours_Quarters</code> constraint (both achieved a working solution). There is at least one other way—possibly more—that this can be implemented using <OracleServer />’s mathematical functions (left as an exercise for the reader).</p>
 				
 			</answer>
 				
@@ -221,7 +225,7 @@ CREATE TABLE Service
 				<code-block>
 CREATE TABLE Other
 ( Staff_ID      NUMBER(4),
-  Salary    NUMBER(8,2)     NOT NULL
+  Salary        NUMBER(8,2)     NOT NULL
       CONSTRAINT Other_Salary_Min
           CHECK ( Salary &gt;= 28080 ),
   --
@@ -231,7 +235,7 @@ CREATE TABLE Other
 );
 				</code-block>
 				
-				<p indent="no">Similar to <code>Service_Staff</code> above. We also accepted <code>Other_Staff</code> as a table name.</p>
+				<p indent="no">Similar to <code>Service</code> above.</p>
 				
 			</answer>
 				
@@ -288,8 +292,6 @@ CREATE TABLE Sales
   Commission_Rate   NUMBER(3,2) NOT NULL
       CONSTRAINT Sales_Valid_Commission_Rate
           CHECK ( Commission_Rate BETWEEN 0.00 AND 0.30 ),
-  -- We can't make Gross_Earnings a computed column, because it requires data
-  -- from other tables.
   Gross_Earnings    NUMBER(8,2) NOT NULL
       CONSTRAINT Sales_Valid_Gross_Earnings
           CHECK ( Gross_Earnings &gt;= 0.00 ),
@@ -304,7 +306,13 @@ CREATE TABLE Sales
 );
 				</code-block>
 				
-				<p indent="no">Similar to <code>Service_Staff</code> above. We also accepted <code>Other_Staff</code> as a table name. Note that the paragraph above about <code>Gross_Earnings</code> describes the <em>process</em> of how it is calculated, not a constraint on its possible values, so implementing this as a constraint is incorrect.</p>
+				<p indent="no">Similar to <code>Service</code> above. Note that the paragraph above about <code>Gross_Earnings</code> describes the <em>process</em> of how it is calculated, not a constraint on its possible values, so implementing this as a constraint is incorrect (although this is probably impossible in practice without using triggers anyway). Ideally, we’d make this a computed column, but <OracleServer />’s virtual columns unfortunately can’t access data from other tables.</p>
+				
+				<p>Bonus marks were awarded for applying a sensible default to <code>On_Commission</code>, such as “N” or “false”. Another thing to watch out for when implementing columns like this is not to allow mixed case values (e.g., “T”, “t”, “F”, “f”). This unnecessarily complicates any logic that needs to compare these values, as you need to include an extra comparison for every permutation of the value. This can lead to subtle and difficult to detect logic bugs. You might argue that permitting mixed case is more flexible, but the obvious counter to this is that you can always permit mixed case input <em>in the user interface</em>, then convert everything to upper or lower case before storing it in the database.</p>
+				
+				<p>One interesting aspect of this table is the overlapping constraints. Not only do we need to cater for the moderately complex interplay between <code>On_Commission</code> and <code>Commission_Rate</code>, we also need to ensure that <code>Commission_Rate</code> only accepts values between 0.00 and 0.30. Quite a few people implemented the complex constraint correctly, but forgot to enforce the maximum commission rate! You could merge the test for the upper bound into the <code>Sales_Check_Commission</code> constraint by changing the last comparison to <code>( Commission_Rate BETWEEN 0.00 AND 0.30 )</code>, but having them as separate constraints makes it easier to figure out why an invalid value was rejected. The argument is essentially that the upper bound condition is completely independent of the other condition, and should therefore be checked independently and return a separate “exception”. You could even reasonably argue that the condition of <code>Sales_Valid_Commission_Rate</code> should be changed to <code>( Commission_Rate &lt; 0.30 )</code>, to avoid redundant checking of the lower bound.</p>
+				
+				<p>The data type of <code>Commission_Rate</code> caught a few people out. Remember that the precision of a <code>NUMBER</code> is the <em>total number</em> of significant digits, not the number of digits before the decimal point. A column declared as <code>NUMBER(8,2)</code> has eight significant digits, two of which appear after the decimal point. The column can therefore only store values in the range -999999.99 to 999999.99, even before any constraints are applied. <code>Commission_Rate</code> therefore has to be at least <code>NUMBER(2,2)</code> in order to store the specified values. A few people declared it as <code>NUMBER(1,2)</code>, which effectively means that the column can only physically store values between 0.00 and 0.09! Anything larger (e.g., 0.10) requires at least two significant digits.</p>
 				
 			</answer>
 				
@@ -398,7 +406,9 @@ CREATE TABLE Customer
 );
 				</code-block>
 				
-				<p indent="no">Many people assigned the <code>Comments</code> a size of 500 characters or less, which is far too small for a general comments column. If we assume an average word length of five characters plus one for the inter-word space, then 500 characters can only hold about 83 words! 100 characters would be only 16 words! We accepted 500 characters as a bare minimum; anything below that lost marks. A better choice would be to use either the maximum allowable VARCHAR2 size of 4000, or just use a CLOB, which for most practical purposes is effectively unlimited in size. A similar argument applies to the <code>Details</code> columns in <code>Purchase</code> and <code>Sale</code>.</p>
+				<p indent="no">A few people assigned the <code>Comments</code> a size of less than 500 characters, which is far too small for a general comments column. If we assume an average word length of five characters plus one for the inter-word space, then 500 characters can only hold about 83 words. 100 characters would be only 16 words! We accepted 500 characters as a bare minimum; anything below that lost marks. A better choice would be to use either the maximum allowable VARCHAR2 size of 4000, or just use a CLOB, which for most practical purposes is effectively unlimited in size. A similar argument applies to the <code>Details</code> columns in <code>Purchase</code> and <code>Sale</code>.</p>
+				
+				<p>We awarded bonus marks for checking the format of <code>Email</code>, either using <code>LIKE</code> or regular expressions. Note that a <code>UNIQUE</code> constraint on <code>Email</code> probably doesn’t make sense, as we’re not using it as a username or similar. In real life, it’s not unusual for two or more people to share the same email address.</p>
 				
 			</answer>
 				
@@ -507,7 +517,6 @@ CREATE TABLE Car
   Flat_Rate         NUMBER(4)       NOT NULL
       CONSTRAINT Car_Valid_Flat_Rate CHECK ( Flat_Rate &gt; 0 ),
   --
-  -- Not specified, but makes sense. Bonus marks!
   CONSTRAINT Car_Valid_Service_Date
       CHECK ( Last_Serviced &gt;= First_Registered )
   --
@@ -515,11 +524,13 @@ CREATE TABLE Car
 );
 				</code-block>
 				
-				<p indent="no">The statement of VIN as “17 characters” was obviously a little too subtle for some people, who implemented it as NUMBER(17) rather than CHAR(17). VINs contain both numbers and letters, and the format is well-documented if you weren’t sure (e.g., look up “VIN” on Wikipedia).</p>
-				
-				<p>There was a small typo in the original specification, which said that the value of <code>Odometer</code> should be “0.0–999,999.<underline>0</underline>”, when it should actually have been 0.0–999,999.<underline>9</underline> (this has been corrected above). We accepted either when marking.</p>
+				<p indent="no">The statement of VIN as “17 characters” was obviously a little too subtle for some people, who implemented it as NUMBER(17) rather than CHAR(17). VINs contain both numbers and letters, and the format is well-documented if you weren’t sure (e.g., search for “VIN” on Wikipedia). We had hoped that someone might try to validate the format of the VIN, but sadly no-one did, so no bonus marks there <smiley type="sad" />.</p>
 				
 				<p>There is little point in storing <code>Year</code> as a <code>DATE</code>, as we won’t be using anything but the year part anyway. Storing it as a <code>DATE</code> means that we would need to do unnecessary extra work to extract the year part from the date. If you don’t need something, don’t store it, especially if it makes things more complicated!</p>
+				
+				<p>We’d also hoped to award some bonus marks for checking that <code>Last_Serviced</code> was no earlier than <code>First_Registered</code>. This wasn’t explicitly specified, but makes a lot of sense to check. But again, no-one attempted this <smiley type="sad" />.</p>
+				
+				<p>Note that while <code>Price</code> is specified as ≥ 0, <code>Flat_Rate</code> is specified as &gt; 0. A common error was to have either both &gt;, or both ≥.</p>
 				
 			</answer>
 				
@@ -578,8 +589,6 @@ CREATE TABLE Feature
 );
 				</code-block>
 
-				<p indent="no">At this point we also need to add an associative entity to resolve the many-to-many relationship between <strong>Car</strong> and <strong>Feature</strong>:</p>
-				
 				<p indent="no"><strong>Car<underscore />Feature</strong><left-brace /><underline>VIN, Feature<underscore />Code</underline><right-brace /> (foreign keys: VIN <rightarrow /><space /><strong>Car</strong>, Feature<underscore />Code <rightarrow /><space /><strong>Feature</strong>)</p>
 
 				<code-block>
@@ -672,19 +681,19 @@ CREATE TABLE Warranty
   CONSTRAINT Warranty_PK PRIMARY KEY ( W_Code )
 );
 
-INSERT INTO Warranty ( W_Code, Duration, Distance, Description )
+INSERT INTO Warranty ( W_Code, Max_Age, Max_KM, Duration, Distance, Notes )
   VALUES ( 'A', 4, 50000, 3, 5000, 'Category A motor vehicle' );
-INSERT INTO Warranty ( W_Code, Duration, Distance, Description )
+INSERT INTO Warranty ( W_Code, Max_Age, Max_KM, Duration, Distance, Notes )
   VALUES ( 'B', 6, 75000, 2, 3000, 'Category B motor vehicle' );
-INSERT INTO Warranty ( W_Code, Duration, Distance, Description )
+INSERT INTO Warranty ( W_Code, Max_Age, Max_KM, Duration, Distance, Notes )
   VALUES ( 'C', 8, 100000, 1, 1500, 'Category C motor vehicle' );
-INSERT INTO Warranty ( W_Code, Duration, Distance, Description )
+INSERT INTO Warranty ( W_Code, Max_Age, Max_KM, Duration, Distance, Notes )
   VALUES ( 'D', NULL, NULL, 0, 0, 'Category D motor vehicle' );
 				</code-block>
 				
-				<p indent="no">This is a lookup table that is intended to define the types of warranties allowed for vehicles. If the regulations change, it’s a simple matter to change the contents of the table to reflect this, which means that the table is effectively acting as a configurable constraint on warranty type. It would therefore be counterproductive to add constraints to the columns of this table based on the values specified in the Appendix, as the whole point of a lookup table is that the <em>contents</em> of the table effectively define a constraint. The values in the Appendix should therefore be used only to determine the data to be inserted into the table.</p>
+				<p indent="no">This is a lookup table that is intended to define the types of warranties allowed for vehicles. If the regulations change, it’s a simple matter to change the contents of the table to reflect this, which means that the table is effectively acting as a configurable constraint on warranty type. It’s therefore counterproductive to add constraints to the columns of this table based on the values specified in the Appendix, as the whole point of a lookup table is that the <em>contents</em> of the table effectively define a constraint. The values in the Appendix should therefore be used only to determine the data to be inserted into the table. (Incidentally, most people didn’t insert any data into this table despite being told to do so above. A couple of people inserted essentially random data, which scored zero marks.)</p>
 				
-				<p>On a similar note, there is little point in trying to enforce constraints between the specification of the warranty type and the <code>First_Registered</code> column in <code>Car</code>. There is no dedicated column in the table to store this information, so it could only be stored in <code>Description</code>, and it would probably be almost impossible in practice to extract anything useful from this column. It could be possible, however, to use a trigger to check that a car is assigned the correct warranty category for it’s odometer reading when it’s sold.</p>
+				<p>It might be possible to use a trigger to check that a car is assigned the correct warranty category for it’s odometer and age reading when it’s sold.</p>
 				
 			</answer>
 				
@@ -761,7 +770,9 @@ CREATE TABLE Purchase
 );
 				</code-block>
 				
-				<p indent="no">Note the absence of <code>ON DELETE CASCADE</code> on the foreign keys in this table. If we attempt to delete a salesrep, it makes little sense to delete all their associated purchases, especially if they are completed. This would cause a serious accounting problem for the company. A better solution might be to have a “dummy” salesrep that can have “orphaned” purchases assigned to it.</p>
+				<p indent="no">Note the absence of <code>ON DELETE CASCADE</code> on the foreign keys in this table. If we attempt to delete a salesrep, it makes little sense to delete all their associated purchases, especially if they are completed. This would cause a serious accounting problem for the company. A better solution might be to have a “dummy” salesrep that can have “orphaned” purchases assigned to it. Even better, add a <code>Status</code> column to the <code>Staff</code> table, and use this to record that the salesrep no longer works for the company, rather than deleting them.</p>
+				
+				<p>Quite a few people had both <code>Salesrep_ID</code> and <code>Staff_ID</code> columns in this table (and similar for <code>Sale</code>). This again doesn’t really make sense, for the same reasons as the <code>Staff</code> subtype tables. We suspect this is an example of people tweaking their code until the schema checker stopped complaining, without stopping to think about <em>why</em> the checker was complaining.</p>
 				
 			</answer>
 				
@@ -844,7 +855,7 @@ CREATE TABLE Sale
 );
 				</code-block>
 				
-				<p indent="no">Similar to <code>Purchase</code> above. While the foreign key for trade-ins could go in either table (or even both), it really makes most sense to place it here, since trade-ins only occur as part of a sale transaction.</p>
+				<p indent="no">Similar to <code>Purchase</code> above. While the foreign key for trade-ins could technically go in either <code>Purchase</code> or <code>Sale</code> (or even both), it really makes most sense to place it here, since trade-ins only ever occur as part of a sale transaction.</p>
 				
 			</answer>
 				
