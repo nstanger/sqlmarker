@@ -6,12 +6,12 @@
 	
 		<title>System specification and details</title>
 
-		<p>Better Digital, Ltd. (BDL) is a large U.S. company that produces a wide range of consumer electronics devices such as radios, stereo components, digital clocks, universal remotes, etc., which they sell in bulk to various retailers. The company has branches in several major U.S. cities, and employs about <number>9000</number> staff across six departments: Central Management, Sales <ampersand/> Marketing, Personnel, Manufacturing, Inventory and Accounts.</p>
+		<p>Better Digital, Ltd. (BDL) is a large U.S.<space />company that produces a wide range of consumer electronics devices such as radios, stereo components, digital clocks, universal remotes, etc., which they sell in bulk to various retailers. The company has branches in several major U.S. cities, and employs about <number>9000</number> staff across six departments: Central Management, Sales <ampersand/> Marketing, Personnel, Manufacturing, Inventory, and Accounts.</p>
 		
-		<p>BDL are currently designing and implementing a new corporate database that will be located at the company headquarters in Los Angeles. The requirements analysis phase of the project is complete, and you have been brought in as a lead database developer. It will be your task to implement an initial prototype of the specification resulting from the requirements analysis phase. An ERD of the proposed database is shown in <hyperlink label="fig-erd"><reference label="fig-erd"/></hyperlink>, and more detailed specifications of the database requirements may be found in the following sections.</p>
+		<p>BDL are currently designing and implementing a new corporate database to be located at the company headquarters in Los Angeles. The requirements analysis phase of the project is complete, and you’ve been brought in as a lead database developer. It’ll be your task to implement an initial prototype of the specification resulting from the requirements analysis phase. An ERD of the proposed database is shown in <hyperlink label="fig-erd"><reference label="fig-erd"/></hyperlink>, and more detailed specifications of the database requirements may be found in the following sections.</p>
 		
 
-		<figure label="fig-erd" latex-placement="!hb">
+		<figure label="fig-erd" latex-placement="!htb">
 			<caption>ERD of Better Digital’s database (Information Engineering notation)</caption>
 			<image basename="BDL_IE" location="images" latex-options="width=0.9\columnwidth,keepaspectratio">
 				<description>ERD of Better Digital’s database (Information Engineering notation)</description>
@@ -88,14 +88,14 @@
 
 			<itemised-list>
 
-				<item>As noted above, BDL has about <number>9000</number> employees. The usual details such as name, address and phone number will be recorded. The phone number must cater for both (U.S.) landline and mobile numbers.</item>
+				<item>As noted above, BDL has about <number>9000</number> employees. The usual details such as name, address, and phone number will be recorded. The phone number must cater for both (U.S.) landline and mobile numbers.</item>
 				
-				<item>There are six possible departments, as follows: <quote>Central Management</quote>, <quote>Sales <ampersand /> Marketing</quote>, <quote>Personnel</quote>, <quote>Manufacturing</quote>, <quote>Inventory</quote> and <quote>Accounts</quote>.</item>
+				<item>There are six possible departments, as follows: <quote>Central Management</quote>, <quote>Sales <ampersand /> Marketing</quote>, <quote>Personnel</quote>, <quote>Manufacturing</quote>, <quote>Inventory</quote>, and <quote>Accounts</quote>.</item>
 			
 				<item>There are twenty possible employee positions, as
-				follows: <quote>CEO</quote>, <quote>CTO</quote>, <quote>CFO</quote>, <quote>CIO</quote>, <quote>Director</quote>, <quote>President</quote>, <quote>Vice-President</quote>, <quote>Manager</quote>, <quote>Personal Assistant</quote>, <quote>Secretary</quote>, <quote>Technician</quote>, <quote>Researcher</quote>, <quote>Designer</quote>, <quote>Assembler</quote>, <quote>Programmer</quote>, <quote>Contractor</quote>, <quote>Sales Representative</quote>, <quote>Accountant</quote>, <quote>Inventory</quote> and <quote>Assistant</quote>.</item>
+				follows: <quote>CEO</quote>, <quote>CTO</quote>, <quote>CFO</quote>, <quote>CIO</quote>, <quote>Director</quote>, <quote>President</quote>, <quote>Vice-President</quote>, <quote>Manager</quote>, <quote>Personal Assistant</quote>, <quote>Secretary</quote>, <quote>Technician</quote>, <quote>Researcher</quote>, <quote>Designer</quote>, <quote>Assembler</quote>, <quote>Programmer</quote>, <quote>Contractor</quote>, <quote>Sales Representative</quote>, <quote>Accountant</quote>, <quote>Inventory</quote>, and <quote>Assistant</quote>.</item>
 				
-				<item>Salary values are monthly.</item>
+				<item>Salary values are monthly, and are in U.S.<space /> dollars.</item>
 			
 			</itemised-list>
 			
@@ -123,7 +123,7 @@ CREATE TABLE Staff
                             'Inventory', 'Assistant' ) ),
   Salary      NUMBER(7,2)   NOT NULL
     CONSTRAINT Staff_Salary_Range_Invalid
-      CHECK ( Salary BETWEEN 1000 and 99999.99 ),
+      CHECK ( Salary BETWEEN 1000 AND 99999.99 ),
   Comments    VARCHAR2(4000),
   --
   CONSTRAINT STAFF_PK PRIMARY KEY ( Staff_ID )
@@ -198,7 +198,7 @@ CREATE TABLE Staff
 
 			<vskip size="medium"/>
 
-			<p indent="no">BDL’s customers are retail outlets of various sizes. BDL currently has about <number>400000</number> customers on its books, increasing by about <number>10000</number> per year. The usual details will be recorded for each customer: name, address, phone and optionally the name of a contact person and an email address. The phone number must cater for full international numbers, as many of BDL’s customers are based outside the U.S.</p>
+			<p indent="no">BDL’s customers are retail outlets of various sizes. BDL currently has about <number>400000</number> customers on its books, increasing by about <number>10000</number> per year. The usual details will be recorded for each customer: name, address, phone, and optionally the name of a contact person and an email address. The phone number must cater for full international numbers, as many of BDL’s customers are based outside the U.S.</p>
 			
 			<answer>
 				<code-block>
@@ -279,7 +279,7 @@ CREATE TABLE Customer
 
 			<vskip size="medium"/>
 			
-			<p indent="no">BDL orders components from a small group of trusted suppliers (of which there are currently thirty-three). Many of these suppliers overlap in the components that they supply, thus enabling BDL to take advantage of special deals, and providing alternative sources for components. BDL normally buys components from the supplier offering the best deal at the time of ordering (pricing data will not be stored in the database because they change too frequently). The details to be recorded for suppliers are identical to those for customers.</p>
+			<p indent="no">BDL orders components from a small group (currently thirty-three) of trusted suppliers. Many of these suppliers overlap in the components that they supply, thus enabling BDL to take advantage of special deals, and providing alternative sources for components. BDL normally buys components from the supplier offering the best deal at the time of ordering (pricing data won’t be stored in the database because they change too frequently). The details to be recorded for suppliers are identical to those for customers.</p>
 
 			<answer>
 				<code-block>
@@ -368,14 +368,14 @@ CREATE TABLE Supplier
 			
 				<item>BDL currently manufactures <number>16492</number> different products, which are assembled from various components (resistors, capacitors, controller chips, power supplies, cases, etc.). BDL can manufacture products on demand in response to a sale, but they also produce an ongoing supply of the most popular products. These are stored in a warehouse and used to fulfil sales.</item>
 				
-				<item>Popular products have a <quote>restock</quote> and a <quote>minimum</quote> stock level. If the stock count for a product falls below the minimum level, an alert is raised by the inventory management application to Inventory staff, who then request Manufacturing to make more of the product. Manufacturing then produce enough units to bring the number in stock back up to at least the restock level (the smallest possible production run is fifty units). The minimum level must therefore be smaller than the restock level; it may be zero.</item>
+				<item>Popular products have a <quote>restock</quote> and a <quote>minimum</quote> stock level. If the stock count for a product falls below the minimum level, the inventory management application automatically raises an alert to Inventory staff, who then request Manufacturing to make more of the product. Manufacturing then produce enough units to bring the number in stock back up to at least the restock level (the smallest possible production run is fifty units). The minimum level must therefore be smaller than the restock level; it may be zero.</item>
 				
-				<item>The database will contain the assembly instructions for each product, where applicable. The <code>Assembly_Manual</code> column will contain a PDF detailing the assembly procedure for each product in human-readable form. These PDFs will average about 150 KB each. The <code>Assembly_Program</code> column will contain a compiled Java class file that can be downloaded from the database and used to control one of BDL’s fifty automated assembly lines. These files will average about 50 KB each.</item>
+				<item>The database will contain the assembly instructions for each product, where applicable. The <code>Assembly_Manual</code> column will contain a PDF detailing the assembly procedure for each product in human-readable form. These PDFs will average about 150<thin-space />kB each. The <code>Assembly_Program</code> column will contain a compiled Java class file that can be downloaded from the database and used to control one of BDL’s fifty automated assembly lines. These files will average about 50<thin-space />kB each.</item>
+				
+				<item>Prices are in U.S.<space />dollars.</item>
 				
 			</itemised-list>
 			
-			<p indent="no">BDL orders components from a small group of trusted suppliers (of which there are currently thirty-three). Many of these suppliers overlap in the components that they supply, thus enabling BDL to take advantage of special deals, and providing alternative sources for components. BDL normally buys components from the supplier offering the best deal at the time of ordering (pricing data will not be stored in the database because they change too frequently). The details to be recorded for suppliers are identical to those for customers.</p>
-
 			<answer>
 				<code-block>
 CREATE TABLE Product
@@ -455,7 +455,7 @@ CREATE TABLE Product
 				
 				<item>The same component may be used in many different products, and multiple times in the same product.</item>
 				
-				<item>The same component is often provided by more than one supplier. For example, <quote>35 ohm resistor</quote> might be available from thirteen different suppliers, at varying prices (pricing data will not be stored in the database because they change too frequently). Although it leads to duplication of component descriptions, BDL have decided for practical reasons to individually store details of each component from each supplier (so in the example above, <quote>35 ohm resistor</quote> would appear thirteen times).</item>
+				<item>The same component is often provided by more than one supplier. For example, <quote>35 ohm resistor</quote> might be available from thirteen different suppliers, at varying prices (pricing data won’t be stored in the database because they change too frequently). Although it leads to duplication of component descriptions, BDL have decided for practical reasons to individually store details of each component from each supplier (so the <quote>35 ohm resistor</quote> above would appear thirteen times).</item>
 				
 				<item>Since BDL has no control over how suppliers identify their components, different suppliers may sometimes use the same component codes for different components. For example, Western Electronics may use the code <quote>BC882719</quote> for 35 ohm resistors, whereas Eastern Electrical Supplies may use the same code for large red LEDs.</item>
 				
@@ -504,7 +504,7 @@ CREATE TABLE Component
 					<row>
 						<cell><tt>*</tt></cell>
 						<cell><code>Quantity</code></cell>
-						<cell>Number of units of this component used, 1–<number>9999</number></cell>
+						<cell>Number of units used of this component, 1–<number>9999</number></cell>
 					</row>
 					<row-rule />
 				</tabular-body>
@@ -512,7 +512,7 @@ CREATE TABLE Component
 
 			<vskip size="medium" />
 
-			<paragraph indent="no">Each product can be made from at least two up to hundreds of distinct components. Some components (e.g., transistors) occur many times in the same product.</paragraph>
+			<paragraph indent="no">Each product can be made from at least two up to hundreds of distinct components. Some components (e.g., transistors or LEDs) occur many times in the same product.</paragraph>
 			
 			<answer>
 				<code-block>
@@ -619,7 +619,7 @@ CREATE TABLE Assembly
 			
 				<item>On a typical working day, BDL makes about seven thousand sales. Each sale is typically for some quantity (possibly several thousand) of each of about seven to ten different products. For example, a customer might buy twenty-three remote garage door openers and two burglar alarm systems in the same sale.</item>
 				
-				<item>Products may sell for a different (usually lower) price from that listed (e.g., bulk discounts, cash payments, etc.).</item>
+				<item>Products may sell for a different (usually lower) price from that listed (e.g., bulk discounts, cash payments, etc.). Prices are in U.S.<space /> dollars.</item>
 				
 				<item>The status of a sale must be one of the following: <quote>pending</quote>, <quote>in progress</quote>, <quote>cancelled</quote>, <quote>backordered</quote> or <quote>shipped</quote>.</item>
 				
@@ -708,6 +708,11 @@ CREATE TABLE Sale_Line
 						<cell>Date that final shipment is due (after <code>Order_Date</code>)</cell>
 					</row>
 					<row>
+						<cell><tt>o</tt></cell>
+						<cell><code>Date_Completed</code></cell>
+						<cell>Date that final shipment is received (after <code>Order_Date</code>)</cell>
+					</row>
+					<row>
 						<cell><tt>*</tt></cell>
 						<cell><code>Status</code></cell>
 						<cell>Current status of order (see below)</cell>
@@ -761,9 +766,9 @@ CREATE TABLE Sale_Line
 			
 				<item>BDL places an average of about 320 orders to suppliers per working day. Each order is typically for some quantity (possibly tens of thousands) of each of about fifteen to twenty different components.</item>
 				
-				<item>Since pricing data will not be stored with the actual component data, the unit prices paid for components must be recorded on the order. Prices are in the range <dollar-sign/>0.00<endash/><dollar-sign/><number>9999.99</number>.</item>
+				<item>While component pricing data won’t be stored in the database, the unit prices paid for components must still be recorded on the order. Prices are in the range <dollar-sign/>0.00<endash/><dollar-sign/><number>9999.99</number>, and are in U.S.<space /> dollars.</item>
 				
-				<item>Components arrive in shipments from a supplier, which may or may not correspond to the original order (for example, a single shipment might include components from several different orders to that supplier). When a shipment arrives, the Inventory staff need to note on the original order how many of each component they have received, so that they can determine when the order is complete (this happens when the number of components received is equal to the number of components ordered). This will also enable them to tell when they have received more components than they originally ordered.</item>
+				<item>Components arrive in shipments from a supplier, which may or may not correspond to the original order (for example, a single shipment might include components from several different orders to that supplier). When a shipment arrives, the Inventory staff need to note on the original order how many of each component they have received, so that they can determine when the order is complete. An order is complete when the number of components received is at least equal to the number of components ordered. This will also enable them to tell when they have received more components than they originally ordered.</item>
 				
 				<item>The status of an order must be one of the following: <quote>in progress</quote> or <quote>complete</quote>.</item>
 				
@@ -772,15 +777,16 @@ CREATE TABLE Sale_Line
 			<answer>
 				<code-block>
 CREATE TABLE Order_Head
-( Order_Num    NUMBER(10),
-  Order_Date   DATE           NOT NULL,
-  Due_Date     DATE,
-  Status       VARCHAR2(11)   NOT NULL
+( Order_Num       NUMBER(10),
+  Order_Date      DATE           NOT NULL,
+  Due_Date        DATE           NOT NULL,
+  Date_Completed  DATE,
+  Status          VARCHAR2(11)   NOT NULL
     CONSTRAINT Order_Head_Status_Invalid
       CHECK ( Status IN ( 'complete', 'in progress' ) ),
-  Staff_ID     NUMBER(7)      NOT NULL,
-  Supplier_ID  NUMBER(7)      NOT NULL,
-  Comments     VARCHAR2(4000),
+  Staff_ID        NUMBER(7)      NOT NULL,
+  Supplier_ID     NUMBER(7)      NOT NULL,
+  Comments        VARCHAR2(4000),
   --
   CONSTRAINT Order_Head_Due_Date_Invalid CHECK ( Due_Date &gt; Order_Date ),
   --
