@@ -12,9 +12,9 @@
 		
 
 		<figure label="fig-erd" latex-placement="!hb">
-			<caption>ERD of Better Digital’s database (Barker notation)</caption>
-			<image basename="BDL_barker" location="images" latex-options="width=0.9\columnwidth,keepaspectratio">
-				<description>ERD of Better Digital’s database (Barker notation)</description>
+			<caption>ERD of Better Digital’s database (Information Engineering notation)</caption>
+			<image basename="BDL_IE" location="images" latex-options="width=0.9\columnwidth,keepaspectratio">
+				<description>ERD of Better Digital’s database (Information Engineering notation)</description>
 			</image>
 		</figure>
 
