@@ -1442,7 +1442,6 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	 *
 	 *	@expectedException PDOException
 	 *	@expectedExceptionMessage length exceeded
-	 *	@expectedExceptionCode HY000
 	 *
 	 *	@access protected
 	 *	@return void
@@ -1510,7 +1509,6 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	 *
 	 *	@expectedException PDOException
 	 *	@expectedExceptionMessage check constraint
-	 *	@expectedExceptionCode HY000
 	 *
 	 *	@access protected
 	 *	@return void
@@ -1560,7 +1558,6 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	 *
 	 *	@expectedException PDOException
 	 *	@expectedExceptionMessage check constraint
-	 *	@expectedExceptionCode HY000
 	 *
 	 *	Note that there's no need for explicit/implicit variants like there is with overflow values, as an underflow value should never be rejected by exceeding the column length. Something much more fundamental is wrong if this happens!
 	 *
@@ -1601,7 +1598,6 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	 *
 	 *	@expectedException PDOException
 	 *	@expectedExceptionMessage length exceeded
-	 *	@expectedExceptionCode HY000
 	 *
 	 *	@access protected
 	 *	@return void
@@ -1657,7 +1653,6 @@ abstract class PHPUnit_Extensions_Database_TestCase_CreateTable extends PHPUnit_
 	 *
 	 *	@expectedException PDOException
 	 *	@expectedExceptionMessage check constraint
-	 *	@expectedExceptionCode HY000
 	 *
 	 *	@access protected
 	 *	@return void

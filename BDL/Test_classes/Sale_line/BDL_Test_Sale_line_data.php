@@ -35,7 +35,6 @@ class BDL_Test_Sale_line_data extends BDL_Test_Sale_line
 	 *	@dataProvider provideColumnUnderflowValues
 	 *	@expectedException PDOException
 	 *	@expectedExceptionMessage check constraint
-	 *	@expectedExceptionCode HY000
 	 */
 	public function testColumnUnderflowValue( $columnName, $underflowValue )
 	{
@@ -47,7 +46,6 @@ class BDL_Test_Sale_line_data extends BDL_Test_Sale_line
 	 *	@dataProvider provideColumnOverflowValues
 	 *	@expectedException PDOException
 	 *	@expectedExceptionMessage check constraint
-	 *	@expectedExceptionCode HY000
 	 */
 	public function testColumnOverflowValueExplicit( $columnName, $overflowValue )
 	{
@@ -59,7 +57,6 @@ class BDL_Test_Sale_line_data extends BDL_Test_Sale_line
 	 *	@dataProvider provideColumnOverflowValues
 	 *	@expectedException PDOException
 	 *	@expectedExceptionMessage length exceeded
-	 *	@expectedExceptionCode HY000
 	 */
 	public function testColumnOverflowValueImplicit( $columnName, $overflowValue )
 	{

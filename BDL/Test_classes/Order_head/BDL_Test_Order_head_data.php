@@ -44,7 +44,6 @@ class BDL_Test_Order_head_data extends BDL_Test_Order_head
 	 *	@dataProvider provideColumnIllegalValues
 	 *	@expectedException PDOException
 	 *	@expectedExceptionMessage check constraint
-	 *	@expectedExceptionCode HY000
 	 */
 	public function testColumnIllegalValueExplicit( $columnName, $illegalValue )
 	{
@@ -56,7 +55,6 @@ class BDL_Test_Order_head_data extends BDL_Test_Order_head
 	 *	@dataProvider provideColumnIllegalValues
 	 *	@expectedException PDOException
 	 *	@expectedExceptionMessage length exceeded
-	 *	@expectedExceptionCode HY000
 	 */
 	public function testColumnIllegalValueImplicit( $columnName, $illegalValue )
 	{
@@ -68,7 +66,6 @@ class BDL_Test_Order_head_data extends BDL_Test_Order_head
 	 *	@dataProvider provideColumnUnderflowValues
 	 *	@expectedException PDOException
 	 *	@expectedExceptionMessage check constraint
-	 *	@expectedExceptionCode HY000
 	 */
 	public function testColumnUnderflowValue( $columnName, $underflowValue )
 	{
@@ -80,7 +77,6 @@ class BDL_Test_Order_head_data extends BDL_Test_Order_head
 	 *	@dataProvider provideColumnOverflowValues
 	 *	@expectedException PDOException
 	 *	@expectedExceptionMessage check constraint
-	 *	@expectedExceptionCode HY000
 	 */
 	public function testColumnOverflowValueExplicit( $columnName, $overflowValue )
 	{
@@ -92,7 +88,6 @@ class BDL_Test_Order_head_data extends BDL_Test_Order_head
 	 *	@dataProvider provideColumnOverflowValues
 	 *	@expectedException PDOException
 	 *	@expectedExceptionMessage length exceeded
-	 *	@expectedExceptionCode HY000
 	 */
 	public function testColumnOverflowValueImplicit( $columnName, $overflowValue )
 	{
