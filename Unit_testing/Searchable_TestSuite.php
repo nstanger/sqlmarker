@@ -7,7 +7,7 @@ class Searchable_TestSuite extends PHPUnit_Framework_TestSuite
 	{
 		foreach ( $this->tests() as $test )
 		{
-			if ( $test->getName() === $name ) return true;
+			if ( $test->getName() === $name ) return $test;
 		}
 		return false;
 	}

@@ -65,26 +65,26 @@ foreach ( $testTables as $table )
 	
 	// Critical to data testing.
 	// TODO: is $testResult needed anymore?
-	if ( $suite->testExists( 'testTableExists' ) )
+	if ( $test = $suite->testExists( 'testTableExists' ) )
 	{
-		$testResult = $suite->run( $result, '/testTableExists/' );
+		$testResult = $test->run( $result );
 		$structurePassed = $listener->wasSuccessful( 'testTableExists' );
 		if ( $structurePassed )
 		{
 			$reporter->report( Reporter::STATUS_PASS, 'Table %s exists.', array( $table ) );
 			
 			// Critical to data testing.
-			if ( $suite->testExists( "${structureTest}::testColumnExists" ) )
+			if ( $test = $suite->testExists( "${structureTest}::testColumnExists" ) )
 			{
-				$testResult = $suite->run( $result, '/testColumnExists/' );
+				$testResult = $test->run( $result );
 				$structurePassed = $listener->wasSuccessful( "${structureTest}::testColumnExists" );
 				if ( $structurePassed )
 				{
 					$reporter->report( Reporter::STATUS_PASS, 'Table %s contains all the expected columns.', array( $table ) );
 				
-					if ( $suite->testExists( "${structureTest}::testColumnDataType" ) )
+					if ( $test = $suite->testExists( "${structureTest}::testColumnDataType" ) )
 					{
-						$testResult = $suite->run( $result, '/testColumnDataType/' );
+						$testResult = $test->run( $result );
 						$structurePassed = $listener->wasSuccessful( "${structureTest}::testColumnDataType" );
 						if ( $structurePassed )
 						{
@@ -92,9 +92,9 @@ foreach ( $testTables as $table )
 												'All columns of table %s have data types compatible with the specification.',
 												array( $table )	);
 						
-							if ( $suite->testExists( "${structureTest}::testColumnLength" ) )
+							if ( $test = $suite->testExists( "${structureTest}::testColumnLength" ) )
 							{
-								$testResult = $suite->run( $result, '/testColumnLength/' );
+								$testResult = $test->run( $result );
 								$structurePassed = $listener->wasSuccessful( "${structureTest}::testColumnLength" );
 								if ( $structurePassed )
 								{
@@ -131,9 +131,9 @@ foreach ( $testTables as $table )
 					if ( RUN_MODE !== 'student' )
 					{
 					    // Critical to data testing.
-						if ( $suite->testExists( "${structureTest}::testColumnNullability" ) )
+						if ( $test = $suite->testExists( "${structureTest}::testColumnNullability" ) )
 						{
-							$testResult = $suite->run( $result, '/testColumnNullability/' );
+							$testResult = $test->run( $result );
 							$structurePassed = $listener->wasSuccessful( "${structureTest}::testColumnNullability" );
 							if ( $structurePassed )
 							{
@@ -151,9 +151,9 @@ foreach ( $testTables as $table )
 			                    $runDataTests = false;
 							}
 						}
-						if ( $suite->testExists( "${structureTest}::testColumnDefault" ) )
+						if ( $test = $suite->testExists( "${structureTest}::testColumnDefault" ) )
 						{
-							$testResult = $suite->run( $result, '/testColumnDefault/' );
+							$testResult = $test->run( $result );
 							if ( $listener->wasSuccessful( "${structureTest}::testColumnDefault" ) )
 							{
 								$reporter->report( Reporter::STATUS_PASS, 'All expected columns of table %s have the correct default values.', array( $table ) );
@@ -190,20 +190,24 @@ foreach ( $testTables as $table )
 				// Not critical to data testing. Need to run both PK tests in one pass as the columns test depends on the existence test.
 				// Note that this causes a slight weirdness in the output where the "skipped test" message for testPKColumns is printed
 				// before the "test failed" message for testPKExists. Not much we can do about this.
-				if ( $suite->testExists( 'testPKExists' ) && $suite->testExists( 'testPKColumns' ) )
+				if ( $test = $suite->testExists( 'testPKExists' ) )
 				{
-					$testResult = $suite->run( $result, '/testPK.*/' );
+					$testResult = $test->run( $result );
 					if ( $listener->wasSuccessful( 'testPKExists' ) )
 					{
 						$reporter->report( Reporter::STATUS_PASS, 'Primary key of table %s exists.', array( $table ) );
-                        if ( $listener->wasSuccessful( 'testPKColumns' ) )
-                        {
-                            $reporter->report( Reporter::STATUS_PASS, 'Primary key of table %s includes (only) the expected columns.', array( $table ) );
-                        }
-                        else
-                        {
-                            $reporter->report( Reporter::STATUS_FAILURE, 'Primary key of table %s does not include (only) the expected columns.', array( $table ) );
-                        }
+						if ( $test = $suite->testExists( 'testPKColumns' ) )
+						{
+					        $testResult = $test->run( $result );
+                            if ( $listener->wasSuccessful( 'testPKColumns' ) )
+                            {
+                                $reporter->report( Reporter::STATUS_PASS, 'Primary key of table %s includes (only) the expected columns.', array( $table ) );
+                            }
+                            else
+                            {
+                                $reporter->report( Reporter::STATUS_FAILURE, 'Primary key of table %s does not include (only) the expected columns.', array( $table ) );
+                            }
+						}
 					}
 					else
 					{
@@ -212,16 +216,16 @@ foreach ( $testTables as $table )
 				}
 				
 				// Not critical to data testing.
-				if ( $suite->testExists( "${structureTest}::testFKsExist" ) )
+				if ( $test = $suite->testExists( "${structureTest}::testFKsExist" ) )
 				{
-					$testResult = $suite->run( $result, '/testFKsExist/' );
+					$testResult = $test->run( $result );
 					if ( $listener->wasSuccessful( "${structureTest}::testFKsExist" ) )
 					{
 						$reporter->report( Reporter::STATUS_PASS, 'All expected foreign keys for table %s exist.', array( $table ) );
 						
-						if ( $suite->testExists( "${structureTest}::testFKColumns" ) )
+						if ( $test = $suite->testExists( "${structureTest}::testFKColumns" ) )
 						{
-							$testResult = $suite->run( $result, '/testFKColumns/' );
+							$testResult = $test->run( $result );
 							if ( $listener->wasSuccessful( "${structureTest}::testFKColumns" ) )
 							{
 								$reporter->report( Reporter::STATUS_PASS, 'All foreign keys for table %s include (only) the expected columns.', array( $table ) );
@@ -253,9 +257,9 @@ foreach ( $testTables as $table )
 				}
 				
 				// Not critical to data testing.
-				if ( $suite->testExists( "${structureTest}::testConstraintsNamed" ) )
+				if ( $test = $suite->testExists( "${structureTest}::testConstraintsNamed" ) )
 				{
-					$testResult = $suite->run( $result, '/testConstraintsNamed/' );
+					$testResult = $test->run( $result );
 					if ( $listener->wasSuccessful( "${structureTest}::testConstraintsNamed" ) )
 					{
 						$reporter->report( Reporter::STATUS_PASS, 'All constraints of table %s that should be are explicitly named.', array( $table ) );
@@ -285,9 +289,9 @@ foreach ( $testTables as $table )
 		{
 			$suite = new Searchable_TestSuite( $dataTest );
 			
-			if ( $suite->testExists( "${dataTest}::testColumnLegalValue" ) )
+			if ( $test = $suite->testExists( "${dataTest}::testColumnLegalValue" ) )
 			{
-				$testResult = $suite->run( $result, '/testColumnLegalValue/' );
+				$testResult = $test->run( $result );
 				if ( $listener->wasSuccessful( "${dataTest}::testColumnLegalValue" ) )
 				{
 					$reporter->report( Reporter::STATUS_PASS, 'All %d legal values tested were accepted.', 
@@ -304,9 +308,9 @@ foreach ( $testTables as $table )
 				}
 			}
 		
-			if ( $suite->testExists( "${dataTest}::testColumnUnderflowValue" ) )
+			if ( $test = $suite->testExists( "${dataTest}::testColumnUnderflowValue" ) )
 			{
-				$testResult = $suite->run( $result, '/testColumnUnderflowValue/' );
+				$testResult = $test->run( $result );
 				if ( $listener->wasSuccessful( "${dataTest}::testColumnUnderflowValue" ) )
 				{
 					$reporter->report( Reporter::STATUS_PASS, 'All %d underflow values were rejected by a CHECK constraint.',
@@ -323,9 +327,9 @@ foreach ( $testTables as $table )
 				}
 			}
 		
-			if ( $suite->testExists( "${dataTest}::testColumnOverflowValueExplicit" ) )
+			if ( $test = $suite->testExists( "${dataTest}::testColumnOverflowValueExplicit" ) )
 			{
-				$testResult = $suite->run( $result, '/testColumnOverflowValueExplicit/' );
+				$testResult = $test->run( $result );
 				if ( $listener->wasSuccessful( "${dataTest}::testColumnOverflowValueExplicit" ) )
 				{
 					$reporter->report( Reporter::STATUS_PASS, 'All %d overflow values were rejected by a CHECK constraint.',
@@ -341,12 +345,12 @@ foreach ( $testTables as $table )
 						) ) ;
 					$reporter->report( Reporter::STATUS_WARNING, 'Checking values against column length...', null );
 					
-					if ( $suite->testExists( "${dataTest}::testColumnOverflowValueImplicit" ) )
+					if ( $test = $suite->testExists( "${dataTest}::testColumnOverflowValueImplicit" ) )
 					{
 						/*
 							Unfortunately, we can't test just the columns that failed the CHECK test. The failed TestCases are in $testResult->failures(), but we need the column name, which is hidden away in the private $data member of TestCase. We therefore have to test all the illegal values again to see if they're larger than the column.
 						*/
-						$testResult = $suite->run( $result, '/testColumnOverflowValueImplicit/' );
+						$testResult = $test->run( $result );
 						if ( $listener->wasSuccessful( "${dataTest}::testColumnOverflowValueImplicit" ) )
 						{
     						$reporter->report( Reporter::STATUS_PASS, 'All %d overflow values were rejected by exceeding the column length.',
@@ -371,9 +375,9 @@ foreach ( $testTables as $table )
 			}
 		    
 		    // Now do much the same for the enumerated values. This needs to be refactored!
-			if ( $suite->testExists( "${dataTest}::testColumnIllegalValueExplicit" ) )
+			if ( $test = $suite->testExists( "${dataTest}::testColumnIllegalValueExplicit" ) )
 			{
-				$testResult = $suite->run( $result, '/testColumnIllegalValueExplicit/' );
+				$testResult = $test->run( $result );
 				if ( $listener->wasSuccessful( "${dataTest}::testColumnIllegalValueExplicit" ) )
 				{
 					$reporter->report( Reporter::STATUS_PASS, 'All %d illegal values tested were rejected by a CHECK constraint.', 
@@ -390,12 +394,12 @@ foreach ( $testTables as $table )
 						) ) ;
 					$reporter->report( Reporter::STATUS_WARNING, 'Checking values against column length...', null );
 					
-					if ( $suite->testExists( "${dataTest}::testColumnIllegalValueImplicit" ) )
+					if ( $test = $suite->testExists( "${dataTest}::testColumnIllegalValueImplicit" ) )
 					{
 						/*
 							Unfortunately, we can't test just the columns that failed the CHECK test. The failed TestCases are in $testResult->failures(), but we need the column name, which is hidden away in the private $data member of TestCase. We therefore have to test all the illegal values again to see if they're larger than the column. We then make the big assumption that if all the values that failed the CHECK test did so because they exceeded the column length. If this is correct, then the number of CHECK fails will equal the number of column length passes. If not, then something more serious has probably gone wrong!
 						*/
-						$testResult = $suite->run( $result, '/testColumnIllegalValueImplicit/' );
+						$testResult = $test->run( $result );
 						$implicitPasses = $listener->countPasses( "${dataTest}::testColumnIllegalValueImplicit" );
 						$reporter->report( Reporter::STATUS_PASS, '%d of %d illegal values tested %s rejected by exceeding the column length.',
 							array(
