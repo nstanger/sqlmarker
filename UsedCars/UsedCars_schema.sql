@@ -1,7 +1,7 @@
 --------------------------------------------------------------------------------
 --
--- SQL schema definition of the Southern Technical Institute of Natural Knowledge
--- student records database, as specified in INFO 214 Assignment 1.
+-- SQL schema definition of the Happy Joe's Quality Used Cars database,
+-- as specified in INFO 214 Assignment 1.
 --
 -- Schema written for Oracle11g.
 --
