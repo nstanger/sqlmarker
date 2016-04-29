@@ -2,7 +2,7 @@
 
 require_once 'test_config.php';
 
-require_once "PHPUnit/Autoload.php";
+include "phpunit-5.3.2.phar";
 require_once 'TestListener/HTMLTestListener.php';
 require_once 'TestListener/TextTestListener.php';
 require_once 'TestListener/ANSITestListener.php';

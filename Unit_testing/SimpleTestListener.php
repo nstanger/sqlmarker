@@ -106,6 +106,10 @@ abstract class SimpleTestListener implements PHPUnit_Framework_TestListener
 		$this->incompletes[ $test->getName() ] = 1;
 	}
  
+    public function addRiskyTest(PHPUnit_Framework_Test $test, Exception $e, $time)
+    {
+    }
+    
 	public function addSkippedTest(PHPUnit_Framework_Test $test, Exception $e, $time)
 	{
 		$this->printSkip( $e );
