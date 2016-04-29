@@ -20,6 +20,17 @@ class BDL_Test_Sale_line_structure extends BDL_Test_Sale_line
 	}
 	
 	
+	/**
+	 *	Return whether or not the fixture should be loaded.
+	 *
+	 *	@return boolean
+	 */
+	protected function willLoadFixture()
+	{
+	    return false;
+	}
+	
+	
 	public function testTableExists()
 	{
 		$this->assertTableExists();

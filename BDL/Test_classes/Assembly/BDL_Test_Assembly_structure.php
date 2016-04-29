@@ -20,6 +20,17 @@ class BDL_Test_Assembly_structure extends BDL_Test_Assembly
 	}
 	
 	
+	/**
+	 *	Return whether or not the fixture should be loaded.
+	 *
+	 *	@return boolean
+	 */
+	protected function willLoadFixture()
+	{
+	    return false;
+	}
+	
+	
 	public function testTableExists()
 	{
 		$this->assertTableExists();

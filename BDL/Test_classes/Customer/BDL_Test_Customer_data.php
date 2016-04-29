@@ -21,6 +21,17 @@ class BDL_Test_Customer_data extends BDL_Test_Customer
 	
 	
 	/**
+	 *	Return whether or not the fixture should be loaded.
+	 *
+	 *	@return boolean
+	 */
+	protected function willLoadFixture()
+	{
+	    return true;
+	}
+	
+	
+	/**
 	 *	@dataProvider provideColumnLegalValues
 	 */
 	public function testColumnLegalValue( $columnName, $legalValue )

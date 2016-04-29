@@ -69,5 +69,11 @@ abstract class BDL_Test_Order_line extends PHPUnit_Extensions_Database_TestCase_
 			'COMPONENT' => array( 'COMPONENT_CODE' ),
 		);
 	}
+	
+	
+	public function getUniqueColumnList()
+	{
+		return array();
+	}
 }
 ?>

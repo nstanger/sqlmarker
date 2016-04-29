@@ -67,5 +67,11 @@ abstract class BDL_Test_Sale_head extends PHPUnit_Extensions_Database_TestCase_C
 			'CUSTOMER' => array( 'CUSTOMER_ID' ),
 		);
 	}
+	
+	
+	public function getUniqueColumnList()
+	{
+		return array();
+	}
 }
 ?>

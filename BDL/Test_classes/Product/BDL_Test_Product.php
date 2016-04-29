@@ -84,5 +84,11 @@ abstract class BDL_Test_Product extends PHPUnit_Extensions_Database_TestCase_Cre
 	{
 		return array();
 	}
+	
+	
+	public function getUniqueColumnList()
+	{
+		return array();
+	}
 }
 ?>

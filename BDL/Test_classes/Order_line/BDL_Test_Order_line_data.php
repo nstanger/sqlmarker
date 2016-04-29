@@ -21,6 +21,17 @@ class BDL_Test_Order_line_data extends BDL_Test_Order_line
 	
 	
 	/**
+	 *	Return whether or not the fixture should be loaded.
+	 *
+	 *	@return boolean
+	 */
+	protected function willLoadFixture()
+	{
+	    return true;
+	}
+	
+	
+	/**
 	 *	@dataProvider provideColumnUnderflowValues
 	 *	@expectedException PDOException
 	 *	@expectedExceptionMessage check constraint

@@ -51,5 +51,11 @@ abstract class BDL_Test_Assembly extends PHPUnit_Extensions_Database_TestCase_Cr
 			'COMPONENT' => array ( 'COMPONENT_CODE' ),
 		);
 	}
+	
+	
+	public function getUniqueColumnList()
+	{
+		return array();
+	}
 }
 ?>

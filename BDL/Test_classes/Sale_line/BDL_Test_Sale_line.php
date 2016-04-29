@@ -60,5 +60,11 @@ abstract class BDL_Test_Sale_line extends PHPUnit_Extensions_Database_TestCase_C
 			'PRODUCT' => array( 'PRODUCT_CODE' ),
 		);
 	}
+	
+	
+	public function getUniqueColumnList()
+	{
+		return array();
+	}
 }
 ?>

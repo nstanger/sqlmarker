@@ -72,5 +72,11 @@ abstract class BDL_Test_Order_head extends PHPUnit_Extensions_Database_TestCase_
 			'SUPPLIER' => array( 'SUPPLIER_ID' ),
 		);
 	}
+	
+	
+	public function getUniqueColumnList()
+	{
+		return array();
+	}
 }
 ?>
