@@ -265,26 +265,30 @@ CREATE TABLE Sale_Line
 -- Order_Head table
 --
 CREATE TABLE Order_Head
-( Order_Num    NUMBER(10),
+( Order_Num      NUMBER(10),
   --
-  Order_Date   DATE           NOT NULL,
+  Order_Date     DATE           NOT NULL,
   --
-  Date_Entered DATE           DEFAULT SYSDATE NOT NULL,
+  Date_Entered   DATE           DEFAULT SYSDATE NOT NULL,
   --
-  Due_Date     DATE           NOT NULL,
+  Due_Date       DATE           NOT NULL,
   --
-  Status       VARCHAR2(11)   NOT NULL
+  Date_Completed DATE,
+  --
+  Status         VARCHAR2(11)   NOT NULL
     CONSTRAINT Order_Head_Status_Invalid CHECK ( Status IN ( 'complete', 'in progress' ) ),
   --
-  Staff_ID     NUMBER(7)      NOT NULL,
+  Staff_ID       NUMBER(7)      NOT NULL,
   --
-  Supplier_ID  NUMBER(7)      NOT NULL,
+  Supplier_ID    NUMBER(7)      NOT NULL,
   --
-  Comments     VARCHAR2(4000),
+  Comments       VARCHAR2(4000),
   --
   CONSTRAINT Order_Head_Date_In_Future CHECK ( Order_Date <= Date_Entered ),
   --
   CONSTRAINT Order_Head_Due_Date_Invalid CHECK ( Due_Date > Order_Date ),
+  --
+  CONSTRAINT Order_Head_Date_Comp_Invalid CHECK ( Date_Completed > Order_Date ),
   --
   CONSTRAINT Order_Head_PK PRIMARY KEY ( Order_Num ),
   --
