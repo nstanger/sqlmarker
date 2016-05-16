@@ -29,9 +29,9 @@ abstract class BDL_Test_Assembly extends PHPUnit_Extensions_Database_TestCase_Cr
 			'QUANTITY'			=>	array(	'generic_type'	=>	'NUMBER',
 											'sql_type'		=>	array( 'NUMBER', 'INTEGER', 'SMALLINT' ),
 											'min_length'	=>	4,
-											'max_length'	=>	4,
+											'max_length'	=>	5,
 											'decimals'		=>	0,
-											'underflow'		=>	-1,
+											'underflow'		=>	0, // should be 1, but there was a typo in the spec
 											'overflow'		=>	10000,
 											'nullable'		=>	false,
 											'test_value'	=>	"456",	),	);

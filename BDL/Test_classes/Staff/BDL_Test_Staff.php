@@ -69,7 +69,7 @@ abstract class BDL_Test_Staff extends PHPUnit_Extensions_Database_TestCase_Creat
 			'SALARY'		=>	array(	'generic_type'	=>	'NUMBER',
 										'sql_type'		=>	array( 'NUMBER', 'DECIMAL' ),
 										'min_length'	=>	7,
-										'max_length'	=>	7,
+										'max_length'	=>	8,
 										'decimals'		=>	2,
 										'underflow'		=>	"999.99",
 										'overflow'		=>	"100000",

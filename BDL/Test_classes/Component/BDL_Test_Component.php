@@ -34,7 +34,7 @@ abstract class BDL_Test_Component extends PHPUnit_Extensions_Database_TestCase_C
 			'STOCK_COUNT'		=>	array(	'generic_type'	=>	'NUMBER',
 											'sql_type'		=>	array( 'NUMBER', 'INTEGER' ),
 											'min_length'	=>	7,
-											'max_length'	=>	7,
+											'max_length'	=>	8,
 											'decimals'		=>	0,
 											'underflow'		=>	-1,
 											'overflow'		=>	10000000,
