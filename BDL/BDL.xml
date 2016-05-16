@@ -504,7 +504,7 @@ CREATE TABLE Component
 					<row>
 						<cell><tt>*</tt></cell>
 						<cell><code>Quantity</code></cell>
-						<cell>Number of units used of this component, 1–<number>9999</number></cell>
+						<cell>Number of units used of this component, 2–<number>9999</number></cell>
 					</row>
 					<row-rule />
 				</tabular-body>
