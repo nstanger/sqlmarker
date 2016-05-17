@@ -50,7 +50,7 @@ abstract class BDL_Test_Order_line extends PHPUnit_Extensions_Database_TestCase_
 											'max_length'	=>	7,
 											'decimals'		=>	2,
 											'underflow'		=>	-0.01,
-											'overflow'		=>	100000.00,
+											'overflow'		=>	10000.00,
 											'nullable'		=>	false,
 											'test_value'	=>	"24.99",	),	);
 	}
