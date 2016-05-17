@@ -247,7 +247,7 @@ CREATE TABLE Sale_Line
   Product_Code  NUMBER(8),
   --
   Quantity      NUMBER(4)   NOT NULL
-    CONSTRAINT Sale_Line_Quantity_Too_Low CHECK ( Quantity > 0 ),
+    CONSTRAINT Sale_Line_Quantity_Too_Low CHECK ( Quantity BETWEEN 1 AND 9999 ),
   --
   Actual_Price  NUMBER(7,2) NOT NULL
     CONSTRAINT Sale_Line_Act_Price_Too_Low CHECK ( Actual_Price BETWEEN 0 AND 99999.99 ),
