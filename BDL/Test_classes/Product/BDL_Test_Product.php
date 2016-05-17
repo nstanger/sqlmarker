@@ -52,7 +52,7 @@ abstract class BDL_Test_Product extends PHPUnit_Extensions_Database_TestCase_Cre
 											'overflow'		=>	100000,
 											'nullable'		=>	true,
 											'legal_values'	=>	array( 0, 653 ),
-											'illegal_values' =>	array( 654, 655 ),
+											'illegal_values' =>	array( 655, 656 ),
 											'test_value'	=>	"456",	),
 			'LIST_PRICE'		=>	array(	'generic_type'	=>	'NUMBER',
 											'sql_type'		=>	array( 'NUMBER', 'DECIMAL' ),
