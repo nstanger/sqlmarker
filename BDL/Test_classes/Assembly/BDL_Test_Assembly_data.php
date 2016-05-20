@@ -32,6 +32,15 @@ class BDL_Test_Assembly_data extends BDL_Test_Assembly
 	
 	
 	/**
+	 *	@dataProvider provideColumnLegalValues
+	 */
+	public function testColumnLegalValue( $columnName, $legalValue )
+	{
+   		$this->assertColumnLegalValue( $columnName, $legalValue );
+	}
+	
+	
+	/**
 	 *	@dataProvider provideColumnUnderflowValues
 	 *	@expectedException PDOException
 	 *	@expectedExceptionMessage check constraint
