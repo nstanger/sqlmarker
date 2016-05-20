@@ -19,7 +19,7 @@ abstract class BDL_Test_Supplier extends PHPUnit_Extensions_Database_TestCase_Cr
 											'decimals'		=>	0,
 // 											'underflow'		=>	-1,
 											'nullable'		=>	false,
-											'test_value'	=>	"123456",	),
+											'test_value'	=>	123456,	),
 			'NAME'				=>	array(	'generic_type'	=>	'TEXT',
 											'sql_type'		=>	array( 'VARCHAR2', 'VARCHAR' ),
 											'min_length'	=>	50,

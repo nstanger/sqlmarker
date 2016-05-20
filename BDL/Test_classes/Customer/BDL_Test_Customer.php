@@ -18,7 +18,7 @@ abstract class BDL_Test_Customer extends PHPUnit_Extensions_Database_TestCase_Cr
 											'max_length'	=>	7,
 											'decimals'		=>	0,
 											'nullable'		=>	false,
-											'test_value'	=>	"123456",	),
+											'test_value'	=>	123456,	),
 			'NAME'				=>	array(	'generic_type'	=>	'TEXT',
 											'sql_type'		=>	array( 'VARCHAR2', 'VARCHAR' ),
 											'min_length'	=>	50,

@@ -18,7 +18,7 @@ abstract class BDL_Test_Sale_line extends PHPUnit_Extensions_Database_TestCase_C
 										'max_length'	=>	10,
 										'decimals'		=>	0,
 										'nullable'		=>	false,
-										'test_value'	=>	"223",	),
+										'test_value'	=>	223,	),
 			'PRODUCT_CODE'	=>	array(	'generic_type'	=>	'NUMBER',
 										'sql_type'		=>	array( 'NUMBER', 'INTEGER' ),
 										'min_length'	=>	8,
@@ -33,8 +33,9 @@ abstract class BDL_Test_Sale_line extends PHPUnit_Extensions_Database_TestCase_C
 										'decimals'		=>	0,
 										'underflow'		=>	0,
 										'overflow'		=>	10000,
+										'legal_values'  =>  array( 1, 9999 ),
 										'nullable'		=>	false,
-										'test_value'	=>	"20",	),
+										'test_value'	=>	20,	),
 			'ACTUAL_PRICE'	=>	array(	'generic_type'	=>	'NUMBER',
 										'sql_type'		=>	array( 'NUMBER', 'DECIMAL' ),
 										'min_length'	=>	7,
@@ -42,8 +43,9 @@ abstract class BDL_Test_Sale_line extends PHPUnit_Extensions_Database_TestCase_C
 										'decimals'		=>	2,
 										'underflow'		=>	-0.01,
 										'overflow'		=>	100000.00,
+										'legal_values'  =>  array( 0, 99999.99 ),
 										'nullable'		=>	false,
-										'test_value'	=>	"24.99",	),	);
+										'test_value'	=>	24.99,	),	);
 	}
 	
 	

@@ -18,7 +18,7 @@ abstract class BDL_Test_Component extends PHPUnit_Extensions_Database_TestCase_C
 											'max_length'	=>	8,
 											'decimals'		=>	0,
 											'nullable'		=>	false,
-											'test_value'	=>	"87654321",	),
+											'test_value'	=>	87654321,	),
 			'SUPPLIERS_CODE'	=>	array(	'generic_type'	=>	'TEXT',
 											'sql_type'		=>	array( 'VARCHAR2', 'VARCHAR' ),
 											'min_length'	=>	25,
@@ -38,15 +38,16 @@ abstract class BDL_Test_Component extends PHPUnit_Extensions_Database_TestCase_C
 											'decimals'		=>	0,
 											'underflow'		=>	-1,
 											'overflow'		=>	10000000,
+											'legal_values'  =>  array( 0, 9999999 ),
 											'nullable'		=>	false,
-											'test_value'	=>	"456",	),
+											'test_value'	=>	456,	),
 			'SUPPLIER_ID'		=>	array(	'generic_type'	=>	'NUMBER',
 											'sql_type'		=>	array( 'NUMBER', 'INTEGER' ),
 											'min_length'	=>	7,
 											'max_length'	=>	7,
 											'decimals'		=>	0,
 											'nullable'		=>	false,
-											'test_value'	=>	"1",	),	);
+											'test_value'	=>	1,	),	);
 	}
 	
 	
