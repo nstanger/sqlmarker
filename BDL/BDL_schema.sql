@@ -82,7 +82,7 @@ CREATE TABLE Staff
   Salary      NUMBER(7,2)   NOT NULL
     CONSTRAINT Staff_Salary_Range_Invalid CHECK ( Salary BETWEEN 1000 and 99999.99 ),
   --
-  Comments    VARCHAR2(4000),
+  Comments    CLOB,
   --
   CONSTRAINT STAFF_PK PRIMARY KEY ( Staff_ID )
 );
@@ -105,7 +105,7 @@ CREATE TABLE Customer
   --
   Email           VARCHAR2(50),
   --
-  Comments        VARCHAR2(4000),
+  Comments        CLOB,
   --
   CONSTRAINT Customer_PK PRIMARY KEY ( Customer_ID )
 );
@@ -128,7 +128,7 @@ CREATE TABLE Supplier
   --
   Email           VARCHAR2(50),
   --
-  Comments        VARCHAR2(4000),
+  Comments        CLOB,
   --
   CONSTRAINT Supplier_PK PRIMARY KEY ( Supplier_ID )
 );
@@ -225,7 +225,7 @@ CREATE TABLE Sale_Head
   --
   Customer_ID  NUMBER(7)      NOT NULL,
   --
-  Comments     VARCHAR2(4000),
+  Comments     CLOB,
   --
   CONSTRAINT Sale_Head_Date_In_Future CHECK ( Sale_Date <= Date_Entered ),
   --
@@ -282,7 +282,7 @@ CREATE TABLE Order_Head
   --
   Supplier_ID    NUMBER(7)      NOT NULL,
   --
-  Comments       VARCHAR2(4000),
+  Comments       CLOB,
   --
   CONSTRAINT Order_Head_Date_In_Future CHECK ( Order_Date <= Date_Entered ),
   --

@@ -124,13 +124,13 @@ CREATE TABLE Staff
   Salary      NUMBER(7,2)   NOT NULL
     CONSTRAINT Staff_Salary_Range_Invalid
       CHECK ( Salary BETWEEN 1000 AND 99999.99 ),
-  Comments    VARCHAR2(4000),
+  Comments    CLOB,
   --
   CONSTRAINT STAFF_PK PRIMARY KEY ( Staff_ID )
 );
 				</code-block>
 				
-				<p indent="no">The most commmon errors here were either renaming some of the columns, or misspelling the values in the <code>Department</code> and <code>Position</code><space /><code>CHECK</code> constraints. Note the use of the <code>CHR</code> function in “Sales <ampersand /> Marketing” to avoid the issue with ampersand (<ampersand />) characters in TOAD. (Alternatively, use <code>SET ESCAPE '\';</code> and change the value to <tt>'Sales <backslash /><ampersand /> Marketing'</tt>.) Remember also that <code>BETWEEN</code> is inclusive of the two endpoint values, so the upper value for <code>Salary</code> should be 99999.99, not 100000.</p>
+				<p indent="no">The most commmon errors here were either renaming some of the columns, or misspelling the values in the <code>Department</code> and <code>Position</code><space /><code>CHECK</code> constraints. Note the use of the <code>CHR</code> function in “Sales <ampersand /> Marketing” to avoid the issue with ampersand (<ampersand />) characters in SQL Developer. (Alternatively, use <code>SET ESCAPE '\';</code> and change the value to <tt>'Sales <backslash /><ampersand /> Marketing'</tt>; or <code>SET DEFINE OFF;</code> and just use “<ampersand />” directly.) Remember also that <code>BETWEEN</code> is inclusive of the two endpoint values, so the upper value for <code>Salary</code> should be 99999.99, not 100000.</p>
 			</answer>
 			
 		</section>
@@ -209,7 +209,7 @@ CREATE TABLE Customer
   Phone           VARCHAR2(12)    NOT NULL,
   Address         VARCHAR2(200)   NOT NULL,
   Email           VARCHAR2(50),
-  Comments        VARCHAR2(4000),
+  Comments        CLOB,
   --
   CONSTRAINT Customer_PK PRIMARY KEY ( Customer_ID )
 );
@@ -290,7 +290,7 @@ CREATE TABLE Supplier
   Phone           VARCHAR2(12)    NOT NULL,
   Address         VARCHAR2(200)   NOT NULL,
   Email           VARCHAR2(50),
-  Comments        VARCHAR2(4000),
+  Comments        CLOB,
   --
   CONSTRAINT Supplier_PK PRIMARY KEY ( Supplier_ID )
 );
@@ -636,7 +636,7 @@ CREATE TABLE Sale_Head
                           'backordered', 'shipped' ) ),
   Staff_ID     NUMBER(7)      NOT NULL,
   Customer_ID  NUMBER(7)      NOT NULL,
-  Comments     VARCHAR2(4000),
+  Comments     CLOB,
   --
   CONSTRAINT Sale_Head_PK PRIMARY KEY ( Sale_Num ),
   --
@@ -786,7 +786,7 @@ CREATE TABLE Order_Head
       CHECK ( Status IN ( 'complete', 'in progress' ) ),
   Staff_ID        NUMBER(7)      NOT NULL,
   Supplier_ID     NUMBER(7)      NOT NULL,
-  Comments        VARCHAR2(4000),
+  Comments        CLOB,
   --
   CONSTRAINT Order_Head_Due_Date_Invalid CHECK ( Due_Date &gt; Order_Date ),
   --
