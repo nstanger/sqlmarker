@@ -296,7 +296,7 @@ CREATE TABLE Supplier
 );
 				</code-block>
 				
-				<p indent="no">This table is essentially identical to Customer, so the same errors tended to apply. Phone numbers are slightly trickier here, because they can be full international numbers. The International Telecommunications Union (ITU) set standards for telecommunications, including phone numbers. They specify the maximum length of a full international phone number to be fifteen digits, including country code, area code and local number (where applicable). An optional “+” can be added at the front, making a total of up to 16 characters However, this doesn’t mean that all international phone numbers are fifteen digits long! New Zealand phone numbers, for example, are between ten and twelve digits depending on whether it’s a landline or a mobile. Twelve digits is probably a reasonable minimum size for the <code>Phone</code> column.</p>
+				<p indent="no">This table is essentially identical to Customer, so the same errors tended to apply. Phone numbers are slightly trickier here, because they can be full international numbers. The International Telecommunications Union (ITU) set standards for telecommunications, including phone numbers. They specify the maximum length of a full international phone number to be fifteen digits, including country code, area code and local number (where applicable). An optional “+” can be added at the front, making a total of up to 16 characters However, this doesn’t mean that all international phone numbers are fifteen digits long! New Zealand phone numbers, for example, are between ten and twelve digits depending on whether it’s a landline or a mobile.</p>
 			</answer>
 			
 		</section>
@@ -521,7 +521,7 @@ CREATE TABLE Assembly
   Component_Code  NUMBER(8),
   Quantity        NUMBER(4)     NOT NULL
     CONSTRAINT Assembly_Quantity_Too_Low
-      CHECK ( Quantity BETWEEN 1 AND 9999 ),
+      CHECK ( Quantity BETWEEN 2 AND 9999 ),
   --
   CONSTRAINT Assembly_PK
     PRIMARY KEY ( Product_Code, Component_Code ),
@@ -534,6 +534,8 @@ CREATE TABLE Assembly
 				</code-block>
 				
 				<p indent="no">It doesn’t make sense to allow zero as a value of <code>Quantity</code>; if there are none of a particular component in a product, then you wouldn’t add an entry to this table anyway!</p>
+				
+				<p>There was actually an inconsistency in the original specification: the definition of the <code>Quantity</code> column said “1–9999” (corrected above), while the following text said “at least two”. We accepted both answers, but awarded a bonus mark for spotting the typo and using the correct lower bound of 2.</p>
 			</answer>
 			
 		</section>
@@ -663,9 +665,11 @@ CREATE TABLE Sale_Line
 );
 				</code-block>
 				
-				<p indent="no">It was great to see people using the workaround for checking the <code>Sale_Date</code> isn’t in the future. However, it was very frustrating to also see of them not bothering to explain it! We were quite happy to accept an extra column to store the sale entry date, as long as there was an explanation of why it was being added. (Note that the code above doesn’t include this to save space.)</p>
+				<p indent="no">It was great to see people using various workarounds for checking the <code>Sale_Date</code> isn’t in the future. (Note that the code above doesn’t include this to save space.)</p>
 				
 				<p>Once again it doesn’t really make sense for <code>Quantity</code> in <code>Sale_Line</code> to be zero (although it does make sense for <code>Actual_Price</code>).</p>
+				
+				<p>A few people forgot that strings in SQL are case-sensitive, and used mixed case values (e.g., “In Progress”) for the <code>CHECK</code> constraint on <code>Status</code>, rather than the specified lower case values (“in progress”). (This also applies to the <code>Status</code> column in <code>Order_Head</code>.)</p>
 			</answer>
 			
 		</section>
@@ -806,7 +810,9 @@ CREATE TABLE Order_Line
   Price           NUMBER(6,2)   NOT NULL
     CONSTRAINT Order_Line_Price_Too_Low
       CHECK ( Price BETWEEN 0 AND 9999.99 ),
-  Qty_Received    NUMBER(6)     NOT NULL,
+  Qty_Received    NUMBER(6)     NOT NULL
+    CONSTRAINT Order_Line_Qty_Rec_Too_Low
+      CHECK ( Qty_Received >= 0 ),
   --
   CONSTRAINT Order_Line_PK
     PRIMARY KEY ( Order_Num, Component_Code ),
@@ -817,6 +823,8 @@ CREATE TABLE Order_Line
     FOREIGN KEY ( Order_Num ) REFERENCES Order_Head
 );
 				</code-block>
+				
+				<p><code>Qty_Received</code> in <code>Order_Line</code> seemed to confuse some people. It should be non-negative (unless you’re allowing for returns, but that wasn’t mentioned in the specification), but the upper bound (if there is one at all) should be greater than <code>Qty_Ordered</code> to enable BDL to record situations where they receive more components than they ordered. (This does happen in real life; sometimes you even get sent things that you never ordered!) A few people said <code>Qty_Received &gt;= Qty_Ordered</code> (or similar), which would completely prevent us from ever entering an order, because <code>Qty_Received</code> will always initially be zero!</p>
 				
 			</answer>
 			
